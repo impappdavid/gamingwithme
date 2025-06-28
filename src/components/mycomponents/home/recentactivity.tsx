@@ -1,10 +1,7 @@
-import { Link } from "react-router-dom"
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,

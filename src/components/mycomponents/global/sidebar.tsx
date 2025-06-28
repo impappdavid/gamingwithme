@@ -1,20 +1,13 @@
-import { Barcode, CircleQuestionMark, CircleUser, Gamepad2, House, Info, Languages, Menu, MessagesSquare, MonitorSmartphone, Music, Play, Store, Swords, Users, Youtube } from "lucide-react"
-import { Link, NavLink } from "react-router-dom"
+import { CircleQuestionMark, House, Info, Languages, MessagesSquare, MonitorSmartphone, Music, Play, Swords, Users, Youtube } from "lucide-react"
+import { NavLink } from "react-router-dom"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
     DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
 import {
     Tooltip,
     TooltipContent,
