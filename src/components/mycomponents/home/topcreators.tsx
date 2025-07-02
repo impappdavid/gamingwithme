@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { MessagesSquare, Star } from "lucide-react"
+import { MessagesSquare } from "lucide-react"
 
 function TopCreators() {
     return (

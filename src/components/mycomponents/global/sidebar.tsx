@@ -8,11 +8,6 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
 
 function Sidebar() {
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
