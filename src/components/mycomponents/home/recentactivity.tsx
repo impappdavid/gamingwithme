@@ -26,24 +26,6 @@ const invoices = [
         totalAmount: "$0.99",
         paymentMethod: "Bank Transfer",
     },
-    {
-        invoice: "@ein",
-        paymentStatus: "2h",
-        totalAmount: "$289.98",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "@ein",
-        paymentStatus: "6h",
-        totalAmount: "$869.94",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "poppins",
-        paymentStatus: "1 session",
-        totalAmount: "$49.99",
-        paymentMethod: "PayPal",
-    },
 ]
 
 function RecentActivity() {

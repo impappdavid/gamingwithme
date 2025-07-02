@@ -27,24 +27,6 @@ const invoices = [
         totalAmount: "$0.99",
         matchedCategory: "Fortnite",
     },
-    {
-        invoice: "@cinna",
-        paymentStatus: "2h",
-        totalAmount: "$100.00",
-        matchedCategory: "Minecraft",
-    },
-    {
-        invoice: "@felix",
-        paymentStatus: "6h",
-        totalAmount: "$5.00",
-        matchedCategory: "CS2",
-    },
-    {
-        invoice: "@dave",
-        paymentStatus: "1 session",
-        totalAmount: "$10.99",
-        matchedCategory: "CS2",
-    },
 ]
 
 function Suggestions() {
