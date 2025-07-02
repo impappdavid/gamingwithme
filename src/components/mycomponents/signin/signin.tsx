@@ -91,7 +91,6 @@ function SignInForm() {
     const [isNotVerified, setIsNotVerified] = useState(false);
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [staticError, setStaticError] = useState<string | null>(null);
     const [isErrorVisible, setIsErrorVisible] = useState(false);
 
@@ -136,7 +135,6 @@ function SignInForm() {
             }, 300);
             e.preventDefault();
             setLoading(true);
-            setError(null);
             removeStaticError();
         }
 
