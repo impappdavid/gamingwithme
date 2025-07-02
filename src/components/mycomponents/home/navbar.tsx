@@ -29,12 +29,13 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-import { NavLink } from "react-router-dom"
+import { useNavigate, NavLink } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 
 function Navbar() {
     const [search, setSearch] = useState("");
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    let loggedin = localStorage.getItem('signedin')
+    const navigate = useNavigate();
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
     return (
         <>
@@ -247,7 +248,7 @@ function Navbar() {
                         </DialogContent>
                     </Dialog >
 
-                    {isLoggedIn ? (
+                    {loggedin?.length != undefined ? (
                         <>
                             <Dialog>
                                 <DialogTrigger asChild>
@@ -345,7 +346,7 @@ function Navbar() {
                                             Settings
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => setIsLoggedIn(false)} className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2">
+                                        <DropdownMenuItem onClick={() => {localStorage.clear(); navigate('/')}} className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2">
                                             <LogOut className="text-red-500" />
                                             Log out
                                         </DropdownMenuItem>
@@ -356,7 +357,7 @@ function Navbar() {
                         </>
                     ) : (
                         <div className="flex gap-2 items-center">
-                            <Button className="h-9 bg-green-500/10 border border-green-500/60 text-green-500 hover:border-green-500/80 hover:bg-green-500/20 cursor-pointer" onClick={() => setIsLoggedIn(true)}>Sign In</Button>
+                            <Button onClick={() => navigate('/signin')} className="h-9 bg-green-500/10 border border-green-500/60 text-green-500 hover:border-green-500/80 hover:bg-green-500/20 cursor-pointer" >Sign In</Button>
                             <Button className="h-9 bg-green-500  text-black  hover:bg-green-500/80 cursor-pointer">Sign Up</Button>
                         </div>
                     )}
