@@ -1,4 +1,4 @@
-import { CircleQuestionMark, House, Info, Languages, MessagesSquare, Music, Play, Swords, Users, Youtube } from "lucide-react"
+import { BadgeCheck, CircleQuestionMark, Gamepad2, House, Info, Languages, MessagesSquare, Music, Play, Swords, Youtube } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import {
     DropdownMenu,
@@ -41,7 +41,7 @@ function Sidebar() {
                                 ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
-                            <Users className="w-5 h-5" />
+                            <Gamepad2 className="w-5 h-5" />
                             <div className="text-md font-medium hidden xl:flex">Players</div>
                         </NavLink>
                         <NavLink to="../just-chatting" className={({ isActive }) =>
@@ -83,6 +83,13 @@ function Sidebar() {
                                 ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
                                 : `${baseClass} text-green-500/60  hover:text-green-500 `
                         }><Swords className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">Games</div></NavLink>
+
+                    </div>
+                    <div className="px-2">
+                        <div className="h-[1.5px] w-full bg-zinc-900"></div>
+                    </div>
+                    <div className="flex flex-col gap-1 p-2">
+                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/40`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">Become a creator</div></NavLink>
 
                     </div>
                     <div className="px-2">

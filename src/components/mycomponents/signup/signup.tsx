@@ -1,4 +1,4 @@
-import { Mail, Lock, Eye, EyeOff, User, Tag, ChevronRight, TriangleAlert, CircleHelp, X } from "lucide-react"
+import { Mail, Lock, Eye, EyeOff, Tag, ChevronRight, TriangleAlert, CircleHelp, X } from "lucide-react"
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
@@ -8,6 +8,14 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 interface CheckmarkProps {
     size?: number
@@ -56,14 +64,13 @@ export function Checkmark({ size = 100, strokeWidth = 2, color = "currentColor",
 }
 
 function SignUpForm() {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [success, setShowSuccess] = useState(false);
     const navigate = useNavigate();
+
 
     const [staticError, setStaticError] = useState<string | null>(null);
     const [isErrorVisible, setIsErrorVisible] = useState(false);
@@ -123,8 +130,8 @@ function SignUpForm() {
 
     return (
         <>
-            <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 py-4 sm:py-0 transition-all">
-                <div className={`rounded-4xl relative bg-zinc-900 sm:border w-96 sm:w-92 border-zinc-800 drop-shadow-xl p-4 transition-all duration-500 ease-in-out overflow-hidden `}>
+            <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 p-0 sm:py-0 transition-all">
+                <div className={`sm:rounded-4xl relative bg-zinc-900 sm:border h-screen sm:h-fit w-full sm:w-92 border-zinc-800 drop-shadow-xl p-4 transition-all duration-500 ease-in-out overflow-hidden `}>
                     {!success ? (
                         <div className="flex justify-between items-center">
                             <div className=" p-1.5 hover:bg-zinc-800  rounded-lg transition-all duration-300 cursor-pointer">
@@ -188,43 +195,22 @@ function SignUpForm() {
                                     <Separator className="flex-1" />
                                 </div>
                                 <form className="flex flex-col gap-2">
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div className="flex flex-col gap-0.5">
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                    <User className="h-4 w-4 text-zinc-500" />
-                                                </div>
-                                                <Input
-                                                    id="firstName"
-                                                    type="text"
-                                                    placeholder="First name"
-                                                    className="pl-10 h-12 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
-                                                    value={firstName}
-                                                    onChange={(e) => setFirstName(e.target.value)}
-                                                    required
-                                                />
-
-                                            </div>
-
-                                        </div>
-                                        <div className="flex flex-col gap-0.5">
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                    <User className="h-4 w-4 text-zinc-500" />
-                                                </div>
-                                                <Input
-                                                    id="lastName"
-                                                    type="text"
-                                                    placeholder="Last name"
-                                                    className="pl-10 h-12 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
-                                                    value={lastName}
-                                                    onChange={(e) => setLastName(e.target.value)}
-                                                    required
-                                                />
-
-                                            </div>
-
-                                        </div>
+                                    <div className="flex">
+                                        <Select>
+                                            <SelectTrigger className="w-full  h-12">
+                                                <SelectValue placeholder="Select a role" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="user">User</SelectItem>
+                                                    <SelectItem value="gamer">Gamer</SelectItem>
+                                                    <SelectItem value="musician">Musician</SelectItem>
+                                                    <SelectItem value="tiktoker">Tiktoker</SelectItem>
+                                                    <SelectItem value="youtuber">Youtuber</SelectItem>
+                                                    <SelectItem value="just_chatting">Just Chatting </SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                     <div className="flex flex-col gap-0.5">
                                         <div className="relative">

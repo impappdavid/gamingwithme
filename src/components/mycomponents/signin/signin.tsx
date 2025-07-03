@@ -182,8 +182,8 @@ function SignInForm() {
 
     return (
         <>
-            <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 py-4 sm:py-0 transition-all">
-                <div className={`rounded-4xl w-96 sm:w-92 relative  bg-zinc-900 sm:border border-zinc-800 drop-shadow-xl p-4 transition-all duration-500 ease-in-out overflow-hidden ${showOtpInput ? "max-h-[200px]" : "max-h-[500px]"}`}>
+            <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 p-0 sm:py-0 transition-all">
+                <div className={`sm:rounded-4xl w-full h-screen sm:h-fit sm:w-92 relative  bg-zinc-900 sm:border border-zinc-800 drop-shadow-xl p-4 transition-all duration-500 ease-in-out overflow-hidden ${showOtpInput ? "h-screen sm:max-h-[200px]" : "h-screen sm:max-h-[500px]"}`}>
                     <div className="flex justify-between items-center">
                         {showOtpInput ? (
                             <div className=" p-1.5 hover:bg-zinc-800  rounded-lg transition-all duration-300 cursor-pointer" onClick={goBackHandle}>
