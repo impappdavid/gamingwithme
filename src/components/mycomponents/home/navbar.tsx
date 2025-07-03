@@ -358,7 +358,7 @@ function Navbar() {
                     ) : (
                         <div className="flex gap-2 items-center">
                             <Button onClick={() => navigate('/signin')} className="h-9 bg-green-500/10 border border-green-500/60 text-green-500 hover:border-green-500/80 hover:bg-green-500/20 cursor-pointer" >Sign In</Button>
-                            <Button className="h-9 bg-green-500  text-black  hover:bg-green-500/80 cursor-pointer">Sign Up</Button>
+                            <Button onClick={() => navigate('/signup')} className="h-9 bg-green-500  text-black  hover:bg-green-500/80 cursor-pointer">Sign Up</Button>
                         </div>
                     )}
                 </div>

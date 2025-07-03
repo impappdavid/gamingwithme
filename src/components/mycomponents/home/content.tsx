@@ -8,7 +8,7 @@ function Content() {
     return (
         <>
             <div className="w-full xl:h-screen p-2">
-                <div className="w-full h-full bg-zinc-900 rounded-2xl border border-zinc-800">
+                <div className="w-full h-full max-h-screen bg-zinc-900 rounded-2xl border border-zinc-800 overflow-y-auto">
                     <Navbar />
                     <TopCreators />
                     <Games />

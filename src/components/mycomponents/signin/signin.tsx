@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Lock, Eye, EyeOff, CircleAlert, ChevronLeft, ChevronRight, TriangleAlert, X } from "lucide-react"
+import { Mail, Lock, Eye, EyeOff, ChevronLeft, ChevronRight, TriangleAlert, X, CircleHelp } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -190,8 +190,8 @@ function SignInForm() {
                                 <ChevronLeft className="w-4.5 h-4.5" />
                             </div>
                         ) : (
-                            <div onClick={() => navigate('/')} className=" p-1.5 hover:bg-zinc-800   rounded-lg transition-all duration-300 cursor-pointer">
-                                <ChevronLeft className="w-4.5 h-4.5" />
+                            <div className=" p-1.5 hover:bg-zinc-800  rounded-lg transition-all duration-300 cursor-pointer">
+                                <CircleHelp className="w-4.5 h-4.5" />
                             </div>
                         )}
                         {showOtpInput ? (
@@ -199,9 +199,9 @@ function SignInForm() {
                         ) : (
                             <h1 className="text-md py-1.5 font-medium">Sign in to GamingWithMe</h1>
                         )}
-                        <div className=" p-1.5 hover:bg-zinc-800  rounded-lg transition-all duration-300 cursor-pointer" >
-                            <CircleAlert className="w-4.5 h-4.5" />
-                        </div>
+                        <Link to='../' className=" p-1.5 hover:bg-zinc-800 rounded-lg transition-all duration-300 cursor-pointer" >
+                            <X className="w-4.5 h-4.5" />
+                        </Link>
                     </div>
 
                     {staticError && (
