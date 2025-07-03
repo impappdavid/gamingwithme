@@ -341,7 +341,7 @@ function SignInForm() {
                                         {loading ? 'Signing In...' : 'Sign In'}
                                     </Button>
                                     <div className="flex justify-center w-full mt-2">
-                                        <div className="text-xs text-zinc-400">Don't have an account? <Link to="./signup" className="text-green-400 hover:underline">Sign Up</Link></div>
+                                        <div className="text-xs text-zinc-400">Don't have an account? <Link to="../signup" className="text-green-400 hover:underline">Sign Up</Link></div>
                                     </div>
                                 </form>
 

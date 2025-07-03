@@ -305,7 +305,7 @@ function SignUpForm() {
                                         {loading ? 'Creating Account... ' : 'Sign up'}
                                     </Button>
                                     <div className="flex justify-center w-full mt-2">
-                                        <div className="text-xs text-zinc-400">Already have an account? <Link to="../" className="text-green-400 hover:underline">Sign In</Link></div>
+                                        <div className="text-xs text-zinc-400">Already have an account? <Link to="../signin" className="text-green-400 hover:underline">Sign In</Link></div>
                                     </div>
                                 </form>
                             </div>
