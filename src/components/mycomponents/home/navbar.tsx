@@ -184,9 +184,12 @@ function Navbar() {
                             </div>
 
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[700px] min-h-[800px] max-h-[800px] flex flex-col ">
+                        <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] min-h-[700px] max-h-[800px] flex flex-col ">
                             <DialogHeader>
-                                <DialogTitle className=""><Input type="text" placeholder="Search for user" className="font-normal" value={search} onChange={(e) => setSearch(e.target.value)} /></DialogTitle>
+                                <DialogTitle className="flex justify-between gap-4">
+                                    <Input type="text" placeholder="Search for user" className="font-normal placeholder:text-sm text-sm" value={search} onChange={(e) => setSearch(e.target.value)} />
+                                    <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">Close</DialogClose>
+                                </DialogTitle>
                                 <div className="h-[1px] bg-zinc-800"></div>
                                 <DialogDescription>
                                     {search.length > 0 ? (
@@ -263,7 +266,7 @@ function Navbar() {
                                     </div>
 
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[700px] min-h-[800px] max-h-[800px] flex flex-col ">
+                                <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] min-h-[700px] max-h-[800px] flex flex-col ">
                                     <DialogHeader>
                                         <DialogTitle className="flex justify-between">
 
@@ -346,7 +349,7 @@ function Navbar() {
                                             Settings
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => {localStorage.clear(); navigate('/')}} className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2">
+                                        <DropdownMenuItem onClick={() => { localStorage.clear(); navigate('/') }} className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2">
                                             <LogOut className="text-red-500" />
                                             Log out
                                         </DropdownMenuItem>
