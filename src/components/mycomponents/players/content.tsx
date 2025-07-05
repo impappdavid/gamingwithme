@@ -73,8 +73,8 @@ function Content() {
 
   return (
     <>
-      <div className="w-full h-screen xl:h-screen sm:p-2">
-        <div className="w-full h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 overflow-y-auto">
+      <div className="w-full h-full xl:h-screen sm:p-2">
+        <div className="w-full h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto">
           <Navbar page={"Players"} />
           <Filter
             filterText={filterText}

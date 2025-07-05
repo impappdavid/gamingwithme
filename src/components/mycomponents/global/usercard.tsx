@@ -36,12 +36,14 @@ function UserCard({ users }: { users: User[] }) {
 
     const goToPage = (page: number) => {
         setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+        // Scroll to top when page changes
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Generate page numbers for pagination
     const getPageNumbers = () => {
         const pages = [];
-        const maxVisible = 5;
+        const maxVisible = 4;
 
         if (totalPages <= maxVisible) {
             for (let i = 1; i <= totalPages; i++) {
@@ -232,9 +234,9 @@ function UserCard({ users }: { users: User[] }) {
 
             {/* Pagination Controls - Fixed at bottom */}
             {totalPages > 1 && users.length > 0 && (
-                <div className="mt-auto pt-6  absolute -bottom-17 w-full">
-                    <div className="flex items-center justify-between px-4">
-                        <div className="text-sm text-zinc-400">
+                <div className="mt-auto pt-6 pb-3 sm:pb-0 absolute -bottom-17 w-full">
+                    <div className="flex items-center justify-center sm:justify-between px-4">
+                        <div className="text-sm text-zinc-400 sm:flex hidden">
                             Showing {startIndex + 1} to {Math.min(endIndex, users.length)} of {users.length} users
                         </div>
                         <div className="flex justify-end">
@@ -242,7 +244,7 @@ function UserCard({ users }: { users: User[] }) {
                                 <PaginationContent>
                                     <PaginationItem>
                                         <PaginationPrevious
-                                            onClick={() => goToPage(currentPage - 1)}
+                                            onClick={() => goToPage(currentPage )}
                                             className={`rounded-xl ${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                                         />
                                     </PaginationItem>
@@ -253,7 +255,11 @@ function UserCard({ users }: { users: User[] }) {
                                                 <PaginationEllipsis />
                                             ) : (
                                                 <PaginationLink
-                                                    onClick={() => goToPage(page as number)}
+                                                    onClick={() => {
+                                                        goToPage(page as number);
+                                                        // Force scroll to top even if it's the same page
+                                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                    }}
                                                     isActive={currentPage === page}
                                                     className="cursor-pointer rounded-xl "
                                                 >
