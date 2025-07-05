@@ -1,4 +1,4 @@
-import { Bell, Calendar, CircleQuestionMark, CircleUser, Download, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, MonitorSmartphone, Music, Play, Search, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
+import { BadgeCheck, Bell, Calendar, CircleQuestionMark, CircleUser, Download, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Search, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
 import {
     Dialog,
     DialogClose,
@@ -32,7 +32,11 @@ import {
 import { useNavigate, NavLink } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 
-function Navbar() {
+type NavbarProps = {
+    page: string;
+  };
+
+function Navbar({ page }: NavbarProps) {
     const [search, setSearch] = useState("");
     let loggedin = localStorage.getItem('signedin')
     const navigate = useNavigate();
@@ -40,7 +44,7 @@ function Navbar() {
     return (
         <>
             <div className="w-full flex justify-between p-4 items-center border-b">
-                <div className="text-xl font-semibold hidden sm:flex">Home</div>
+                <div className="text-xl font-semibold hidden sm:flex">{page}</div>
 
 
                 <div className="flex sm:hidden">
@@ -115,19 +119,16 @@ function Navbar() {
                                             ? `${baseClass} bg-green-500/20 text-green-500`
                                             : `${baseClass} text-green-500/60 hover:text-green-500`
                                     }><Swords className="w-5 h-5" /> <div className="text-md font-medium  ">Games</div></NavLink>
-                                    <NavLink to="../profile" className={({ isActive }) =>
-                                        isActive
-                                            ? `${baseClass} bg-green-500/20 text-green-500`
-                                            : `${baseClass} text-green-500/60 hover:text-green-500`
-                                    }><CircleUser className="w-5 h-5" /> <div className="text-md font-medium  ">Profile</div></NavLink>
-                                    <div className="px-2">
-                                        <div className="h-[1.5px] w-full bg-zinc-900"></div>
+                                    <div className="px-2 py-1.5">
+                                        <div className="h-[2px] w-full bg-zinc-900"></div>
                                     </div>
-                                    <NavLink to="../app" className={({ isActive }) =>
-                                        isActive
-                                            ? `${baseClass} bg-green-500/20 text-green-500`
-                                            : `${baseClass} text-green-500/60 hover:text-green-500`
-                                    }><MonitorSmartphone className="w-5 h-5" /> <div className="text-md font-medium ">App</div></NavLink>
+                                    <div className="flex flex-col gap-1 px-1">
+                                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium">Become a creator</div></NavLink>
+
+                                    </div>
+                                    <div className="px-2 py-1.5">
+                                        <div className="h-[2px] w-full bg-zinc-900"></div>
+                                    </div>
                                     <NavLink to="../faq" className={({ isActive }) =>
                                         isActive
                                             ? `${baseClass} bg-green-500/20 text-green-500`
@@ -143,7 +144,7 @@ function Navbar() {
                                 </div>
                                 <DrawerFooter className="p-0">
                                     <DropdownMenu>
-                                        <DropdownMenuTrigger asChild className="absolute bottom-3">
+                                        <DropdownMenuTrigger asChild className="absolute bottom-3 ">
                                             <div className="flex gap-2 w-full items-center cursor-pointer text-zinc-400 hover:text-white hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium">Languages</div></div>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent className="w-full" align="start">

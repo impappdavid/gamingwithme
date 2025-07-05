@@ -38,7 +38,7 @@ function Sidebar() {
 
                         <NavLink to="../players" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-green-500`
+                                ? `${baseClass} bg-green-500/20 text-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
                             <Gamepad2 className="w-5 h-5" />
@@ -46,7 +46,7 @@ function Sidebar() {
                         </NavLink>
                         <NavLink to="../just-chatting" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white`
+                                ? `${baseClass} bg-green-500/20 text-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
                             <MessagesSquare className="w-5 h-5" />
@@ -54,7 +54,7 @@ function Sidebar() {
                         </NavLink>
                         <NavLink to="../music" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white`
+                                ? `${baseClass} bg-green-500/20 text-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
                             <Music className="w-5 h-5" />
@@ -62,7 +62,7 @@ function Sidebar() {
                         </NavLink>
                         <NavLink to="../tiktok" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
+                                ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500 fill-green-500/60 hover:fill-green-500`
                         }>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="">
@@ -89,7 +89,7 @@ function Sidebar() {
                         <div className="h-[1.5px] w-full bg-zinc-900"></div>
                     </div>
                     <div className="flex flex-col gap-1 p-2">
-                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/40`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">Become a creator</div></NavLink>
+                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">Become a creator</div></NavLink>
 
                     </div>
                     <div className="px-2">

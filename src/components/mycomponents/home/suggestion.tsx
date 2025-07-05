@@ -78,9 +78,9 @@ function Suggestions() {
 
                                     <div className="flex items-center">
                                         <div className="flex flex-wrap gap-1">
-                                            {element.games.length > 3 ? (
+                                            {element.games.length > 2 ? (
                                                 <>
-                                                    {element.games.slice(0, 2).map((game, idx) => (
+                                                    {element.games.slice(0, 1).map((game, idx) => (
                                                         <>
                                                             {game === "valorant" ? (
                                                                 <div key={idx} className="bg-[#ff4654] p-1 rounded-md ">
@@ -132,7 +132,7 @@ function Suggestions() {
                                                         </>
                                                     ))}
                                                     <div className="bg-white p-1 rounded-md flex items-center justify-center" style={{ minWidth: 24, minHeight: 24 }}>
-                                                        <span className="text-xs font-semibold text-black">{element.games.length - 2}+</span>
+                                                        <span className="text-xs font-semibold text-black">{element.games.length - 1}+</span>
                                                     </div>
                                                 </>
                                             ) : (

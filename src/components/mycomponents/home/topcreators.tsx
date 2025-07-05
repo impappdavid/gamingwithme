@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { CalendarSearch, MessageSquare, MessagesSquare, Music } from "lucide-react"
+import { CalendarSearch, MessageSquare, MessagesSquare, Music, Star } from "lucide-react"
 
 function TopCreators() {
     const topCreators = [
@@ -68,7 +68,12 @@ function TopCreators() {
                         <div key={index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
                             <div className="flex justify-center relative w-full overflow-hidden rounded-2xl">
                                 <img src={element.profilePic} alt={element.name} className="w-full rounded-2xl object-cover  ease-in-out group-hover:scale-105 transition-all duration-300" />
-                                <div className="absolute top-1 right-1 p-1 px-1.5 bg-green-500/40 backdrop-blur-2xl rounded-full text-xs drop-shadow-2xl flex items-center">{element.cost}</div>
+                                <div className="absolute top-1.5 flex justify-between w-full px-1">
+                                    <div className="p-1 bg-green-500/40 backdrop-blur-2xl text-green-500 rounded-md ">
+                                        <Star className="w-4 h-4"/>
+                                    </div>
+                                    <div className=" p-1 px-1.5 bg-green-500/40 backdrop-blur-2xl rounded-full text-xs drop-shadow-2xl flex items-center">{element.cost}</div>
+                                </div>
                             </div>
                             <div className="flex flex-col gap-2 px-1">
                                 <div className="flex gap-1 items-center">
@@ -147,7 +152,7 @@ function TopCreators() {
                     ))}
 
 
-                    
+
 
 
 
