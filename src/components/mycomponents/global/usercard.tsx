@@ -18,7 +18,7 @@ type User = {
     active: boolean;
 };
 
-const ITEMS_PER_PAGE = 32;
+const ITEMS_PER_PAGE = 36;
 
 function UserCard({ users }: { users: User[] }) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -88,7 +88,7 @@ function UserCard({ users }: { users: User[] }) {
                     </div>
                 ) : (
                     // User grid
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-3 2xl:gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-9 gap-3 2xl:gap-6">
                         {currentUsers.map((element, index) => (
                             <div key={startIndex + index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
                                 <div className="flex justify-center relative w-full overflow-hidden rounded-2xl">
@@ -96,6 +96,7 @@ function UserCard({ users }: { users: User[] }) {
                                     <div className="absolute top-1 right-1 p-1 px-1.5 bg-green-500/40 backdrop-blur-2xl rounded-full text-xs drop-shadow-2xl flex items-center">{element.cost}</div>
                                     {/* Active status dot */}
                                     {element.active && (
+
                                         <span className="absolute top-2 left-1.5 flex h-3 w-3">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
@@ -231,7 +232,7 @@ function UserCard({ users }: { users: User[] }) {
 
             {/* Pagination Controls - Fixed at bottom */}
             {totalPages > 1 && users.length > 0 && (
-                <div className="mt-auto pt-6 pb-3 absolute -bottom-17 w-full">
+                <div className="mt-auto pt-6  absolute -bottom-17 w-full">
                     <div className="flex items-center justify-between px-4">
                         <div className="text-sm text-zinc-400">
                             Showing {startIndex + 1} to {Math.min(endIndex, users.length)} of {users.length} users
