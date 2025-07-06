@@ -81,7 +81,6 @@ function Navbar({ page }: NavbarProps) {
     // Filter state
     const [filterText, setFilterText] = useState("");
 
-    const [showActive, setShowActive] = useState<boolean>(false);
 
     // Filtering logic
     const filteredUsers = useMemo(() => {
@@ -93,12 +92,12 @@ function Navbar({ page }: NavbarProps) {
                 user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()));
             ;
             // Active filter
-            const activeOk = !showActive || user.active;
+            const activeOk = user.active;
             return textMatch && activeOk;
         });
 
         return filtered;
-    }, [users, filterText, showActive]);
+    }, [users, filterText]);
 
 
     return (
