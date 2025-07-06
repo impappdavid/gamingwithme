@@ -48,7 +48,6 @@ type NavbarProps = {
 };
 
 function Navbar({ page }: NavbarProps) {
-    const [search, setSearch] = useState("");
     let loggedin = localStorage.getItem('signedin')
     const navigate = useNavigate();
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200"
