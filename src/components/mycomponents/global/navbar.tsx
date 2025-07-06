@@ -1,4 +1,4 @@
-import { BadgeCheck, Bell, Calendar, CircleQuestionMark, Download, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Search, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
+import { BadgeCheck, Bell, CircleQuestionMark, Download, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Search, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
 import {
     Dialog,
     DialogClose,
@@ -18,7 +18,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import {
     Drawer,
     DrawerClose,
@@ -31,19 +31,80 @@ import {
 } from "@/components/ui/drawer"
 import { useNavigate, NavLink } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import SearchUserCard from "./searchUsercard"
+import TopCreators from "./topCreators"
+
+// User type
+type User = {
+    name: string;
+    profilePic: string;
+    games: string[];
+    cost: string;
+    active: boolean;
+};
 
 type NavbarProps = {
     page: string;
-  };
+};
 
 function Navbar({ page }: NavbarProps) {
     const [search, setSearch] = useState("");
     let loggedin = localStorage.getItem('signedin')
     const navigate = useNavigate();
-    const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
+    const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200"
+
+    const users: User[] = useMemo(() => {
+        const baseUsers: User[] = [
+            { name: "IAmLiam", profilePic: "/profile/7.jpg", games: ["valorant", "csgo", "just-chatting", "minecraft"], cost: "$0.99/game", active: true },
+            { name: "Noah", profilePic: "/profile/104.jpg", games: ["youtube"], cost: "$1.99/1h", active: false },
+            { name: "Ava", profilePic: "/profile/58.jpg", games: ["fortnite"], cost: "$4.99/30m", active: true },
+            { name: "Isla", profilePic: "/profile/35.jpg", games: ["just-chatting"], cost: "$2.99/s", active: false },
+            { name: "Ethan", profilePic: "/profile/17.jpg", games: ["just-chatting"], cost: "$4.99/s", active: true },
+            { name: "Maya", profilePic: "/profile/48.jpg", games: ["valorant", "minecraft"], cost: "$14.99/1h", active: false },
+            { name: "Alex", profilePic: "/profile/15.jpg", games: ["tiktok"], cost: "$9.99/video", active: true },
+            { name: "Peter", profilePic: "/profile/77.jpg", games: ["minecraft"], cost: "$5.99/30m", active: false },
+            { name: "Ben", profilePic: "/profile/82.jpg", games: ["musician"], cost: "$14.99/s", active: true },
+            { name: "Ash", profilePic: "/profile/52.jpg", games: ["musician"], cost: "$14.99/s", active: false },
+        ];
+        // Add more users up to 116.jpg
+        for (let i = 1; i <= 116; i++) {
+            baseUsers.push({
+                name: `User${i}`,
+                profilePic: `/profile/${i}.jpg`,
+                games: ["valorant", "minecraft"],
+                cost: `$${(Math.random() * 20 + 1).toFixed(2)}/game`,
+                active: i % 2 === 0 // alternate active status
+            });
+        }
+        return baseUsers;
+    }, []);
+
+    // Filter state
+    const [filterText, setFilterText] = useState("");
+
+    const [showActive, setShowActive] = useState<boolean>(false);
+
+    // Filtering logic
+    const filteredUsers = useMemo(() => {
+        let filtered = users.filter(user => {
+            // Text filter (name or game)
+            const textMatch =
+                filterText === "" ||
+                user.name.toLowerCase().includes(filterText.toLowerCase()) ||
+                user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()));
+            ;
+            // Active filter
+            const activeOk = !showActive || user.active;
+            return textMatch && activeOk;
+        });
+
+        return filtered;
+    }, [users, filterText, showActive]);
+
+
     return (
         <>
-            <div className="w-full flex justify-between p-4 items-center border-b">
+            <div className="flex justify-between p-4 items-center border-b border-zinc-800">
                 <div className="text-xl font-semibold hidden sm:flex">{page}</div>
 
 
@@ -185,64 +246,20 @@ function Navbar({ page }: NavbarProps) {
                             </div>
 
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] min-h-[700px] max-h-[800px] flex flex-col ">
+                        <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col ">
                             <DialogHeader>
                                 <DialogTitle className="flex justify-between gap-4">
-                                    <Input type="text" placeholder="Search for user" className="font-normal placeholder:text-sm text-sm" value={search} onChange={(e) => setSearch(e.target.value)} />
+                                    <Input type="text" placeholder="Search for user" className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
                                     <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">Close</DialogClose>
                                 </DialogTitle>
                                 <div className="h-[1px] bg-zinc-800"></div>
-                                <DialogDescription>
-                                    {search.length > 0 ? (
-                                        <div className="flex flex-col">
-                                            <div className=" hover:bg-zinc-800/40 cursor-pointer flex flex-col gap-4 p-2">
-                                                <div className="flex justify-between">
-                                                    <div className="flex gap-2 items-center">
-                                                        <div className="w-10 h-10 bg-zinc-700 rounded-md"></div>
-                                                        <div className="flex flex-col">
-                                                            <div className="text-white text-md">Name</div>
-                                                            <div className="text-xs">@username</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="px-2 py-1.5 bg-blue-500/50 text-white h-fit text-xs rounded-lg">$4.99/30m</div>
-                                                </div>
-                                                <div className="text-xs">
-                                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                                                </div>
-                                                <div className="flex gap-1 items-center">
-                                                    <Calendar className="w-3 h-3" />
-                                                    <div className="text-xs">Jun 21, 2025</div>
-                                                </div>
-                                            </div>
-                                            <div className=" hover:bg-zinc-800/40 cursor-pointer flex flex-col gap-4 p-2">
-                                                <div className="flex justify-between">
-                                                    <div className="flex gap-2 items-center">
-                                                        <div className="w-10 h-10 bg-zinc-700 rounded-md"></div>
-                                                        <div className="flex flex-col">
-                                                            <div className="text-white text-md">Name</div>
-                                                            <div className="text-xs">@username</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="px-2 py-1.5 bg-blue-500/50 text-white h-fit text-xs rounded-lg">$14.99/1h</div>
-                                                </div>
-                                                <div className="text-xs">
-                                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                                                </div>
-                                                <div className="flex gap-1 items-center">
-                                                    <Calendar className="w-3 h-3" />
-                                                    <div className="text-xs">Jun 21, 2025</div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <DialogDescription className="h-full">
+                                    {filterText.length > 0 ? (
+                                        <SearchUserCard users={filteredUsers} />
                                     ) : (
                                         <div className="flex flex-col gap-2">
                                             <div className="text-start">Top creators</div>
-                                            <div className="flex flex-wrap gap-2 items-center">
-                                                <div className="p-1 bg-zinc-800 rounded-full px-2 border text-xs cursor-pointer" onClick={() => setSearch("ethan")}>@ethan</div>
-                                                <div className="p-1 bg-zinc-800 rounded-full px-2 border text-xs cursor-pointer" onClick={() => setSearch("pacosCS")}>@pacosCS</div>
-                                                <div className="p-1 bg-zinc-800 rounded-full px-2 border text-xs cursor-pointer" onClick={() => setSearch("pineapple")}>@pineapple</div>
-                                                <div className="p-1 bg-zinc-800 rounded-full px-2 border text-xs cursor-pointer" onClick={() => setSearch("Mark")}>@Mark</div>
-                                            </div>
+                                            <TopCreators users={users} />
                                         </div>
                                     )}
                                 </DialogDescription>
@@ -276,38 +293,37 @@ function Navbar({ page }: NavbarProps) {
                                                 <X className="w-5 h-5 cursor-pointer" />
                                             </DialogClose>
                                         </DialogTitle>
-                                        <div className="h-[1px] bg-zinc-800"></div>
+
                                         <DialogDescription>
-                                            <div className="flex flex-col">
-                                                <div className=" hover:bg-zinc-800/40 cursor-pointer flex flex-col gap-2 p-2 border-b">
+                                            <div className="flex flex-col border-t">
+                                                <div className=" hover:bg-zinc-900/40 cursor-pointer flex flex-col gap-2 p-2 py-3 border-b">
                                                     <div className="flex justify-between">
                                                         <div className="flex gap-2 items-center">
-                                                            <div className="w-10 h-10 bg-zinc-700 rounded-md"></div>
+                                                            <img src="/profile/25.jpg" alt="" className="w-13 h-13 rounded-md" />
                                                             <div className="flex flex-col">
-                                                                <div className="text-white text-md">Ethan Wong</div>
-                                                                <div className="text-xs">@ethan</div>
+                                                                <div className="text-white text-lg">Ethan</div>
+                                                                <div className="text-sm">
+                                                                    <span className="text-blue-500">Ethan</span> bought a session to play with yout.
+                                                                </div>
+
                                                             </div>
                                                         </div>
-                                                        <div className="px-2 py-1.5 bg-green-500/50 text-white h-fit text-xs rounded-lg">30m</div>
                                                     </div>
-                                                    <div className="text-xs">
-                                                        <span className="text-blue-500">Ethan</span> bought a session to play with yout.
-                                                    </div>
+
                                                 </div>
-                                                <div className=" hover:bg-zinc-800/40 cursor-pointer flex flex-col gap-2 p-2 border-b">
+                                                <div className=" hover:bg-zinc-900/40 cursor-pointer flex flex-col gap-2 p-2 py-3 border-b">
                                                     <div className="flex justify-between">
                                                         <div className="flex gap-2 items-center">
-                                                            <div className="w-10 h-10 bg-zinc-700 rounded-md"></div>
+                                                            <img src="/profile/95.jpg" alt="" className="w-13 h-13 rounded-md" />
                                                             <div className="flex flex-col">
-                                                                <div className="text-white text-md">GamingWithMe</div>
-                                                                <div className="text-xs">@everyone</div>
+                                                                <div className="text-white text-lg">GamingWithMe</div>
+                                                                <div className="text-sm">
+                                                                    New <span className="text-blue-500">updates</span> coming in 1 day.
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div className="px-2 py-1.5 bg-green-500/50 text-white h-fit text-xs rounded-lg">Server</div>
                                                     </div>
-                                                    <div className="text-xs">
-                                                        New <span className="text-blue-500">updates</span> coming in 1 day.
-                                                    </div>
+
                                                 </div>
                                             </div>
 

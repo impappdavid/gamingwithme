@@ -74,22 +74,26 @@ function Content() {
   return (
     <>
       <div className="w-full h-full xl:h-screen sm:p-2">
-        <div className="w-full h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto">
-          <Navbar page={"Players"} />
-          <Filter
-            filterText={filterText}
-            setFilterText={setFilterText}
-            minPrice={minPrice}
-            setMinPrice={setMinPrice}
-            maxPrice={maxPrice}
-            setMaxPrice={setMaxPrice}
-            orderBy={orderBy}
-            setOrderBy={setOrderBy}
-            showActive={showActive}
-            setShowActive={setShowActive}
-          />
-          <div className="p-2">
-            <UserCard users={filteredUsers} />
+        <div className="w-full min-h-screen sm:min-h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
+          <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
+            <Navbar page={"Players"} />
+          </div>
+          <div >
+            <Filter
+              filterText={filterText}
+              setFilterText={setFilterText}
+              minPrice={minPrice}
+              setMinPrice={setMinPrice}
+              maxPrice={maxPrice}
+              setMaxPrice={setMaxPrice}
+              orderBy={orderBy}
+              setOrderBy={setOrderBy}
+              showActive={showActive}
+              setShowActive={setShowActive}
+            />
+            <div className="p-2">
+              <UserCard users={filteredUsers} />
+            </div>
           </div>
         </div>
       </div>
