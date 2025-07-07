@@ -77,7 +77,6 @@ function Content() {
     return filtered;
   }, [users, filterText, minPrice, maxPrice, orderBy, showActive]);
   
-  const { t } = useTranslation()
   return (
     <>
       <div className="w-full h-full xl:h-screen sm:p-2">
