@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import Navbar from "../global/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
