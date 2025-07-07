@@ -75,7 +75,7 @@ function Sidebar() {
                         </NavLink>
                         <NavLink to="../youtube" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
+                                ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
                             <Youtube className="w-5 h-5" />
@@ -83,7 +83,7 @@ function Sidebar() {
                         </NavLink>
                         <NavLink to="../games" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
+                                ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500 `
                         }><Swords className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Games")}</div></NavLink>
 
@@ -101,13 +101,13 @@ function Sidebar() {
                     <div className="flex flex-col gap-1 p-2">
                         <NavLink to="../faq" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
+                                ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }><CircleQuestionMark className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">FAQ</div></NavLink>
 
                         <NavLink to="../about-us" className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
+                                ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }><Info className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("About")}</div></NavLink>
                     </div>

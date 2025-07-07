@@ -5,6 +5,10 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Players from "./pages/Players";
 import Profile from "./pages/Profile";
+import JustChatting from "./pages/JustChatting";
+import Music from "./pages/Music";
+import Tiktok from "./pages/Tiktok";
+import Youtube from "./pages/Youtube";
 
 function App() {
 
@@ -17,6 +21,10 @@ function App() {
             <Route path="signin" element={<SignIn />} />
             <Route path="signup" element={<SignUp />} />
             <Route path="players" element={<Players />} />
+            <Route path="just-chatting" element={<JustChatting />} />
+            <Route path="music" element={<Music />} />
+            <Route path="tiktok" element={<Tiktok />} />
+            <Route path="youtube" element={<Youtube />} />
             <Route path="/profile/:slug" element={<Profile />} />
           </Route>
 

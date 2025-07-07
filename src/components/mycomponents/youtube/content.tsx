@@ -14,32 +14,29 @@ type User = {
 };
 
 function Content() {
-  // Generate users up to 116.jpg - only game-related categories
+  // Generate users for YouTube category
   const users: User[] = useMemo(() => {
     const baseUsers: User[] = [
-      { name: "IAmLiam", profilePic: "/profile/7.jpg", games: ["valorant", "csgo", "minecraft"], cost: "$0.99/game", active: true },
-      { name: "Ava", profilePic: "/profile/58.jpg", games: ["fortnite"], cost: "$4.99/30m", active: true },
-      { name: "Maya", profilePic: "/profile/48.jpg", games: ["valorant", "minecraft"], cost: "$14.99/1h", active: false },
-      { name: "Peter", profilePic: "/profile/77.jpg", games: ["minecraft"], cost: "$5.99/30m", active: false },
-      { name: "Gamer1", profilePic: "/profile/11.jpg", games: ["valorant"], cost: "$2.99/game", active: true },
-      { name: "CSGOPRO", profilePic: "/profile/23.jpg", games: ["csgo"], cost: "$3.50/game", active: false },
-      { name: "FortniteKing", profilePic: "/profile/34.jpg", games: ["fortnite"], cost: "$6.99/30m", active: true },
-      { name: "MinecraftBuilder", profilePic: "/profile/45.jpg", games: ["minecraft"], cost: "$4.25/30m", active: false },
-      { name: "ValorantPro", profilePic: "/profile/56.jpg", games: ["valorant"], cost: "$8.99/game", active: true },
-      { name: "GameMaster", profilePic: "/profile/67.jpg", games: ["valorant", "csgo"], cost: "$12.50/game", active: false },
+      { name: "Noah", profilePic: "/profile/104.jpg", games: ["youtube"], cost: "$1.99/1h", active: false },
+      { name: "YouTuber1", profilePic: "/profile/22.jpg", games: ["youtube"], cost: "$3.50/1h", active: true },
+      { name: "VideoMaster", profilePic: "/profile/41.jpg", games: ["youtube"], cost: "$2.25/1h", active: false },
+      { name: "ContentCreator", profilePic: "/profile/63.jpg", games: ["youtube"], cost: "$4.99/1h", active: true },
+      { name: "StreamKing", profilePic: "/profile/85.jpg", games: ["youtube"], cost: "$1.75/1h", active: false },
+      { name: "LivePro", profilePic: "/profile/16.jpg", games: ["youtube"], cost: "$6.50/1h", active: true },
+      { name: "ChannelStar", profilePic: "/profile/37.jpg", games: ["youtube"], cost: "$3.25/1h", active: false },
+      { name: "BroadcastQueen", profilePic: "/profile/59.jpg", games: ["youtube"], cost: "$2.99/1h", active: true },
+      { name: "VideoWizard", profilePic: "/profile/81.jpg", games: ["youtube"], cost: "$5.75/1h", active: false },
+      { name: "StreamMaster", profilePic: "/profile/103.jpg", games: ["youtube"], cost: "$2.50/1h", active: true },
     ];
     
-    // Add more users with only game categories
-    for (let i = 1; i <= 116; i++) {
-      const gameCategories = ["valorant", "csgo", "fortnite", "minecraft"];
-      const randomGames = gameCategories.slice(0, Math.floor(Math.random() * 3) + 1); // 1-3 random games
-      
+    // Add more users for variety
+    for (let i = 1; i <= 70; i++) {
       baseUsers.push({
-        name: `Gamer${i}`,
-        profilePic: `/profile/${i}.jpg`,
-        games: randomGames,
-        cost: `$${(Math.random() * 20 + 1).toFixed(2)}/game`,
-        active: i % 2 === 0 // alternate active status
+        name: `YouTuber${i}`,
+        profilePic: `/profile/${(i % 116) + 1}.jpg`,
+        games: ["youtube"],
+        cost: `$${(Math.random() * 8 + 1).toFixed(2)}/1h`,
+        active: i % 3 === 0 // some active, some not
       });
     }
     return baseUsers;
@@ -86,7 +83,7 @@ function Content() {
       <div className="w-full h-full xl:h-screen sm:p-2">
         <div className="w-full min-h-screen sm:min-h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
           <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
-            <Navbar page={t("Players")} />
+            <Navbar page="YouTube" />
           </div>
           <div >
             <Filter
@@ -110,4 +107,4 @@ function Content() {
     </>
   );
 }
-export default Content
+export default Content 
