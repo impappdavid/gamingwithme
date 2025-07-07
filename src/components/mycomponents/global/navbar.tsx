@@ -33,6 +33,7 @@ import { useNavigate, NavLink } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import SearchUserCard from "./searchUsercard"
 import TopCreators from "./topCreators"
+import { useTranslation } from "react-i18next"
 
 // User type
 type User = {
@@ -99,6 +100,7 @@ function Navbar({ page }: NavbarProps) {
         return filtered;
     }, [users, filterText]);
 
+    const { t, i18n } = useTranslation()
 
     return (
         <>
@@ -131,14 +133,14 @@ function Navbar({ page }: NavbarProps) {
                                         isActive
                                             ? `${baseClass} bg-green-500/20 text-green-500`
                                             : `${baseClass} text-green-500/60 hover:text-green-500`
-                                    }><House className="w-5 h-5" /> <div className="text-md font-medium">Home</div></NavLink>
+                                    }><House className="w-5 h-5" /> <div className="text-md font-medium">{t("home")}</div></NavLink>
                                     <NavLink to="../players" className={({ isActive }) =>
                                         isActive
                                             ? `${baseClass} bg-green-500/20 text-green-500`
                                             : `${baseClass} text-green-500/60 hover:text-green-500`
                                     }>
                                         <Users className="w-5 h-5" />
-                                        <div className="text-md font-medium ">Players</div>
+                                        <div className="text-md font-medium ">{t("Players")}</div>
                                     </NavLink>
                                     <NavLink to="../just-chatting" className={({ isActive }) =>
                                         isActive
@@ -146,7 +148,7 @@ function Navbar({ page }: NavbarProps) {
                                             : `${baseClass} text-green-500/60 hover:text-green-500`
                                     }>
                                         <MessagesSquare className="w-5 h-5" />
-                                        <div className="text-md font-medium">Just Chatting</div>
+                                        <div className="text-md font-medium">{t("JustChatting")}</div>
                                     </NavLink>
                                     <NavLink to="../music" className={({ isActive }) =>
                                         isActive
@@ -154,7 +156,7 @@ function Navbar({ page }: NavbarProps) {
                                             : `${baseClass} text-green-500/60 hover:text-green-500`
                                     }>
                                         <Music className="w-5 h-5" />
-                                        <div className="text-md font-medium ">Music</div>
+                                        <div className="text-md font-medium ">{t("Music")}</div>
                                     </NavLink>
                                     <NavLink to="../tiktok" className={({ isActive }) =>
                                         isActive
@@ -177,12 +179,12 @@ function Navbar({ page }: NavbarProps) {
                                         isActive
                                             ? `${baseClass} bg-green-500/20 text-green-500`
                                             : `${baseClass} text-green-500/60 hover:text-green-500`
-                                    }><Swords className="w-5 h-5" /> <div className="text-md font-medium  ">Games</div></NavLink>
+                                    }><Swords className="w-5 h-5" /> <div className="text-md font-medium  ">{t("Games")}</div></NavLink>
                                     <div className="px-2 py-1.5">
                                         <div className="h-[2px] w-full bg-zinc-900"></div>
                                     </div>
                                     <div className="flex flex-col gap-1 px-1">
-                                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium">Become a creator</div></NavLink>
+                                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium">{t("Become")}</div></NavLink>
 
                                     </div>
                                     <div className="px-2 py-1.5">
@@ -198,31 +200,31 @@ function Navbar({ page }: NavbarProps) {
                                         isActive
                                             ? `${baseClass} bg-green-500/20 text-green-500`
                                             : `${baseClass} text-green-500/60 hover:text-green-500`
-                                    }><Info className="w-5 h-5" /> <div className="text-md font-medium">About us</div></NavLink>
+                                    }><Info className="w-5 h-5" /> <div className="text-md font-medium">{t("About")}</div></NavLink>
 
                                 </div>
                                 <DrawerFooter className="p-0">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild className="absolute bottom-3 ">
-                                            <div className="flex gap-2 w-full items-center cursor-pointer text-zinc-400 hover:text-white hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium">Languages</div></div>
+                                            <div className="flex gap-2 w-full items-center cursor-pointer text-zinc-400 hover:text-white hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium">{t("Languages")}</div></div>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent className="w-full" align="start">
                                             <DropdownMenuGroup>
-                                                <DropdownMenuItem>
-                                                    English
-                                                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                                                <DropdownMenuItem onClick={() => i18n.changeLanguage('en')}>
+                                                    {t("English")}
+                                                    <DropdownMenuShortcut>en</DropdownMenuShortcut>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    Hungary
-                                                    <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                                                <DropdownMenuItem onClick={() => i18n.changeLanguage('hu')}>
+                                                    {t("Hungary")}
+                                                    <DropdownMenuShortcut>hu</DropdownMenuShortcut>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    Deutsch
-                                                    <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                                                <DropdownMenuItem onClick={() => i18n.changeLanguage('de')}>
+                                                    {t("Deutsch")}
+                                                    <DropdownMenuShortcut>de</DropdownMenuShortcut>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    Spanish
-                                                    <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+                                                <DropdownMenuItem onClick={() => i18n.changeLanguage('sp')}>
+                                                    {t("Spanish")}
+                                                    <DropdownMenuShortcut>sp</DropdownMenuShortcut>
                                                 </DropdownMenuItem>
                                             </DropdownMenuGroup>
 
@@ -240,15 +242,15 @@ function Navbar({ page }: NavbarProps) {
                         <DialogTrigger asChild>
                             <div className="sm:w-60 rounded-lg h-9  bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
                                 <Search className="w-5 h-5" />
-                                <div className="text-sm hidden sm:flex">Search...</div>
+                                <div className="text-sm hidden sm:flex">{t("Search")}...</div>
                             </div>
 
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col ">
                             <DialogHeader>
                                 <DialogTitle className="flex justify-between gap-4">
-                                    <Input type="text" placeholder="Search for user" className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                                    <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">Close</DialogClose>
+                                    <Input type="text" placeholder={t("Search")} className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+                                    <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">{t("close")}</DialogClose>
                                 </DialogTitle>
                                 <div className="h-[1px] bg-zinc-800"></div>
                                 <DialogDescription className="h-full">
@@ -256,7 +258,7 @@ function Navbar({ page }: NavbarProps) {
                                         <SearchUserCard users={filteredUsers} />
                                     ) : (
                                         <div className="flex flex-col gap-2">
-                                            <div className="text-start">Top creators</div>
+                                            <div className="text-start">{t("TopCreators")}</div>
                                             <TopCreators users={users} />
                                         </div>
                                     )}
@@ -286,7 +288,7 @@ function Navbar({ page }: NavbarProps) {
                                     <DialogHeader>
                                         <DialogTitle className="flex justify-between">
 
-                                            Notifications
+                                            {t("Notification")}
                                             <DialogClose>
                                                 <X className="w-5 h-5 cursor-pointer" />
                                             </DialogClose>
@@ -299,9 +301,9 @@ function Navbar({ page }: NavbarProps) {
                                                         <div className="flex gap-2 items-center">
                                                             <img src="/profile/25.jpg" alt="" className="w-13 h-13 rounded-md" />
                                                             <div className="flex flex-col">
-                                                                <div className="text-white text-lg">Ethan</div>
-                                                                <div className="text-sm">
-                                                                    <span className="text-blue-500">Ethan</span> bought a session to play with yout.
+                                                                <div className="text-white text-lg text-start">Ethan</div>
+                                                                <div className="text-sm text-start">
+                                                                    <span className="text-blue-500">Ethan</span> {t("bought")}
                                                                 </div>
 
                                                             </div>
@@ -314,9 +316,9 @@ function Navbar({ page }: NavbarProps) {
                                                         <div className="flex gap-2 items-center">
                                                             <img src="/profile/95.jpg" alt="" className="w-13 h-13 rounded-md" />
                                                             <div className="flex flex-col">
-                                                                <div className="text-white text-lg">GamingWithMe</div>
-                                                                <div className="text-sm">
-                                                                    New <span className="text-blue-500">updates</span> coming in 1 day.
+                                                                <div className="text-white text-lg text-start">GamingWithMe</div>
+                                                                <div className="text-sm text-start">
+                                                                    {t("update")}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -348,25 +350,24 @@ function Navbar({ page }: NavbarProps) {
                             </div>
 
                             <DropdownMenu>
-                                <DropdownMenuTrigger asChild className="">
-                                    <div className=" rounded-lg h-9 w-9 bg-green-500/20 hover:bg-green-500/30 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
-                                        <User className="w-5 h-5" />
-                                    </div>
+                                <DropdownMenuTrigger asChild className="flex items-center">
+                                    <img src="/profile/9.jpg" className=" rounded-lg h-9.5 w-9.5 border flex gap-2 text-zinc-400 items-center  cursor-pointer transition-all duration-200" />
+
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-36" align="end">
                                     <DropdownMenuGroup>
-                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1 items-center" onClick={()=> navigate('/profile/james')}>
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1 items-center" onClick={() => navigate('/profile/james')}>
                                             <User className="w-5 h-5" />
-                                            Profile
+                                            {t("profile")}
                                         </DropdownMenuItem>
                                         <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1">
                                             <Settings />
-                                            Settings
+                                            {t("settings")}
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem onClick={() => { localStorage.clear(); navigate('/') }} className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2">
                                             <LogOut className="text-red-500" />
-                                            Log out
+                                            {t("logout")}
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
 

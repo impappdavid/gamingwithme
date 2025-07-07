@@ -18,6 +18,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { useTranslation } from "react-i18next";
 
 function Filter({
     filterText,
@@ -54,6 +55,8 @@ function Filter({
         setMaxPrice(newValue);
     };
 
+    const {t} = useTranslation()
+
     return (
         <div className="flex gap-2 items-center p-2">
             <div className="relative w-full ">
@@ -63,7 +66,7 @@ function Filter({
                 <Input
                     id="filter"
                     type="text"
-                    placeholder="Search for players or game tags..."
+                    placeholder={t("searchpog")}
                     className="pl-9 h-10 rounded-xl text-[14px] lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300  "
                     value={filterText}
                     onChange={(e) => setFilterText(e.target.value)}
@@ -78,7 +81,7 @@ function Filter({
                     <span className="relative flex h-2 w-2">
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
-                    <span>Active</span>
+                    <span>Online</span>
                 </Button>
             </div>
             <div className="relative max-w-46 hidden md:flex">
@@ -89,7 +92,7 @@ function Filter({
                     id="minPrice"
                     type="number"
                     min={0}
-                    placeholder="Min price"
+                    placeholder={t("min")}
                     className="pl-9 pr-16 h-10 rounded-xl lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                     value={minPrice === undefined ? '' : minPrice}
                     onChange={(e) => setMinPrice(e.target.value === '' ? undefined : Number(e.target.value))}
@@ -121,7 +124,7 @@ function Filter({
                     id="maxPrice"
                     type="number"
                     min={0}
-                    placeholder="Max price"
+                    placeholder={t("max")}
                     className="pl-9 pr-16 h-10 rounded-xl lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                     value={maxPrice === undefined ? '' : maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value === '' ? undefined : Number(e.target.value))}
@@ -147,14 +150,13 @@ function Filter({
             </div>
             <div className="hidden md:flex">
                 <Select value={orderBy} onValueChange={setOrderBy}>
-                    <SelectTrigger className="w-46 h-10">
+                    <SelectTrigger className="w-fit h-10">
                         <SelectValue placeholder="Order by" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectItem value="highest">Highest price first</SelectItem>
-                            <SelectItem value="lowest">Lowest price first</SelectItem>
-                            <SelectItem value="newest">Newest first</SelectItem>
+                            <SelectItem value="highest">{t("highest")}</SelectItem>
+                            <SelectItem value="lowest">{t("lowest")}</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>
@@ -169,7 +171,7 @@ function Filter({
                 <DialogContent className="sm:max-w-[700px] h-fit  max-h-[800px] flex flex-col ">
                     <DialogHeader className="flex flex-col gap-3">
                         <DialogTitle className="flex justify-between items-center gap-4">
-                            <div className="">Filter players</div>
+                            <div className="">{t("filter")}</div>
                             <DialogClose>
                                 <X className="w-4.5 h-4.5" />
                             </DialogClose>
@@ -184,9 +186,8 @@ function Filter({
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectItem value="highest">Highest price first</SelectItem>
-                                            <SelectItem value="lowest">Lowest price first</SelectItem>
-                                            <SelectItem value="newest">Newest first</SelectItem>
+                                            <SelectItem value="highest">{t("highest")}</SelectItem>
+                                            <SelectItem value="lowest">{t("lowest")}</SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
@@ -201,7 +202,7 @@ function Filter({
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                         </span>
-                                        <span>Active</span>
+                                        <span>Online</span>
                                     </Button>
                                 </div>
                                 <div className="relative w-full ">
@@ -212,7 +213,7 @@ function Filter({
                                         id="minPrice"
                                         type="number"
                                         min={0}
-                                        placeholder="Min price"
+                                        placeholder={t("min")}
                                         className="pl-9 pr-16 h-10 rounded-xl lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                                         value={minPrice === undefined ? '' : minPrice}
                                         onChange={(e) => setMinPrice(e.target.value === '' ? undefined : Number(e.target.value))}
@@ -244,7 +245,7 @@ function Filter({
                                         id="maxPrice"
                                         type="number"
                                         min={0}
-                                        placeholder="Max price"
+                                        placeholder={t("max")}
                                         className="pl-9 pr-16 h-10 rounded-xl lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                                         value={maxPrice === undefined ? '' : maxPrice}
                                         onChange={(e) => setMaxPrice(e.target.value === '' ? undefined : Number(e.target.value))}
@@ -271,10 +272,10 @@ function Filter({
                                 </div>
                                 <div className="grid grid-cols-2 w-full gap-4">
                                     <DialogClose >
-                                        <Button className="w-full rounded-xl bg-zinc-800 hover:bg-zinc-700/40 border text-zinc-400">Close</Button>
+                                        <Button className="w-full rounded-xl bg-zinc-800 hover:bg-zinc-700/40 border text-zinc-400">{t("close")}</Button>
                                     </DialogClose>
                                     <DialogClose>
-                                        <Button className="w-full rounded-xl bg-green-500 hover:bg-green-500/60">Search</Button>
+                                        <Button className="w-full rounded-xl bg-green-500 hover:bg-green-500/60">{t("search")}</Button>
                                     </DialogClose>
                                 </div>
                             </div>

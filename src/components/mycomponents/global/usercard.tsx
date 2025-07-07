@@ -9,6 +9,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
+import { useTranslation } from "react-i18next";
 
 type User = {
     name: string;
@@ -75,6 +76,8 @@ function UserCard({ users }: { users: User[] }) {
 
         return pages;
     };
+
+    const {t} = useTranslation()
 
     return (
         <div className="flex flex-col h-full relative">
@@ -237,14 +240,14 @@ function UserCard({ users }: { users: User[] }) {
                 <div className="mt-auto pt-6 pb-3 sm:pb-0 absolute -bottom-17 w-full">
                     <div className="flex items-center justify-center sm:justify-between px-4">
                         <div className="text-sm text-zinc-400 sm:flex hidden">
-                            Showing {startIndex + 1} to {Math.min(endIndex, users.length)} of {users.length} users
+                            {Math.min(endIndex, users.length)} / {users.length} {t("users")}
                         </div>
                         <div className="flex justify-end">
                             <Pagination>
                                 <PaginationContent>
                                     <PaginationItem>
                                         <PaginationPrevious
-                                            onClick={() => goToPage(currentPage )}
+                                            onClick={() => goToPage(currentPage)}
                                             className={`rounded-xl ${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                                         />
                                     </PaginationItem>

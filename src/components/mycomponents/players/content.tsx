@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import Navbar from "../global/navbar"
 import UserCard from "../global/usercard"
 import Filter from "./filter"
@@ -70,13 +71,13 @@ function Content() {
     if (orderBy === "newest") filtered = filtered.slice().reverse();
     return filtered;
   }, [users, filterText, minPrice, maxPrice, orderBy, showActive]);
-
+  const { t } = useTranslation()
   return (
     <>
       <div className="w-full h-full xl:h-screen sm:p-2">
         <div className="w-full min-h-screen sm:min-h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
           <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
-            <Navbar page={"Players"} />
+            <Navbar page={t("Players")} />
           </div>
           <div >
             <Filter

@@ -7,14 +7,16 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next"
 
 function Content() {
+    const {t} = useTranslation()
     return (
         <>
             <div className="w-full xl:h-screen sm:p-2">
                 <div className="w-full min-h-screen sm:min-h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
                     <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
-                        <Navbar page={"Profile"} />
+                        <Navbar page={t("profile")} />
                     </div>
                     <div className="p-2 sm:p-4 flex flex-col gap-4">
                         <div className="relative">
@@ -67,13 +69,13 @@ function Content() {
 
                         </div>
                         <div className="px-4 py-2 flex flex-col gap-2">
-                            <div className="text-zinc-400">Active dates</div>
+                            <div className="text-zinc-400">{t("activedates")}</div>
                             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                                 <Dialog>
                                     <DialogTrigger asChild>
                                         <div className="flex flex-col gap-1 bg-green-700/80 p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
                                             <div className="flex justify-between">
-                                                <div className="text-sm">Avaiable</div>
+                                                <div className="text-sm">{t("avaiable")}</div>
                                                 <div className="text-sm">Wed, Jul 20 2025</div>
                                             </div>
                                             <div className="flex justify-between">
@@ -86,7 +88,7 @@ function Content() {
                                         <div className="flex flex-col gap-1 relative">
                                             <div className="bg-zinc-900 p-4 flex flex-col gap-2 rounded-xl">
                                                 <div className="flex justify-between text-sm text-zinc-400">
-                                                    You send
+                                                    {t("send")}
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <div className="text-2xl">4.99</div>
@@ -96,7 +98,7 @@ function Content() {
 
                                             <div className="bg-zinc-900 p-4 flex flex-col gap-2 rounded-xl">
                                                 <div className="flex justify-between text-sm text-zinc-400">
-                                                    James receive
+                                                    James {t("receive")}
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <div className="flex">
@@ -109,12 +111,12 @@ function Content() {
                                         <div className="grid grid-cols-2 gap-1">
                                             <DialogClose className="w-full">
                                                 <Button className="bg-zinc-900/40 border w-full text-zinc-400 hover:bg-zinc-900 cursor-pointer transition-all duration-300 rounded-xl">
-                                                    <div className="">Cancel</div>
+                                                    <div className="">{t("cancel")}</div>
                                                 </Button>
                                             </DialogClose>
                                             <Button className="bg-green-600 hover:bg-green-600/80 cursor-pointer transition-all duration-300 rounded-xl">
                                                 <Wallet />
-                                                <div className="">Pay</div>
+                                                <div className="">{t("pay")}</div>
                                             </Button>
                                         </div>
 
@@ -124,7 +126,7 @@ function Content() {
                                     <DialogTrigger asChild>
                                         <div className="flex flex-col gap-1 bg-green-700/80 p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
                                             <div className="flex justify-between">
-                                                <div className="text-sm">Avaiable</div>
+                                                <div className="text-sm">{t("avaiable")}</div>
                                                 <div className="text-sm">Wed, Jul 21 2025</div>
                                             </div>
                                             <div className="flex justify-between">
@@ -158,12 +160,12 @@ function Content() {
                                         <div className="grid grid-cols-2 gap-1">
                                             <DialogClose className="w-full outline-none" >
                                                 <Button className="bg-zinc-900/40 outline-none border w-full text-zinc-400 hover:bg-zinc-900 cursor-pointer transition-all duration-300 rounded-xl">
-                                                    <div className="">Cancel</div>
+                                                    <div className="">{t("cancel")}</div>
                                                 </Button>
                                             </DialogClose>
                                             <Button className="bg-green-600 hover:bg-green-600/80 cursor-pointer transition-all duration-300 rounded-xl">
                                                 <Wallet />
-                                                <div className="">Pay</div>
+                                                <div className="">{t("pay")}</div>
                                             </Button>
                                         </div>
 
@@ -171,7 +173,7 @@ function Content() {
                                 </Dialog >
                                 <div className="flex flex-col gap-1 bg-red-700/80 p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
                                     <div className="flex justify-between">
-                                        <div className="text-sm">Taken</div>
+                                        <div className="text-sm">{t("taken")}</div>
                                         <div className="text-sm">Wed, Jul 21 2025</div>
                                     </div>
                                     <div className="flex justify-between">

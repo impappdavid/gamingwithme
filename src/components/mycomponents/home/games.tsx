@@ -1,11 +1,13 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom"
 
 function Games() {
+    const {t} = useTranslation();
     return (
         <>
             <div className="flex flex-col gap-4 p-4 ">
                 <div className="flex w-full justify-between items-center">
-                    <div className="text-xl font-medium">Games</div>
+                    <div className="text-xl font-medium">{t("Games")}</div>
                     <Link to={``} className="text-xs text-zinc-400 hover:underline ">View All</Link>
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-4">

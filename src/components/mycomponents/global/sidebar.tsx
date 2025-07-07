@@ -8,8 +8,11 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useTranslation } from "react-i18next";
+import '../../../i18n';
 
 function Sidebar() {
+    const { t, i18n } = useTranslation();
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
     return (
         <>
@@ -30,7 +33,7 @@ function Sidebar() {
                             }
                         >
                             <House className="w-5 h-5" />
-                            <div className="text-md font-medium hidden xl:flex">Home</div>
+                            <div className="text-md font-medium hidden xl:flex">{t("home")}</div>
                         </NavLink>
 
 
@@ -42,7 +45,7 @@ function Sidebar() {
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
                             <Gamepad2 className="w-5 h-5" />
-                            <div className="text-md font-medium hidden xl:flex">Players</div>
+                            <div className="text-md font-medium hidden xl:flex">{t("Players")}</div>
                         </NavLink>
                         <NavLink to="../just-chatting" className={({ isActive }) =>
                             isActive
@@ -50,7 +53,7 @@ function Sidebar() {
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
                             <MessagesSquare className="w-5 h-5" />
-                            <div className="text-md font-medium hidden xl:flex">Just Chatting</div>
+                            <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
                         </NavLink>
                         <NavLink to="../music" className={({ isActive }) =>
                             isActive
@@ -58,7 +61,7 @@ function Sidebar() {
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
                         }>
                             <Music className="w-5 h-5" />
-                            <div className="text-md font-medium hidden xl:flex">Music</div>
+                            <div className="text-md font-medium hidden xl:flex">{t("Music")}</div>
                         </NavLink>
                         <NavLink to="../tiktok" className={({ isActive }) =>
                             isActive
@@ -82,14 +85,14 @@ function Sidebar() {
                             isActive
                                 ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
                                 : `${baseClass} text-green-500/60  hover:text-green-500 `
-                        }><Swords className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">Games</div></NavLink>
+                        }><Swords className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Games")}</div></NavLink>
 
                     </div>
                     <div className="px-2">
                         <div className="h-[1.5px] w-full bg-zinc-900"></div>
                     </div>
                     <div className="flex flex-col gap-1 p-2">
-                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">Become a creator</div></NavLink>
+                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Become")}</div></NavLink>
 
                     </div>
                     <div className="px-2">
@@ -106,30 +109,30 @@ function Sidebar() {
                             isActive
                                 ? `${baseClass} bg-zinc-800/80 hover:bg-zinc-800/80 text-white fill-white`
                                 : `${baseClass} text-green-500/60  hover:text-green-500`
-                        }><Info className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">About us</div></NavLink>
+                        }><Info className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("About")}</div></NavLink>
                     </div>
                 </div>
                 <div className="p-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <div className="flex gap-2 items-center cursor-pointer text-green-500/60  hover:text-green-500 hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">Languages</div></div>
+                            <div className="flex gap-2 items-center cursor-pointer text-green-500/60  hover:text-green-500 hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Languages")}</div></div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" align="start">
                             <DropdownMenuGroup>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1">
-                                    English
+                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('en')}>
+                                    {t("English")}
                                     <DropdownMenuShortcut>En</DropdownMenuShortcut>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1">
-                                    Hungary
+                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('hu')}>
+                                {t("Hungary")}
                                     <DropdownMenuShortcut>Hu</DropdownMenuShortcut>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1">
-                                    Deutsch
+                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('de')}>
+                                {t("Deutsch")}
                                     <DropdownMenuShortcut>De</DropdownMenuShortcut>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1">
-                                    Spanish
+                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('sp')}>
+                                {t("Spanish")}
                                     <DropdownMenuShortcut>Sp</DropdownMenuShortcut>
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>

@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button"
 import { CalendarSearch, MessageSquare, MessagesSquare, Music, Star } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 function TopCreators() {
+    const {t} = useTranslation();
     const topCreators = [
         {
             name: "Pacos",
@@ -61,7 +63,7 @@ function TopCreators() {
     return (
         <>
             <div className="flex flex-col gap-4 p-4">
-                <div className="text-xl font-medium">Top Creators</div>
+                <div className="text-xl font-medium">{t("TopCreators")}</div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-9 gap-3 2xl:gap-6">
 
                     {topCreators.map((element, index) => (
