@@ -355,7 +355,7 @@ function Navbar({ page }: NavbarProps) {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-36" align="end">
                                     <DropdownMenuGroup>
-                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1 items-center">
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1 items-center" onClick={()=> navigate('/profile/james')}>
                                             <User className="w-5 h-5" />
                                             Profile
                                         </DropdownMenuItem>

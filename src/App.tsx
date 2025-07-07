@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Players from "./pages/Players";
+import Profile from "./pages/Profile";
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
             <Route path="signin" element={<SignIn />} />
             <Route path="signup" element={<SignUp />} />
             <Route path="players" element={<Players />} />
+            <Route path="/profile/:slug" element={<Profile />} />
           </Route>
 
 
