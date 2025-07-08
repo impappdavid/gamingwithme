@@ -25,7 +25,7 @@ function App() {
             <Route path="music" element={<Music />} />
             <Route path="tiktok" element={<Tiktok />} />
             <Route path="youtube" element={<Youtube />} />
-            <Route path="/profile/:slug" element={<Profile />} />
+            <Route path="profile/:slug" element={<Profile />} />
           </Route>
 
 
