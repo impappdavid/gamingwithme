@@ -4,11 +4,13 @@ import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Players from "./pages/Players";
-import Profile from "./pages/Profile";
+import { lazy } from "react";
 import JustChatting from "./pages/JustChatting";
 import Music from "./pages/Music";
 import Tiktok from "./pages/Tiktok";
 import Youtube from "./pages/Youtube";
+
+const Profile = lazy(() => import('./pages/Profile'));
 
 function App() {
 
