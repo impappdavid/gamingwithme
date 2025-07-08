@@ -9,6 +9,8 @@ import JustChatting from "./pages/JustChatting";
 import Music from "./pages/Music";
 import Tiktok from "./pages/Tiktok";
 import Youtube from "./pages/Youtube";
+import Games from "./pages/Games";
+import Game from "./pages/Game";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -27,6 +29,8 @@ function App() {
             <Route path="/music" element={<Music />} />
             <Route path="/tiktok" element={<Tiktok />} />
             <Route path="/youtube" element={<Youtube />} />
+            <Route path="/games" element={<Games />} />
+            <Route path="/games/:slug" element={<Game />} />
             <Route path="/profile/:slug" element={<Profile />} />
           </Route>
 

@@ -46,6 +46,7 @@ i18n.use(LanguageDetector).use(initReactI18next).init({
                 receive: "receive",
                 filter: "Filter players",
                 search: "Search",
+                searchforgames: "Search for games...",
             },
         },
         hu: {
@@ -89,6 +90,7 @@ i18n.use(LanguageDetector).use(initReactI18next).init({
                 receive: "kap",
                 filter: "Játékosok szűrése",
                 search: "Keresés",
+                searchforgames: "Keress játékokra...",
             },
         },
         de: {
@@ -132,6 +134,7 @@ i18n.use(LanguageDetector).use(initReactI18next).init({
                 receive: "empfangen",
                 filter: "Spieler filtern",
                 search: "Suchen",
+                searchforgames: "Suche nach Spielen...",
             },
         },
         sp: {
@@ -175,6 +178,7 @@ i18n.use(LanguageDetector).use(initReactI18next).init({
                 receive: "recibes",
                 filter: "Filtrar jugadores",
                 search: "Buscar",
+                searchforgames: "Buscar juegos...",
             },
         },
     },
