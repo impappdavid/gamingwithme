@@ -20,14 +20,14 @@ function App() {
         <Routes>
           <Route>
             <Route index element={<Home />} />
-            <Route path="signin" element={<SignIn />} />
-            <Route path="signup" element={<SignUp />} />
-            <Route path="players" element={<Players />} />
-            <Route path="just-chatting" element={<JustChatting />} />
-            <Route path="music" element={<Music />} />
-            <Route path="tiktok" element={<Tiktok />} />
-            <Route path="youtube" element={<Youtube />} />
-            <Route path="profile/:slug" element={<Profile />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/players" element={<Players />} />
+            <Route path="/just-chatting" element={<JustChatting />} />
+            <Route path="/music" element={<Music />} />
+            <Route path="/tiktok" element={<Tiktok />} />
+            <Route path="/youtube" element={<Youtube />} />
+            <Route path="/profile/:slug" element={<Profile />} />
           </Route>
 
 
