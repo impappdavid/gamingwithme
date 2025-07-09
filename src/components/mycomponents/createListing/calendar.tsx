@@ -201,7 +201,7 @@ const AvailabilityCalendar = () => {
                                             onClick={() => !isPast && setSelectedDay(isSelected ? null : dateStr)}
                                             disabled={isPast}
                                             className={`
-                        p-2 h-28 border rounded-lg transition-all bg-zinc-800/60  text-zinc-400 text-left flex flex-col 
+                        p-2 h-12 sm:h-28 border rounded-lg transition-all bg-zinc-800/60  text-zinc-400 text-left flex flex-col 
                         ${isPast ? 'bg-zinc-950 text-zinc-400 cursor-not-allowed ' : 'hover:bg-zinc-800/40  cursor-pointer'}
                         ${isSelected ? 'ring-2 ring-blue-500 bg-blue-500' : ''}
                         ${isToday ? 'border-blue-500' : 'border-zinc-800'}

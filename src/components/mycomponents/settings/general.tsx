@@ -14,7 +14,7 @@ function General() {
     return (
         <>
             <div className="w-full h-screen sm:p-2">
-                <div className="w-full h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
+                <div className="w-full h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
                     <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("settings")} />
                     </div>
@@ -40,7 +40,7 @@ function General() {
                                             />
 
                                         </div>
-                                        <Button className="h-10 rounded-xl bg-green-500/60 text-white hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
+                                        <Button className="h-10 rounded-xl bg-[#19FF00] text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
 
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@ function General() {
                                             />
 
                                         </div>
-                                        <Button className="h-10 rounded-xl bg-blue-500 text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Send email</Button>
+                                        <Button className="h-10 rounded-xl bg-[#2856F4] text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Send email</Button>
 
                                     </div>
                                 </div>

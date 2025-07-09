@@ -14,7 +14,7 @@ function Content() {
     return (
         <>
             <div className="w-full xl:h-screen sm:p-2">
-                <div className="w-full min-h-screen sm:min-h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
+                <div className="w-full min-h-screen sm:min-h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
                     <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("profile")} />
                     </div>
@@ -73,14 +73,14 @@ function Content() {
                             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <div className="flex flex-col gap-1 bg-green-700/80 p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
+                                        <div className="flex flex-col gap-1 bg-[#19FF00] p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
                                             <div className="flex justify-between">
-                                                <div className="text-sm">{t("avaiable")}</div>
-                                                <div className="text-sm">Wed, Jul 20 2025</div>
+                                                <div className="text-sm text-black font-medium">{t("avaiable")}</div>
+                                                <div className="text-sm text-black font-medium">Wed, Jul 20 2025</div>
                                             </div>
                                             <div className="flex justify-between">
                                                 <div className=" p-1 px-1.5 bg-green-900/80  rounded-md text-xs drop-shadow-2xl flex items-center">$4.99/30m</div>
-                                                <div className="text-md">3:00 PM - 3:30 PM</div>
+                                                <div className="text-md text-black font-semibold">3:00 PM - 3:30 PM</div>
                                             </div>
                                         </div>
                                     </DialogTrigger>
@@ -92,7 +92,7 @@ function Content() {
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <div className="text-2xl">4.99</div>
-                                                    <CircleDollarSign className="text-green-500" />
+                                                    <CircleDollarSign className="text-[#19FF00]" />
                                                 </div>
                                             </div>
 
@@ -104,7 +104,7 @@ function Content() {
                                                     <div className="flex">
                                                         <div className="text-2xl">4.49</div>
                                                     </div>
-                                                    <CircleDollarSign className="text-green-500" />
+                                                    <CircleDollarSign className="text-[#19FF00]" />
                                                 </div>
                                             </div>
                                         </div>
@@ -114,7 +114,7 @@ function Content() {
                                                     <div className="">{t("cancel")}</div>
                                                 </Button>
                                             </DialogClose>
-                                            <Button className="bg-green-600 hover:bg-green-600/80 cursor-pointer transition-all duration-300 rounded-xl">
+                                            <Button className="bg-[#19FF00] hover:bg-green-500 cursor-pointer transition-all duration-300 rounded-xl">
                                                 <Wallet />
                                                 <div className="">{t("pay")}</div>
                                             </Button>
@@ -124,14 +124,14 @@ function Content() {
                                 </Dialog >
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <div className="flex flex-col gap-1 bg-green-700/80 p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
+                                        <div className="flex flex-col gap-1 bg-[#19FF00] p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
                                             <div className="flex justify-between">
-                                                <div className="text-sm">{t("avaiable")}</div>
-                                                <div className="text-sm">Wed, Jul 21 2025</div>
+                                                <div className="text-sm text-black font-medium">{t("avaiable")}</div>
+                                                <div className="text-sm text-black font-medium">Wed, Jul 21 2025</div>
                                             </div>
                                             <div className="flex justify-between">
                                                 <div className=" p-1 px-1.5 bg-green-900/80  rounded-md text-xs drop-shadow-2xl flex items-center">$4.99/30m</div>
-                                                <div className="text-md">11:00 AM - 11:30 AM</div>
+                                                <div className="text-md text-black font-semibold">11:00 AM - 11:30 AM</div>
                                             </div>
                                         </div>
                                     </DialogTrigger>

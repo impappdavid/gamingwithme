@@ -35,7 +35,7 @@ type User = {
 
 
 function Sidebar() {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [isCreator, setIsCreator] = useState(false);
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
     const users: User[] = useMemo(() => {

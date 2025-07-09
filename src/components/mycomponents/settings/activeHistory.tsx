@@ -47,7 +47,7 @@ function ActiveHistory() {
     return (
         <>
             <div className="w-full h-screen sm:p-2">
-                <div className="w-full h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
+                <div className="w-full h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
                     <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("settings")} />
                     </div>

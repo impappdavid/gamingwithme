@@ -10,7 +10,7 @@ function Games() {
                     <div className="text-xl font-medium">{t("Games")}</div>
                     <Link to={``} className="text-xs text-zinc-400 hover:underline ">View All</Link>
                 </div>
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2">
 
                     <img src="/fortnite.jpg" className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
                     <img src="/minecraft.png" className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />

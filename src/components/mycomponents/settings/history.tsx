@@ -15,7 +15,7 @@ const transactions = [
         amount: "$25.00",
         ago: "2 hours ago",
         status: "Received",
-        statusColor: "text-green-500",
+        statusColor: "text-[#19FF00]",
         statusBg: "bg-green-500/10 hover:bg-green-500/20",
     },
     {
@@ -27,7 +27,7 @@ const transactions = [
         amount: "$12.00",
         ago: "1 day ago",
         status: "Sent",
-        statusColor: "text-blue-400",
+        statusColor: "text-[#2856F4]",
         statusBg: "bg-blue-500/10 hover:bg-blue-500/20",
     },
     {
@@ -39,7 +39,7 @@ const transactions = [
         amount: "$25.00",
         ago: "3 days ago",
         status: "Received",
-        statusColor: "text-green-500",
+        statusColor: "text-[#19FF00]",
         statusBg: "bg-green-500/10 hover:bg-green-500/20",
     }
 ];
@@ -51,7 +51,7 @@ function BillHistory() {
     return (
         <>
             <div className="w-full h-screen sm:p-2">
-                <div className="w-full h-full sm:max-h-screen bg-zinc-900 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
+                <div className="w-full h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
                     <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("settings")} />
                     </div>
