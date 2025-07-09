@@ -1,4 +1,4 @@
-import { BadgeCheck, Bell, CircleQuestionMark, Download, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
+import { BadgeCheck, Bell, CircleQuestionMark, Download, Headset, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
 import {
     Dialog,
     DialogClose,
@@ -50,7 +50,7 @@ function Navbar({ page }: NavbarProps) {
     const navigate = useNavigate();
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200"
 
-    
+
 
     const { t, i18n } = useTranslation()
 
@@ -190,7 +190,7 @@ function Navbar({ page }: NavbarProps) {
 
 
                 <div className="flex gap-2">
-                    
+
 
                     {loggedin?.length != undefined ? (
                         <>
@@ -267,10 +267,46 @@ function Navbar({ page }: NavbarProps) {
                                 </div>
                             </div>
 
+
                             <div className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
                                 <Download className="w-5 h-5" />
 
                             </div>
+
+                            <div className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
+                                <Headset className="w-5 h-5" />
+
+                            </div>
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <div className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
+                                        <Languages className="w-5 h-5" />
+
+                                    </div>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56" align="end">
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('en')}>
+                                            {t("English")}
+                                            <DropdownMenuShortcut>En</DropdownMenuShortcut>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('hu')}>
+                                            {t("Hungary")}
+                                            <DropdownMenuShortcut>Hu</DropdownMenuShortcut>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('de')}>
+                                            {t("Deutsch")}
+                                            <DropdownMenuShortcut>De</DropdownMenuShortcut>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('sp')}>
+                                            {t("Spanish")}
+                                            <DropdownMenuShortcut>Sp</DropdownMenuShortcut>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild className="flex items-center">
@@ -296,6 +332,8 @@ function Navbar({ page }: NavbarProps) {
 
                                 </DropdownMenuContent>
                             </DropdownMenu>
+
+
                         </>
                     ) : (
                         <div className="flex gap-2 items-center">

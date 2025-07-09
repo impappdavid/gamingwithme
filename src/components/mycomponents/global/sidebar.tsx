@@ -222,34 +222,6 @@ function Sidebar() {
                         }><Info className="w-5 h-5 text-[#2856F4]" /> <div className="text-md font-medium hidden xl:flex">{t("About")}</div></NavLink>
                     </div>
                 </div>
-                <div className="p-2">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <div className="flex gap-2 items-center cursor-pointer text-green-500/60  hover:text-green-500 hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Languages")}</div></div>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="start">
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('en')}>
-                                    {t("English")}
-                                    <DropdownMenuShortcut>En</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('hu')}>
-                                    {t("Hungary")}
-                                    <DropdownMenuShortcut>Hu</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('de')}>
-                                    {t("Deutsch")}
-                                    <DropdownMenuShortcut>De</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('sp')}>
-                                    {t("Spanish")}
-                                    <DropdownMenuShortcut>Sp</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
             </div >
         </>
     )
