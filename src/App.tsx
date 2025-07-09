@@ -1,8 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
 import Home from "./pages/Home";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
 import Players from "./pages/Players";
 import { lazy } from "react";
 import JustChatting from "./pages/JustChatting";
@@ -16,6 +14,8 @@ import History from "./pages/History";
 import Activehistory from "./pages/ActiveHistory";
 import Danger from "./pages/Danger";
 import CreateListing from "./pages/CreateListing";
+import Login from "./pages/Login";
+import Registration from "./pages/Registration";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -27,8 +27,8 @@ function App() {
         <Routes>
           <Route>
             <Route index element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/registration" element={<Registration />} />
             <Route path="/players" element={<Players />} />
             <Route path="/just-chatting" element={<JustChatting />} />
             <Route path="/music" element={<Music />} />

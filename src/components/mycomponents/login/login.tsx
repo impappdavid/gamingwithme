@@ -79,7 +79,7 @@ const styleSheet = document.createElement("style");
 styleSheet.textContent = verifyAnimation;
 document.head.appendChild(styleSheet);
 
-function SignInForm() {
+function LogInForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -183,7 +183,7 @@ function SignInForm() {
     return (
         <>
             <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 p-0 sm:py-0 transition-all">
-                <div className={`sm:rounded-4xl w-full h-screen sm:h-fit sm:w-92 relative  bg-zinc-900 sm:border border-zinc-800 drop-shadow-xl p-4 transition-all duration-500 ease-in-out overflow-hidden ${showOtpInput ? "h-screen sm:max-h-[200px]" : "h-screen sm:max-h-[500px]"}`}>
+                <div className={`sm:rounded-4xl w-full h-screen sm:h-fit sm:w-92 relative  bg-zinc-900 sm:border border-zinc-800 drop-shadow-xl p-4 transition-all duration-300 ease-in-out overflow-hidden ${showOtpInput ? "h-screen sm:max-h-[200px]" : "h-screen sm:max-h-[510px]"}`}>
                     <div className="flex justify-between items-center">
                         {showOtpInput ? (
                             <div className=" p-1.5 hover:bg-zinc-800  rounded-lg transition-all duration-300 cursor-pointer" onClick={goBackHandle}>
@@ -197,7 +197,7 @@ function SignInForm() {
                         {showOtpInput ? (
                             <h1 className="text-md py-1.5 font-medium">2FA</h1>
                         ) : (
-                            <h1 className="text-md py-1.5 font-medium">Sign in to GamingWithMe</h1>
+                            <h1 className="text-md py-1.5 font-medium">Login to GamingWithMe</h1>
                         )}
                         <Link to='../' className=" p-1.5 hover:bg-zinc-800 rounded-lg transition-all duration-300 cursor-pointer" >
                             <X className="w-4.5 h-4.5" />
@@ -273,6 +273,18 @@ function SignInForm() {
                                         <ChevronRight className="w-4 h-4" />
                                     </div>
                                 </Link>
+                                <Link to="/" className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300">
+                                    <div className="p-1 bg-zinc-950/40 border border-zinc-800  rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256">
+                                            <path fill="#1877f2" d="M256 128C256 57.308 198.692 0 128 0S0 57.308 0 128c0 63.888 46.808 116.843 108 126.445V165H75.5v-37H108V99.8c0-32.08 19.11-49.8 48.348-49.8C170.352 50 185 52.5 185 52.5V84h-16.14C152.959 84 148 93.867 148 103.99V128h35.5l-5.675 37H148v89.445c61.192-9.602 108-62.556 108-126.445" />
+                                            <path fill="#fff" d="m177.825 165l5.675-37H148v-24.01C148 93.866 152.959 84 168.86 84H185V52.5S170.352 50 156.347 50C127.11 50 108 67.72 108 99.8V128H75.5v37H108v89.445A129 129 0 0 0 128 256a129 129 0 0 0 20-1.555V165z" />
+                                        </svg>
+                                    </div>
+                                    <div className="text-sm text-zinc-200 font-medium">Continue With Facebook</div>
+                                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                        <ChevronRight className="w-4 h-4" />
+                                    </div>
+                                </Link>
                                 <div className="flex items-center gap-2 w-full py-1">
                                     <Separator className="flex-1" />
                                     <span className="text-xs text-zinc-500 dark:text-zinc-600">OR</span>
@@ -341,7 +353,7 @@ function SignInForm() {
                                         {loading ? 'Signing In...' : 'Sign In'}
                                     </Button>
                                     <div className="flex justify-center w-full mt-2">
-                                        <div className="text-xs text-zinc-400">Don't have an account? <Link to="../signup" className="text-green-400 hover:underline">Sign Up</Link></div>
+                                        <div className="text-xs text-zinc-400">Don't have an account? <Link to="../registration" className="text-green-400 hover:underline">Registration</Link></div>
                                     </div>
                                 </form>
 
@@ -355,4 +367,4 @@ function SignInForm() {
         </>
     )
 }
-export default SignInForm
+export default LogInForm
