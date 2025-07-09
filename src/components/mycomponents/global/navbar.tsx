@@ -1,4 +1,4 @@
-import { BadgeCheck, Bell, CircleQuestionMark, Download, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Search, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
+import { BadgeCheck, Bell, CircleQuestionMark, Download, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
 import {
     Dialog,
     DialogClose,
@@ -17,8 +17,6 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { useMemo, useState } from "react"
 import {
     Drawer,
     DrawerClose,
@@ -31,8 +29,7 @@ import {
 } from "@/components/ui/drawer"
 import { useNavigate, NavLink } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import SearchUserCard from "./searchUsercard"
-import TopCreators from "./topCreators"
+
 import { useTranslation } from "react-i18next"
 
 // User type
@@ -53,52 +50,7 @@ function Navbar({ page }: NavbarProps) {
     const navigate = useNavigate();
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200"
 
-    const users: User[] = useMemo(() => {
-        const baseUsers: User[] = [
-            { name: "IAmLiam", profilePic: "/profile/7.jpg", games: ["valorant", "csgo", "just-chatting", "minecraft"], cost: "$0.99/game", active: true },
-            { name: "Noah", profilePic: "/profile/104.jpg", games: ["youtube"], cost: "$1.99/1h", active: false },
-            { name: "Ava", profilePic: "/profile/58.jpg", games: ["fortnite"], cost: "$4.99/30m", active: true },
-            { name: "Isla", profilePic: "/profile/35.jpg", games: ["just-chatting"], cost: "$2.99/s", active: false },
-            { name: "Ethan", profilePic: "/profile/17.jpg", games: ["just-chatting"], cost: "$4.99/s", active: true },
-            { name: "Maya", profilePic: "/profile/48.jpg", games: ["valorant", "minecraft"], cost: "$14.99/1h", active: false },
-            { name: "Alex", profilePic: "/profile/15.jpg", games: ["tiktok"], cost: "$9.99/video", active: true },
-            { name: "Peter", profilePic: "/profile/77.jpg", games: ["minecraft"], cost: "$5.99/30m", active: false },
-            { name: "Ben", profilePic: "/profile/82.jpg", games: ["musician"], cost: "$14.99/s", active: true },
-            { name: "Ash", profilePic: "/profile/52.jpg", games: ["musician"], cost: "$14.99/s", active: false },
-        ];
-        // Add more users up to 116.jpg
-        for (let i = 1; i <= 116; i++) {
-            baseUsers.push({
-                name: `User${i}`,
-                profilePic: `/profile/${i}.jpg`,
-                games: ["valorant", "minecraft"],
-                cost: `$${(Math.random() * 20 + 1).toFixed(2)}/game`,
-                active: i % 2 === 0 // alternate active status
-            });
-        }
-        return baseUsers;
-    }, []);
-
-    // Filter state
-    const [filterText, setFilterText] = useState("");
-
-
-    // Filtering logic
-    const filteredUsers = useMemo(() => {
-        let filtered = users.filter(user => {
-            // Text filter (name or game)
-            const textMatch =
-                filterText === "" ||
-                user.name.toLowerCase().includes(filterText.toLowerCase()) ||
-                user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()));
-            ;
-            // Active filter
-            const activeOk = user.active;
-            return textMatch && activeOk;
-        });
-
-        return filtered;
-    }, [users, filterText]);
+    
 
     const { t, i18n } = useTranslation()
 
@@ -238,36 +190,7 @@ function Navbar({ page }: NavbarProps) {
 
 
                 <div className="flex gap-2">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <div className="sm:w-60 rounded-lg h-9  bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
-                                <Search className="w-5 h-5" />
-                                <div className="text-sm hidden sm:flex">{t("Search")}...</div>
-                            </div>
-
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col ">
-                            <DialogHeader>
-                                <DialogTitle className="flex justify-between gap-4">
-                                    <Input type="text" placeholder={t("Search")} className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                                    <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">{t("close")}</DialogClose>
-                                </DialogTitle>
-                                <div className="h-[1px] bg-zinc-800"></div>
-                                <DialogDescription className="h-full">
-                                    {filterText.length > 0 ? (
-                                        <SearchUserCard users={filteredUsers} />
-                                    ) : (
-                                        <div className="flex flex-col gap-2">
-                                            <div className="text-start">{t("TopCreators")}</div>
-                                            <TopCreators users={users} />
-                                        </div>
-                                    )}
-                                </DialogDescription>
-
-                            </DialogHeader>
-
-                        </DialogContent>
-                    </Dialog >
+                    
 
                     {loggedin?.length != undefined ? (
                         <>
