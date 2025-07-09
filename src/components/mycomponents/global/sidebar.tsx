@@ -1,14 +1,6 @@
-import { BadgeCheck, CircleQuestionMark, Gamepad2, House, Info, Languages, MessagesSquare, Music, Play, Plus, Search, Swords, Youtube } from "lucide-react"
+import { BadgeCheck, CircleQuestionMark, Gamepad2, House, Info, MessagesSquare, Music, Play, Plus, Search, Swords, Youtube } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import { useMemo, useState } from "react"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import SearchUserCard from "./searchUsercard"
 import TopCreators from "./topCreators"
 import {
