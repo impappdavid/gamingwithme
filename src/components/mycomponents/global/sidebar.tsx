@@ -95,10 +95,10 @@ function Sidebar() {
                     </div>
                     <div className="flex flex-col gap-1 p-2">
                         {isCreator ? (
-                            <div className={`${baseClass} bg-green-500/20 cursor-pointer border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}>
+                            <NavLink to={"/create-listing"} className={`${baseClass} bg-green-500/20 cursor-pointer border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}>
                                 <Plus className="w-5 h-5"/>
                                 <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
-                            </div>
+                            </NavLink>
                         ): (
                             <NavLink to = "" onClick={()=> setIsCreator(!isCreator)} className = {`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Become")}</div></NavLink>
 

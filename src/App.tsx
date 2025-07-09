@@ -15,6 +15,7 @@ import Settings from "./pages/Settings";
 import History from "./pages/History";
 import Activehistory from "./pages/ActiveHistory";
 import Danger from "./pages/Danger";
+import CreateListing from "./pages/CreateListing";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/tiktok" element={<Tiktok />} />
             <Route path="/youtube" element={<Youtube />} />
             <Route path="/games" element={<Games />} />
+            <Route path="/create-listing" element={<CreateListing />} />
             <Route path="/games/:slug" element={<Game />} />
             <Route path="/settings/general" element={<Settings />} />
             <Route path="/settings/history" element={<History />} />
