@@ -360,7 +360,7 @@ function Navbar({ page }: NavbarProps) {
                                             <User className="w-5 h-5" />
                                             {t("profile")}
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1">
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => navigate('/settings/general')}>
                                             <Settings />
                                             {t("settings")}
                                         </DropdownMenuItem>

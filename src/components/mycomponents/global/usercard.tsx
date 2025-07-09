@@ -19,7 +19,7 @@ type User = {
     active: boolean;
 };
 
-const ITEMS_PER_PAGE = 36;
+const ITEMS_PER_PAGE = 21;
 
 function UserCard({ users }: { users: User[] }) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -93,7 +93,7 @@ function UserCard({ users }: { users: User[] }) {
                     </div>
                 ) : (
                     // User grid
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-9 gap-3 2xl:gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7  gap-3 2xl:gap-6">
                         {currentUsers.map((element, index) => (
                             <div key={startIndex + index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
                                 <div className="flex justify-center relative w-full overflow-hidden rounded-2xl">
@@ -107,12 +107,12 @@ function UserCard({ users }: { users: User[] }) {
                                             <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                                         </span>
                                     )}
-                                    <div className="flex justify-between  px-2 absolute bottom-0 py-1 rounded-b-2xl backdrop-blur-sm w-full" >
+                                    <div className="flex justify-between  px-2 absolute bottom-0 py-1.5 rounded-b-2xl backdrop-blur-md w-full" >
                                         <div className="flex gap-1 items-center">
-                                            <div className="text-md max-w-16 truncate">{element.name}</div>
+                                            <div className="text-md max-w-24 truncate">{element.name}</div>
                                         </div>
                                         <div className="flex items-center">
-                                            <div className="grid grid-cols-2 gap-0.5">
+                                            <div className="flex gap-0.5">
                                                 {element.games.length > 2 ? (
                                                     <>
                                                         {element.games.slice(0, 1).map((game, idx) => (
@@ -237,7 +237,7 @@ function UserCard({ users }: { users: User[] }) {
 
             {/* Pagination Controls - Fixed at bottom */}
             {totalPages > 1 && users.length > 0 && (
-                <div className="mt-auto pt-6 pb-3 sm:pb-0 absolute -bottom-17 w-full">
+                <div className="mt-auto pt-6 pb-3 sm:pb-0 absolute -bottom-22 w-full">
                     <div className="flex items-center justify-center sm:justify-between px-4">
                         <div className="text-sm text-zinc-400 sm:flex hidden">
                             {Math.min(endIndex, users.length)} / {users.length} {t("users")}

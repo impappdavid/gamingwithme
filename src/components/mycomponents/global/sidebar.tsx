@@ -1,4 +1,4 @@
-import { BadgeCheck, CircleQuestionMark, Gamepad2, House, Info, Languages, MessagesSquare, Music, Play, Swords, Youtube } from "lucide-react"
+import { BadgeCheck, CircleQuestionMark, Gamepad2, House, Info, Languages, MessagesSquare, Music, Play, Plus, Swords, Youtube } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import {
     DropdownMenu,
@@ -10,9 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
+import { useState } from "react";
 
 function Sidebar() {
     const { t, i18n } = useTranslation();
+    const [isCreator, setIsCreator] = useState(false);
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
     return (
         <>
@@ -92,55 +94,63 @@ function Sidebar() {
                         <div className="h-[1.5px] w-full bg-zinc-900"></div>
                     </div>
                     <div className="flex flex-col gap-1 p-2">
-                        <NavLink to="../creator" className={`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Become")}</div></NavLink>
+                        {isCreator ? (
+                            <div className={`${baseClass} bg-green-500/20 cursor-pointer border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}>
+                                <Plus className="w-5 h-5"/>
+                                <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
+                            </div>
+                        ): (
+                            <NavLink to = "" onClick={()=> setIsCreator(!isCreator)} className = {`${baseClass} bg-green-500/20 border border-dashed border-green-500/50 text-green-500 hover:bg-green-500/30`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Become")}</div></NavLink>
 
-                    </div>
-                    <div className="px-2">
-                        <div className="h-[1.5px] w-full bg-zinc-900"></div>
-                    </div>
-                    <div className="flex flex-col gap-1 p-2">
-                        <NavLink to="../faq" className={({ isActive }) =>
-                            isActive
-                                ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
-                                : `${baseClass} text-green-500/60  hover:text-green-500`
-                        }><CircleQuestionMark className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">FAQ</div></NavLink>
+                        )}
 
-                        <NavLink to="../about-us" className={({ isActive }) =>
-                            isActive
-                                ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
-                                : `${baseClass} text-green-500/60  hover:text-green-500`
-                        }><Info className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("About")}</div></NavLink>
-                    </div>
                 </div>
-                <div className="p-2">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <div className="flex gap-2 items-center cursor-pointer text-green-500/60  hover:text-green-500 hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Languages")}</div></div>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="start">
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('en')}>
-                                    {t("English")}
-                                    <DropdownMenuShortcut>En</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('hu')}>
-                                {t("Hungary")}
-                                    <DropdownMenuShortcut>Hu</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('de')}>
-                                {t("Deutsch")}
-                                    <DropdownMenuShortcut>De</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('sp')}>
-                                {t("Spanish")}
-                                    <DropdownMenuShortcut>Sp</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
+                <div className="px-2">
+                    <div className="h-[1.5px] w-full bg-zinc-900"></div>
+                </div>
+                <div className="flex flex-col gap-1 p-2">
+                    <NavLink to="../faq" className={({ isActive }) =>
+                        isActive
+                            ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
+                            : `${baseClass} text-green-500/60  hover:text-green-500`
+                    }><CircleQuestionMark className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">FAQ</div></NavLink>
 
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <NavLink to="../about-us" className={({ isActive }) =>
+                        isActive
+                            ? `${baseClass} bg-green-500/20 text-green-500  fill-green-500`
+                            : `${baseClass} text-green-500/60  hover:text-green-500`
+                    }><Info className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("About")}</div></NavLink>
                 </div>
             </div>
+            <div className="p-2">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <div className="flex gap-2 items-center cursor-pointer text-green-500/60  hover:text-green-500 hover:bg-zinc-900 p-2 rounded-lg transition-all duration-200"><Languages className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Languages")}</div></div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="start">
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('en')}>
+                                {t("English")}
+                                <DropdownMenuShortcut>En</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('hu')}>
+                                {t("Hungary")}
+                                <DropdownMenuShortcut>Hu</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('de')}>
+                                {t("Deutsch")}
+                                <DropdownMenuShortcut>De</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1" onClick={() => i18n.changeLanguage('sp')}>
+                                {t("Spanish")}
+                                <DropdownMenuShortcut>Sp</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div >
         </>
     )
 }
