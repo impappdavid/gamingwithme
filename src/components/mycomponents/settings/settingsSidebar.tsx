@@ -22,7 +22,7 @@ function SettingsSidebar() {
             <div className="flex flex-col gap-2 p-4">
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                        <div className="relative group w-24 ">
+                        <div className="relative group sm:w-24 ">
                             <div className="bg-black/40 backdrop-blur-sm z-50 w-24 h-24 absolute rounded-lg text-center text-sm text-zinc-200 hidden group-hover:flex justify-center items-center transition-all duration-300 cursor-pointer">
                                 Change Picture
                             </div>
