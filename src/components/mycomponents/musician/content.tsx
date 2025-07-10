@@ -3,6 +3,7 @@ import Navbar from "../global/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
 import { useState, useMemo } from "react"
+import Footer from "../global/footer";
 
 // User type
 type User = {
@@ -101,6 +102,9 @@ function Content() {
             <div className="p-2">
               <UserCard users={filteredUsers} />
             </div>
+          </div>
+          <div className="mt-34">
+            <Footer />
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
 
 function Content() {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     return (
         <>
             <div className="w-full xl:h-screen sm:p-2">
@@ -181,7 +181,9 @@ function Content() {
                                         <div className="text-md">1:00 PM - 1:30 PM</div>
                                     </div>
                                 </div>
+
                             </div>
+                            
                         </div>
                     </div>
                 </div>

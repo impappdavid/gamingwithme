@@ -3,6 +3,7 @@ import Navbar from "../global/navbar"
 import Suggestions from "./suggestion"
 import TopCreators from "./topcreators"
 import { useTranslation } from "react-i18next"
+import Footer from "../global/footer"
 
 function Content() {
     const {t} = useTranslation()
@@ -18,6 +19,7 @@ function Content() {
                         <Games />
                         <Suggestions />
                     </div>
+                    <Footer />
                 </div>
             </div>
         </>

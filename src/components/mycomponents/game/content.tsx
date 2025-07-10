@@ -9,6 +9,7 @@ import {
 import News from "./news"
 import Events from "./events"
 import EasterEgg from "./easteregg"
+import Footer from "../global/footer"
 
 function Content() {
     const { t } = useTranslation()
@@ -38,7 +39,11 @@ function Content() {
                                     <EasterEgg />
                                 </TabsContent>
                             </Tabs>
+                            <div className=" sm:mt-24">
+                                <Footer />
+                            </div>
                         </div>
+
 
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import Navbar from "../global/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
 import { useState, useMemo } from "react"
+import Footer from "../global/footer";
 
 // User type
 type User = {
@@ -28,7 +29,7 @@ function Content() {
       { name: "John", profilePic: "/profile/45.jpg", games: ["just-chatting"], cost: "$1.75/min", active: false },
       { name: "Anna", profilePic: "/profile/78.jpg", games: ["just-chatting"], cost: "$3.99/min", active: true },
     ];
-    
+
     // Add more users for variety
     for (let i = 1; i <= 50; i++) {
       baseUsers.push({
@@ -57,18 +58,18 @@ function Content() {
         filterText === "" ||
         user.name.toLowerCase().includes(filterText.toLowerCase()) ||
         user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()));
-      
+
       // Price filter
       const price = parseFloat(user.cost.replace(/[^\d.]/g, ""));
       const minOk = minPrice === undefined || price >= minPrice;
       const maxOk = maxPrice === undefined || price <= maxPrice;
-      
+
       // Active filter
       const activeOk = !showActive || user.active;
-      
+
       return textMatch && minOk && maxOk && activeOk;
     });
-    
+
     // Order
     if (orderBy === "highest") filtered.sort((a, b) => parseFloat(b.cost.replace(/[^\d.]/g, "")) - parseFloat(a.cost.replace(/[^\d.]/g, "")));
     if (orderBy === "lowest") filtered.sort((a, b) => parseFloat(a.cost.replace(/[^\d.]/g, "")) - parseFloat(b.cost.replace(/[^\d.]/g, "")));
@@ -76,7 +77,7 @@ function Content() {
     if (orderBy === "newest") filtered = filtered.slice().reverse();
     return filtered;
   }, [users, filterText, minPrice, maxPrice, orderBy, showActive]);
-  
+
   const { t } = useTranslation()
   return (
     <>
@@ -101,6 +102,9 @@ function Content() {
             <div className="p-2">
               <UserCard users={filteredUsers} />
             </div>
+          </div>
+          <div className="mt-34">
+            <Footer />
           </div>
         </div>
       </div>

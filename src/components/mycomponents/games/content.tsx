@@ -3,6 +3,7 @@ import Navbar from "../global/navbar"
 import { useTranslation } from "react-i18next"
 import Filter from "./filter"
 import { useState } from "react"
+import Footer from "../global/footer"
 
 function Content() {
     const {t} = useTranslation()
@@ -18,6 +19,7 @@ function Content() {
                         <Filter filterText={filterText} setFilterText={setFilterText} />
                         <Games filterText={filterText} />
                     </div>
+                    <Footer />
                 </div>
             </div>
         </>

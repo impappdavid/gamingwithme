@@ -1,6 +1,7 @@
 import Navbar from "../global/navbar"
 import { useTranslation } from "react-i18next"
 import AvailabilityCalendar from "./calendar"
+import Footer from "../global/footer"
 
 
 function Content() {
@@ -16,6 +17,7 @@ function Content() {
                         <AvailabilityCalendar />
 
                     </div>
+                    <Footer />
                 </div>
             </div>
         </>
