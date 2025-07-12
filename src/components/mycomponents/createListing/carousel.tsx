@@ -71,6 +71,7 @@ function Carousel() {
     const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
     const carouselRef = useRef<any>(null);
     const hasScrolledToSelected = useRef(false);
+    const [selectedSlots, setSelectedSlots] = useState<{ [slot: string]: string }>(() => ({}));
 
     // Generate days for the current month
     const daysInMonth = getMonthDays(currentYear, currentMonth);
@@ -111,12 +112,18 @@ function Carousel() {
     };
 
     // Time slot selection logic
-    const handleTimeToggle = (slot: string) => {
-        setSelectedTimes(prev =>
-            prev.includes(slot)
-                ? prev.filter(s => s !== slot)
-                : [...prev, slot]
-        );
+    const handleTimeSelect = (slot: string) => {
+        setSelectedSlots(prev => {
+            if (prev[slot]) {
+                // Deselect
+                const newSlots = { ...prev };
+                delete newSlots[slot];
+                return newSlots;
+            } else {
+                // Select with current price
+                return { ...prev, [slot]: price };
+            }
+        });
     };
 
     // Selected day display
@@ -177,7 +184,7 @@ function Carousel() {
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-white text-xs">Duration:</span>
-                    <Select value={selectedDuration.toString()} onValueChange={val => setSelectedDuration(Number(val))}>
+                    <Select value={selectedDuration.toString()} onValueChange={val => setSelectedDuration(Number(val))} disabled={selectedDuration === 30 && Object.keys(selectedSlots).length > 0}>
                         <SelectTrigger className="w-24">
                             <SelectValue placeholder="Select duration" />
                         </SelectTrigger>
@@ -199,23 +206,25 @@ function Carousel() {
                         onChange={e => setPrice(e.target.value)}
                     />
                 </div>
-
-                <Button className="bg-green-500 hover:bg-green-600 text-black rounded-xl font-bold text-xs cursor-pointer transition-all duration-300">Create</Button>
             </div>
 
             {/* List all time slots for the selected duration */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto">
                 {generateTimeSlots(selectedDuration).map((slot, idx) => {
                     const slotKey = `${slot.start}-${slot.end}`;
-                    const selected = selectedTimes.includes(slotKey);
+                    const isSelected = selectedSlots[slotKey] !== undefined;
                     return (
                         <Button
                             key={slotKey}
                             variant="outline"
-                            className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300 ${selected ? "bg-green-500 border-green-500 text-black" : "bg-zinc-900 border-zinc-900 text-white"}`}
-                            onClick={() => handleTimeToggle(slotKey)}
+                            className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300 ${isSelected ? "bg-green-500 border-green-500 text-black" : "bg-zinc-900 border-zinc-900 text-white"}`}
+                            onClick={() => handleTimeSelect(slotKey)}
                         >
-                            {slot.start} - {slot.end}
+                            {isSelected ? (
+                                <span>{slot.start} - {slot.end} | ${selectedSlots[slotKey]}</span>
+                            ) : (
+                                <span>{slot.start} - {slot.end}</span>
+                            )}
                         </Button>
                     );
                 })}
