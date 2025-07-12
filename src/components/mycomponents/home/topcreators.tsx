@@ -59,7 +59,7 @@ function TopCreators() {
         <>
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex w-full justify-between items-center">
-                    <div className="text-xl font-medium">{t("Suggestedusers")}</div>
+                    <div className="text-xl font-medium">{t("Top Creators")}</div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-3 2xl:gap-4">
                     {suggestions.map((element, index) => (

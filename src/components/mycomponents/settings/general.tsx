@@ -2,15 +2,17 @@ import Navbar from "../global/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
 import { Input } from "@/components/ui/input"
-import { KeyRound, User } from "lucide-react"
+import { CaseLower, KeyRound, User } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 
 
 function General() {
     const { t } = useTranslation()
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [description, setDescription] = useState("");
     return (
         <>
             <div className="w-full h-screen sm:p-2">
@@ -40,10 +42,25 @@ function General() {
                                             />
 
                                         </div>
-                                        <Button className="h-10 rounded-xl bg-[#19FF00] text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
-
+                                        
                                     </div>
                                 </div>
+                                <div className="flex flex-col">
+                                <div className="text-xl font-bold mb-2">Bio</div>
+                                    <div className="relative">
+                                        <div className="absolute top-3 left-0 flex items-center pl-3 pointer-events-none">
+                                            <CaseLower className="h-4 w-4 text-zinc-500" />
+                                        </div>
+                                        <Textarea
+                                            id="title"
+                                            placeholder="Enter your project description"
+                                            className="pl-10 h-24 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <Button className="h-10 rounded-xl bg-[#19FF00] text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
                                 <div className="flex flex-col">
                                     <div className="text-xl font-bold mb-2">Change password</div>
                                     <div className="flex justify-between gap-2">

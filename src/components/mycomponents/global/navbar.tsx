@@ -26,7 +26,7 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-import { useNavigate, NavLink } from "react-router-dom"
+import { useNavigate, NavLink, Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 
 import { useTranslation } from "react-i18next"
@@ -238,7 +238,7 @@ function Navbar({ page }: NavbarProps) {
                                 </DialogContent>
                             </Dialog >
 
-                            <div className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
+                            <Link to="/chat" className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
                                 <MessageSquare className="w-5 h-5" />
                                 <div className="absolute -top-1 -right-1">
                                     <span className="relative flex h-3 w-3">
@@ -246,7 +246,7 @@ function Navbar({ page }: NavbarProps) {
                                         <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500/80"></span>
                                     </span>
                                 </div>
-                            </div>
+                            </Link>
 
 
                             <div className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">

@@ -16,6 +16,7 @@ import Danger from "./pages/Danger";
 import CreateListing from "./pages/CreateListing";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
+import Chat from "./pages/Chat";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/tiktok" element={<Tiktok />} />
             <Route path="/youtube" element={<Youtube />} />
             <Route path="/games" element={<Games />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="/create-listing" element={<CreateListing />} />
             <Route path="/games/:slug" element={<Game />} />
             <Route path="/settings/general" element={<Settings />} />

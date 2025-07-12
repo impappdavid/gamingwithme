@@ -1,4 +1,4 @@
-import { Play, Facebook, Instagram, Mail, HelpCircle, FileText, HeadphonesIcon } from "lucide-react"
+import { Facebook, Instagram, Mail, HelpCircle, FileText, HeadphonesIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 
@@ -10,7 +10,7 @@ function Footer() {
                     {/* Logo Section */}
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-2">
-                            <Play className="h-8 w-8 text-[#19FF00]" />
+                            <img src="/logo.png" alt="logo" className="w-14 h-14"/>
                             <span className="text-2xl font-bold">GamingWithMe</span>
                         </div>
                         <div className="text-xs pl-1.5 text-zinc-400">

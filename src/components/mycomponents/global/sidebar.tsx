@@ -1,4 +1,4 @@
-import { BadgeCheck, CircleQuestionMark, Gamepad2, House, Info, MessagesSquare, Music, Play, Plus, Search, Swords, Youtube } from "lucide-react"
+import { BadgeCheck, Gamepad2, House, Info, MessagesSquare, Music, Plus, Search, Swords, Youtube } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import { useMemo, useState } from "react"
 import SearchUserCard from "./searchUsercard"
@@ -80,8 +80,8 @@ function Sidebar() {
         <>
             <div className="  xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">
                 <div className="flex flex-col gap-2">
-                    <div className="flex gap-2 items-center p-3 px-4">
-                        <Play className="w-5 h-5 text-green-500" />
+                    <div className="flex gap-1 items-center p-3 px-4">
+                        <img src="/logo.png" alt="" className="w-8 h-8" />
                         <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
                     </div>
                     <div className="flex flex-col gap-1 p-2">
@@ -201,12 +201,6 @@ function Sidebar() {
                         <div className="h-[1.5px] w-full bg-zinc-900"></div>
                     </div>
                     <div className="flex flex-col gap-1 p-2">
-                        <NavLink to="../faq" className={({ isActive }) =>
-                            isActive
-                                ? `${baseClass} bg-[#19FF00] text-black  fill-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
-                        }><CircleQuestionMark className="w-5 h-5 text-[#2856F4]" /> <div className="text-md font-medium hidden xl:flex">FAQ</div></NavLink>
-
                         <NavLink to="../about-us" className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black  fill-black`
