@@ -94,9 +94,22 @@ function Carousel() {
         hasScrolledToSelected.current = false;
     }, [currentYear, currentMonth]);
 
+    // Check if date is in the past
+    const isDateInPast = (date: Date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        date.setHours(0, 0, 0, 0);
+        return date < today;
+    };
+
     // When a date is picked from the calendar, update month/year and selectedDate
     const handleCalendarSelect = (date: Date | undefined) => {
         if (date) {
+            // Only allow today and future dates
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            date.setHours(0, 0, 0, 0);
+            if (date < today) return;
             setCurrentYear(date.getFullYear());
             setCurrentMonth(date.getMonth());
             setSelectedDate(date);
@@ -145,6 +158,7 @@ function Carousel() {
                             mode="single"
                             selected={selectedDate}
                             onSelect={handleCalendarSelect}
+                            disabled={(date) => isDateInPast(date)}
                             initialFocus
                         />
                     </PopoverContent>
@@ -156,22 +170,29 @@ function Carousel() {
                 <ShadCarousel className="w-full" opts={{ align: "center" }} setApi={api => (carouselRef.current = api)}>
                     <CarouselPrevious />
                     <CarouselContent className=" ">
-                        {daysInMonth.map((d, idx) => (
-                            <CarouselItem key={d.toISOString()} className="basis-1/4 sm:basis-1/7">
-                                <Card
-                                    className={`cursor-pointer transition-all duration-200 border-2 px-2 py-2 rounded-lg text-center min-w-[80px] max-w-[80px] h-[80px] mx-auto flex flex-col justify-center ${selectedDate.toDateString() === d.toDateString() ? "border-green-500 bg-zinc-900" : "border-zinc-800 bg-zinc-950"}`}
-                                    onClick={() => setSelectedDate(d)}
-                                >
-                                    <CardContent className="flex flex-col items-center gap-1 p-0 justify-center h-full">
-                                        <span className="text-xs text-zinc-400">{getWeekday(d)}</span>
-                                        <CardTitle className="text-base font-bold p-0 m-0">{pad(d.getDate())}</CardTitle>
-                                        <CardDescription className="text-[10px] mt-0">
-                                            <span className="text-green-500 font-semibold">{(d.getDate() % 3) + 1} active</span>
-                                        </CardDescription>
-                                    </CardContent>
-                                </Card>
-                            </CarouselItem>
-                        ))}
+                        {daysInMonth.map((d, idx) => {
+                            const isPast = isDateInPast(d);
+                            return (
+                                <CarouselItem key={d.toISOString()} className="basis-1/4 sm:basis-1/7">
+                                    <Card
+                                        className={`cursor-pointer transition-all duration-200 border-2 px-2 py-2 rounded-lg text-center min-w-[80px] max-w-[80px] h-[80px] mx-auto flex flex-col justify-center ${selectedDate.toDateString() === d.toDateString() ? "border-green-500 bg-zinc-900" : isPast ? "border-zinc-700 bg-zinc-900 opacity-50" : "border-zinc-800 bg-zinc-950"}`}
+                                        onClick={() => { if (!isPast) setSelectedDate(d); }}
+                                    >
+                                        <CardContent className="flex flex-col items-center gap-1 p-0 justify-center h-full">
+                                            <span className="text-xs text-zinc-400">{getWeekday(d)}</span>
+                                            <CardTitle className="text-base font-bold p-0 m-0">{pad(d.getDate())}</CardTitle>
+                                            <CardDescription className="text-[10px] mt-0">
+                                                {isPast ? (
+                                                    <span className="text-zinc-500">Past</span>
+                                                ) : (
+                                                    <span className="text-green-500 font-semibold">{(d.getDate() % 3) + 1} active</span>
+                                                )}
+                                            </CardDescription>
+                                        </CardContent>
+                                    </Card>
+                                </CarouselItem>
+                            );
+                        })}
                     </CarouselContent>
                     <CarouselNext />
                 </ShadCarousel>
@@ -213,12 +234,15 @@ function Carousel() {
                 {generateTimeSlots(selectedDuration).map((slot, idx) => {
                     const slotKey = `${slot.start}-${slot.end}`;
                     const isSelected = selectedSlots[slotKey] !== undefined;
+                    // Disable slot selection if selectedDate is in the past
+                    const isPastDay = isDateInPast(selectedDate);
                     return (
                         <Button
                             key={slotKey}
                             variant="outline"
                             className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300 ${isSelected ? "bg-green-500 border-green-500 text-black" : "bg-zinc-900 border-zinc-900 text-white"}`}
-                            onClick={() => handleTimeSelect(slotKey)}
+                            onClick={() => !isPastDay && handleTimeSelect(slotKey)}
+                            disabled={isPastDay}
                         >
                             {isSelected ? (
                                 <span>{slot.start} - {slot.end} | ${selectedSlots[slotKey]}</span>
