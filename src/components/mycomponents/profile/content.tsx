@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
+import Carousel from "./carousel"
 
 function Content() {
     const { t } = useTranslation()
@@ -19,14 +20,10 @@ function Content() {
                         <Navbar page={t("profile")} />
                     </div>
                     <div className="p-2 sm:p-4 flex flex-col gap-4">
-                        <div className="relative">
-                            <img src="/header.png" alt="profileheader" className="min-h-36 sm:min-h-46 max-h-46 w-full rounded-2xl" />
-                            <div className="border rounded-2xl w-fit absolute -bottom-12 sm:-bottom-18 left-4">
+                        <div className=" pl-4 flex flex-col gap-2">
+                            <div className="border rounded-2xl w-fit ">
                                 <img src="/profile/115.jpg" alt="user" className="w-24 sm:w-36 sm:h-36 rounded-2xl" />
                             </div>
-
-                        </div>
-                        <div className="pt-12 sm:pt-18 pl-4 flex flex-col gap-2">
                             <div className="text-2xl">James</div>
                             <div className="flex flex-wrap gap-1.5">
                                 <div className="bg-[#ff4654] p-1 rounded-md">
@@ -69,121 +66,8 @@ function Content() {
 
                         </div>
                         <div className="px-4 py-2 flex flex-col gap-2">
-                            <div className="text-zinc-400">{t("activedates")}</div>
-                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <div className="flex flex-col gap-1 bg-[#19FF00] p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
-                                            <div className="flex justify-between">
-                                                <div className="text-sm text-black font-medium">{t("avaiable")}</div>
-                                                <div className="text-sm text-black font-medium">Wed, Jul 20 2025</div>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <div className=" p-1 px-1.5 bg-green-900/80  rounded-md text-xs drop-shadow-2xl flex items-center">$4.99/30m</div>
-                                                <div className="text-md text-black font-semibold">3:00 PM - 3:30 PM</div>
-                                            </div>
-                                        </div>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-[500px] h-fit p-2  flex flex-col gap-2">
-                                        <div className="flex flex-col gap-1 relative">
-                                            <div className="bg-zinc-900 p-4 flex flex-col gap-2 rounded-xl">
-                                                <div className="flex justify-between text-sm text-zinc-400">
-                                                    {t("send")}
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <div className="text-2xl">4.99</div>
-                                                    <CircleDollarSign className="text-[#19FF00]" />
-                                                </div>
-                                            </div>
+                            <Carousel />
 
-                                            <div className="bg-zinc-900 p-4 flex flex-col gap-2 rounded-xl">
-                                                <div className="flex justify-between text-sm text-zinc-400">
-                                                    James {t("receive")}
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex">
-                                                        <div className="text-2xl">4.49</div>
-                                                    </div>
-                                                    <CircleDollarSign className="text-[#19FF00]" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-1">
-                                            <DialogClose className="w-full">
-                                                <Button className="bg-zinc-900/40 border w-full text-zinc-400 hover:bg-zinc-900 cursor-pointer transition-all duration-300 rounded-xl">
-                                                    <div className="">{t("cancel")}</div>
-                                                </Button>
-                                            </DialogClose>
-                                            <Button className="bg-[#19FF00] hover:bg-green-500 cursor-pointer transition-all duration-300 rounded-xl">
-                                                <Wallet />
-                                                <div className="">{t("pay")}</div>
-                                            </Button>
-                                        </div>
-
-                                    </DialogContent>
-                                </Dialog >
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <div className="flex flex-col gap-1 bg-[#19FF00] p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
-                                            <div className="flex justify-between">
-                                                <div className="text-sm text-black font-medium">{t("avaiable")}</div>
-                                                <div className="text-sm text-black font-medium">Wed, Jul 21 2025</div>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <div className=" p-1 px-1.5 bg-green-900/80  rounded-md text-xs drop-shadow-2xl flex items-center">$4.99/30m</div>
-                                                <div className="text-md text-black font-semibold">11:00 AM - 11:30 AM</div>
-                                            </div>
-                                        </div>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-[500px] h-fit p-2 flex flex-col gap-2">
-                                        <div className="flex flex-col gap-1 relative">
-                                            <div className="bg-zinc-900 p-4 flex flex-col gap-2 rounded-xl">
-                                                <div className="flex justify-between text-sm text-zinc-400">
-                                                    You send
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <div className="text-2xl">4.99</div>
-                                                    <CircleDollarSign className="text-green-500" />
-                                                </div>
-                                            </div>
-
-                                            <div className="bg-zinc-900 p-4 flex flex-col gap-2 rounded-xl">
-                                                <div className="flex justify-between text-sm text-zinc-400">
-                                                    James receive
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <div className="text-2xl">4.49</div>
-                                                    <CircleDollarSign className="text-green-500" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-1">
-                                            <DialogClose className="w-full outline-none" >
-                                                <Button className="bg-zinc-900/40 outline-none border w-full text-zinc-400 hover:bg-zinc-900 cursor-pointer transition-all duration-300 rounded-xl">
-                                                    <div className="">{t("cancel")}</div>
-                                                </Button>
-                                            </DialogClose>
-                                            <Button className="bg-green-600 hover:bg-green-600/80 cursor-pointer transition-all duration-300 rounded-xl">
-                                                <Wallet />
-                                                <div className="">{t("pay")}</div>
-                                            </Button>
-                                        </div>
-
-                                    </DialogContent>
-                                </Dialog >
-                                <div className="flex flex-col gap-1 bg-red-700/80 p-1.5 px-2  rounded-xl hover:scale-105 cursor-pointer transition-all duration-300">
-                                    <div className="flex justify-between">
-                                        <div className="text-sm">{t("taken")}</div>
-                                        <div className="text-sm">Wed, Jul 21 2025</div>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <div className=" p-1 px-1.5 bg-red-900/80  rounded-md text-xs drop-shadow-2xl flex items-center">$4.99/30m</div>
-                                        <div className="text-md">1:00 PM - 1:30 PM</div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            
                         </div>
                     </div>
                 </div>
