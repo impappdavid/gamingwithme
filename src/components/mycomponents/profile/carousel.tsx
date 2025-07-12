@@ -122,6 +122,7 @@ const sampleAvailability = generateSampleAvailability();
 function Carousel() {
     // State for current month/year in view
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [selectedDate, setSelectedDate] = useState<Date>(today);
@@ -133,19 +134,31 @@ function Carousel() {
 
     // Generate days for the current month
     const daysInMonth = getMonthDays(currentYear, currentMonth);
+    // Only show today and future days in the carousel
+    const visibleDays = daysInMonth.filter(d => {
+        const day = new Date(d);
+        day.setHours(0, 0, 0, 0);
+        return day.getTime() >= today.getTime();
+    });
 
     // Scroll carousel to selected day (today by default) on mount or when month changes
     useEffect(() => {
-        // Only scroll if selectedDate is in the current month
-        const idx = daysInMonth.findIndex(d => d.toDateString() === selectedDate.toDateString());
-        if (carouselRef.current && carouselRef.current.scrollTo && idx >= 0) {
-            // Prevent multiple scrolls on re-render
+        let targetIdx = visibleDays.findIndex(d => {
+            const day = new Date(d);
+            day.setHours(0, 0, 0, 0);
+            return day.getTime() === today.getTime();
+        });
+        // If today is not in this month, scroll to first available future date
+        if (targetIdx === -1) {
+            targetIdx = 0;
+        }
+        if (carouselRef.current && carouselRef.current.scrollTo && targetIdx >= 0) {
             if (!hasScrolledToSelected.current) {
-                carouselRef.current.scrollTo(idx, true);
+                carouselRef.current.scrollTo(targetIdx, true);
                 hasScrolledToSelected.current = true;
             }
         }
-    }, [daysInMonth, selectedDate]);
+    }, [visibleDays, selectedDate]);
 
     // Reset scroll flag when month/year changes
     useEffect(() => {
@@ -249,7 +262,7 @@ function Carousel() {
                 <ShadCarousel className="w-full" opts={{ align: "center" }} setApi={api => (carouselRef.current = api)}>
                     <CarouselPrevious />
                     <CarouselContent className=" ">
-                        {daysInMonth.map((d, idx) => {
+                        {visibleDays.map((d, idx) => {
                             const availability = getDateAvailability(d);
                             const isPast = isDateInPast(d);
                             
