@@ -327,59 +327,7 @@ function Content() {
                                 </div>
                             </div>
                         </div>
-                        {/* User List Dialog for small screens */}
-                        <Dialog open={showUserListDialog} onOpenChange={setShowUserListDialog}>
-                            <DialogContent className="block lg:hidden max-w-xs w-full p-0">
-                                <DialogHeader className="p-4 border-b border-zinc-800">
-                                    <DialogTitle>Conversations</DialogTitle>
-                                    <DialogClose asChild>
-                                        <button className="absolute right-4 top-4 text-zinc-400 hover:text-white">✕</button>
-                                    </DialogClose>
-                                </DialogHeader>
-                                <div className="p-4">
-                                    <div className="space-y-2">
-                                        {users.map((user) => (
-                                            <div
-                                                key={user.id}
-                                                className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedUser === user.name
-                                                    ? 'bg-zinc-700 border-l-4 border-blue-500'
-                                                    : 'bg-zinc-800 hover:bg-zinc-700'
-                                                    }`}
-                                                onClick={() => {
-                                                    setSelectedUser(user.name);
-                                                    navigate(`/chat/${user.id}`);
-                                                    setShowUserListDialog(false);
-                                                }}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className="relative">
-                                                        <img
-                                                            src={user.avatar}
-                                                            alt={user.name}
-                                                            className="w-10 h-10 rounded-full"
-                                                        />
-                                                        <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-zinc-900 ${user.online ? 'bg-green-500' : 'bg-gray-500'
-                                                            }`}></div>
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center justify-between">
-                                                            <h4 className="text-sm font-medium text-white truncate">{user.name}</h4>
-                                                            <span className="text-xs text-zinc-400">{user.time}</span>
-                                                        </div>
-                                                        <p className="text-xs text-zinc-400 truncate">{user.lastMessage}</p>
-                                                    </div>
-                                                    {user.unread > 0 && (
-                                                        <div className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                                            {user.unread}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </DialogContent>
-                        </Dialog>
+                        
                     </div>
                 </div>
             </div>
