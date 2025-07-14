@@ -17,6 +17,7 @@ import CreateListing from "./pages/CreateListing";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import Chat from "./pages/Chat";
+import ChatChoose from "./pages/ChatChoose";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -36,7 +37,8 @@ function App() {
             <Route path="/tiktok" element={<Tiktok />} />
             <Route path="/youtube" element={<Youtube />} />
             <Route path="/games" element={<Games />} />
-            <Route path="/chat" element={<Chat />} />
+            <Route path="/chat" element={<ChatChoose />} />
+            <Route path="/chat/:userId" element={<Chat />} />
             <Route path="/create-listing" element={<CreateListing />} />
             <Route path="/games/:slug" element={<Game />} />
             <Route path="/settings/general" element={<Settings />} />
@@ -44,6 +46,20 @@ function App() {
             <Route path="/settings/active-history" element={<Activehistory />} />
             <Route path="/settings/danger" element={<Danger />} />
             <Route path="/profile/:slug" element={<Profile />} />
+            {/*
+              become
+              support
+              coupon
+              aboutus
+              faq
+              download
+              admin
+              admin/game
+              admin/game/create
+              admin/game/edit/:slug
+              admin/notification
+              terms-and-conditions
+            */}
           </Route>
 
 

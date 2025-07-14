@@ -88,9 +88,9 @@ function Sidebar() {
                         <div className="mb-2">
                             <Dialog>
                                 <DialogTrigger asChild className="">
-                                    <div className=" rounded-lg h-9  bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
+                                    <div className=" rounded-lg h-9 w-10 xl:w-full  bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
                                         <Search className="w-5 h-5" />
-                                        <div className="text-sm hidden sm:flex">{t("Search")}...</div>
+                                        <div className="hidden xl:flex">Search...</div>
                                     </div>
 
                                 </DialogTrigger>
