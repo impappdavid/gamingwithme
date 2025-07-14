@@ -12,8 +12,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-
-
+import {  login } from "@/api/login";
 
 
 // Keyframes for the verification animation
@@ -108,37 +107,50 @@ function LogInForm() {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        removeStaticError();
         if (!email.includes('@')) {
             setStaticError('Invalid email. Try again')
             setTimeout(() => {
                 setIsErrorVisible(true);
-                // Auto hide after 3 seconds
                 setTimeout(() => {
                     removeStaticError();
                 }, 3000);
             }, 0);
             setLoading(false);
         } else if (email.length < 1 || password.length < 1) {
-            setStaticError('Please enter your creadentials')
+            setStaticError('Please enter your credentials')
             setTimeout(() => {
                 setIsErrorVisible(true);
-                // Auto hide after 3 seconds
                 setTimeout(() => {
                     removeStaticError();
                 }, 3000);
             }, 0);
+            setLoading(false);
         } else {
-            setIsFormVisible(false);
-            setTimeout(() => {
-                setShowOtpInput(true);
-                setIsFormVisible(true);
-            }, 300);
-            e.preventDefault();
-            setLoading(true);
-            removeStaticError();
+            try {
+                // Call the login API
+                const loginResult = await login(email, password, true);
+                // Store user ID in localStorage (adjust property name as needed)
+                
+                setIsFormVisible(false);
+                setTimeout(() => {
+                    setShowOtpInput(true);
+                    setIsFormVisible(true);
+                }, 300);
+            } catch (error: any) {
+                setStaticError('Login failed. Please check your credentials.');
+                setTimeout(() => {
+                    setIsErrorVisible(true);
+                    setTimeout(() => {
+                        removeStaticError();
+                    }, 3000);
+                }, 0);
+            } finally {
+                setLoading(false);
+            }
         }
-
-
     }
 
     const goBackHandle = () => {
@@ -262,17 +274,7 @@ function LogInForm() {
                                         <ChevronRight className="w-4 h-4" />
                                     </div>
                                 </Link>
-                                <Link to="/" className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl  hover:bg-zinc-800/80 bg-zinc-800/40 border border-zinc-800 transition-all duration-300">
-                                    <div className="p-1 bg-zinc-950/40 border border-zinc-800  rounded-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-                                            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.1.1 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.1 16.1 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02M8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12m6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12" />
-                                        </svg>
-                                    </div>
-                                    <div className="text-sm text-zinc-200 font-medium">Continue With Discord</div>
-                                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                        <ChevronRight className="w-4 h-4" />
-                                    </div>
-                                </Link>
+                                
                                 <Link to="/" className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300">
                                     <div className="p-1 bg-zinc-950/40 border border-zinc-800  rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256">
@@ -291,6 +293,7 @@ function LogInForm() {
                                     <Separator className="flex-1" />
                                 </div>
                                 <form className="flex flex-col gap-2">
+                                    
                                     <div className="flex flex-col gap-0.5">
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

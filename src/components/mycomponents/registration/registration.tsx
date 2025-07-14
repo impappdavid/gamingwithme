@@ -1,4 +1,4 @@
-import { Mail, Lock, Eye, EyeOff, Tag, ChevronRight, TriangleAlert, CircleHelp, X } from "lucide-react"
+import { Mail, Lock, Eye, EyeOff, Tag, ChevronRight, TriangleAlert, CircleHelp, X, CircleAlert } from "lucide-react"
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { registration } from "@/api/registration"
 
 interface CheckmarkProps {
     size?: number
@@ -18,6 +19,8 @@ interface CheckmarkProps {
 
 
 export function Checkmark({ size = 100, strokeWidth = 2, color = "currentColor", className = "" }: CheckmarkProps) {
+
+
     return (
         <motion.svg
             width={size}
@@ -61,6 +64,8 @@ function RegistrationForm() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [success, setShowSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [googleId, setGoogleId] = useState("");
     const navigate = useNavigate();
 
 
@@ -70,24 +75,28 @@ function RegistrationForm() {
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
-        if (!email.includes('@')) {
-            setStaticError('Invalid email. Try again')
-            setTimeout(() => {
-                setIsErrorVisible(true);
-            }, 0);
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+       
+
+        // Validate password length
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters long");
             setLoading(false);
-        } else if (email.length < 1 || password.length < 1 || username.length < 1) {
-            setStaticError('Please enter your creadentials')
-            setTimeout(() => {
-                setIsErrorVisible(true);
-            }, 0);
-        } else {
-            setTimeout(() => {
-                setShowSuccess(true);
-            }, 300);
-            e.preventDefault();
-            setLoading(true);
-            removeStaticError();
+            return;
+        }
+        try {
+            await registration(email, password, username, googleId);
+            navigate('/login')
+            // Clear form
+            setEmail("");
+            setPassword("");
+        } catch (error: any) {
+            setError(error.message || 'An error occurred during signup');
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -170,17 +179,7 @@ function RegistrationForm() {
                                         <ChevronRight className="w-4 h-4" />
                                     </div>
                                 </Link>
-                                <Link to="/" className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300">
-                                    <div className="p-1 bg-zinc-950/40 border border-zinc-800  rounded-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-                                            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.1.1 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.1 16.1 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02M8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12m6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12" />
-                                        </svg>
-                                    </div>
-                                    <div className="text-sm text-zinc-200 font-medium">Continue With Discord</div>
-                                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                        <ChevronRight className="w-4 h-4" />
-                                    </div>
-                                </Link>
+                                
                                 <Link to="/" className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300">
                                     <div className="p-1 bg-zinc-950/40 border border-zinc-800  rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256">
@@ -263,6 +262,14 @@ function RegistrationForm() {
                                             </Button>
                                         </div>
                                     </div>
+                                    {error && (
+                                        <div className="text-red-400 p-2 h-8 text-xs border border-red-500/40 bg-red-500/20 rounded-lg transition-all duration-300 flex items-center gap-1">
+                                            <CircleAlert className="w-4 h-4 text-red-400" />
+                                            <div className="">
+                                                {error}
+                                            </div>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between my-2 ">
                                         <div className="flex items-center space-x-1 ">
                                             <Checkbox id="terms" />
