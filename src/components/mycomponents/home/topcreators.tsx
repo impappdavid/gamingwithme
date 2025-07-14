@@ -1,10 +1,11 @@
 import { MessagesSquare, Music } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { Link } from "react-router-dom"
 
 
 
 function TopCreators() {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     const suggestions = [
         {
             name: "Allan",
@@ -63,7 +64,7 @@ function TopCreators() {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-3 2xl:gap-4">
                     {suggestions.map((element, index) => (
-                        <div key={index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
+                        <Link to={`/profile/${element.name}`} key={index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
                             <div className="flex justify-center relative w-full overflow-hidden rounded-2xl">
                                 <img src={element.profilePic} alt={element.name} className="w-full rounded-2xl object-cover  ease-in-out group-hover:scale-105 transition-all duration-300" />
                                 <div className="absolute top-1 right-1 p-1 px-1.5 bg-[#19FF00] backdrop-blur-2xl rounded-full text-xs text-black font-semibold drop-shadow-2xl flex items-center">{element.cost}</div>
@@ -77,7 +78,7 @@ function TopCreators() {
                                             {element.games.length > 2 ? (
                                                 <>
                                                     {element.games.slice(0, 1).map((game, idx) => (
-                                                        <>
+                                                        <div key={idx} className="">
                                                             {game === "valorant" ? (
                                                                 <div key={idx} className="bg-[#ff4654] p-1 rounded-md ">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
@@ -125,7 +126,7 @@ function TopCreators() {
                                                             ) : (
                                                                 <div className="p-1"><div className="h-4"></div></div>
                                                             )}
-                                                        </>
+                                                        </div>
                                                     ))}
                                                     <div className="bg-white p-1 rounded-md flex items-center justify-center" style={{ minWidth: 24, minHeight: 24 }}>
                                                         <span className="text-xs font-semibold text-black">{element.games.length - 1}+</span>
@@ -134,7 +135,7 @@ function TopCreators() {
                                             ) : (
                                                 <>
                                                     {element.games.map((game, idx) => (
-                                                        <>
+                                                       <div key={idx} className="">
                                                             {game === "valorant" ? (
                                                                 <div key={idx} className="bg-[#ff4654] p-1 rounded-md ">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
@@ -182,7 +183,7 @@ function TopCreators() {
                                                             ) : (
                                                                 <div className="p-1"><div className="h-4"></div></div>
                                                             )}
-                                                        </>
+                                                        </div>
                                                     ))}
                                                 </>
                                             )}
@@ -191,7 +192,7 @@ function TopCreators() {
                                 </div>
                             </div>
 
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

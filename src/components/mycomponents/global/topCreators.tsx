@@ -39,7 +39,7 @@ function TopCreators({ users }: { users: User[] }) {
                     </div>
                 ) : (
                     // User grid
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-4 gap-3 2xl:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 2xl:gap-4">
                         {currentUsers.map((element, index) => (
                             <div key={startIndex + index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
                                 <div className="flex justify-center relative w-full overflow-hidden rounded-2xl">
