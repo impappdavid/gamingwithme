@@ -2,44 +2,203 @@ import { Input } from "@/components/ui/input"
 import Navbar from "../global/navbar"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
+
+import SignalRService from "../../../api/signalr"
+import { useNavigate, useParams } from "react-router-dom"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
+import { Menu } from "lucide-react"
+
 
 function Content() {
     const { t } = useTranslation()
+    const navigate = useNavigate()
     const [message, setMessage] = useState("")
-    const [messages, setMessages] = useState([
-        { id: 1, text: "Hey! How's it going?", sender: "Adam", time: "2:30 PM", isOwn: false },
-        { id: 2, text: "Pretty good! Just playing some games. What about you?", sender: "You", time: "2:32 PM", isOwn: true },
-        { id: 3, text: "Same here! Want to play together later?", sender: "Adam", time: "2:35 PM", isOwn: false },
-    ])
-    const [selectedUser, setSelectedUser] = useState("Adam")
-
-    const handleSendMessage = () => {
-        if (message.trim()) {
-            const newMessage = {
-                id: messages.length + 1,
-                text: message,
-                sender: "You",
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                isOwn: true
-            }
-            setMessages([...messages, newMessage])
-            setMessage("")
-        }
+    interface ChatMessage {
+        id: string;
+        content: string;
+        sender: string;
+        senderId: boolean;
+        time: string;
     }
+    let params = useParams();
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            handleSendMessage()
+
+
+    let receiver = params.userId;
+
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const latestMessages = useRef<ChatMessage[] | null>(null);
+    latestMessages.current = messages;
+    const [selectedUser, setSelectedUser] = useState("Adam");
+
+    // Get current user ID from localStorage or use a default for testing
+    const [currentUserId, setCurrentUserId] = useState<string>('DF568793-F7F0-4D87-8F9E-E19047AE892C'); // Default for testing
+
+    // Use the receiverId from props, or default to the hardcoded one for testing
+    const targetUserId = receiver;
+
+    const [showUserListDialog, setShowUserListDialog] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        console.log("This is the page slug", params.userId)
+        // Get current user ID from localStorage or auth context
+        const storedUserId = localStorage.getItem('currentUserId');
+        if (storedUserId) {
+            setCurrentUserId(storedUserId);
+            console.log("Stored userId", storedUserId)
+        }
+
+
+    }, [currentUserId, targetUserId]);
+
+    useEffect(() => {
+        // Fetch chat history
+        const fetchHistory = async () => {
+            try {
+
+                // Try the conversation endpoint first
+                let response = await fetch(`https://localhost:7091/api/Message/conversation/${receiver}`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    console.log('Conversation endpoint failed, trying alternative...');
+                    // Try alternative endpoint that might return messages between two users
+                    response = await fetch(`https://localhost:7091/api/Message/conversation/${currentUserId}/${receiver}`, {
+                        credentials: 'include'
+                    });
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+
+                // Check if data is an array
+                if (!Array.isArray(data)) {
+                    console.error('API returned non-array data:', typeof data, data);
+                    return;
+                }
+
+
+
+                // Map the backend data to frontend format
+                const mappedMessages = data.map((msg: any) => {
+                    const isOwn = msg.senderId === currentUserId;
+                    return {
+                        id: msg.id,
+                        content: msg.content,
+                        sender: msg.senderName,
+                        senderId: isOwn, // boolean
+                        time: new Date(msg.sentAt).toLocaleTimeString(),
+                    };
+                });
+
+                setMessages(mappedMessages);
+            } catch (error) {
+                console.error('Error fetching conversation history:', error);
+            }
+        };
+        fetchHistory();
+
+        // Start SignalR connection
+        SignalRService.startConnection().then(() => {
+            SignalRService.onReceiveMessage((message) => {
+
+                // Handle both string messages (current backend) and full objects (expected)
+                let mappedMessage;
+
+                if (typeof message === 'string') {
+                    // Backend is sending just the message content as string
+                    // We can't determine sender/receiver from just a string, so show it to both users
+                    mappedMessage = {
+                        id: Date.now().toString(), // temporary ID
+                        content: message,
+                        sender: 'Unknown', // will be updated when backend sends proper object
+                        senderId: false, // not own message
+                        time: new Date().toLocaleTimeString(),
+                    };
+
+                    // Add the message to the chat immediately for both users
+                    const prevMessages = latestMessages.current ?? [];
+                    const updatedMessages = [...prevMessages, mappedMessage];
+                    setMessages(updatedMessages);
+                } else {
+                    // Backend is sending full message object (expected behavior)
+                    mappedMessage = {
+                        id: message.id,
+                        content: message.content,
+                        sender: message.senderName,
+                        senderId: message.senderId === currentUserId, // boolean
+                        time: new Date(message.sentAt).toLocaleTimeString(),
+                    };
+
+                    const isRelevant =
+                        (message.senderId && message.receiverId === targetUserId) ||
+                        (message.senderId && message.receiverId === currentUserId);
+
+
+
+                    if (isRelevant) {
+                        const prevMessages = latestMessages.current ?? [];
+                        const updatedMessages = [...prevMessages, mappedMessage];
+                        setMessages(updatedMessages);
+                    }
+                }
+            });
+        }).catch(error => {
+            console.error('SignalR connection failed:', error);
+        });
+
+        // Cleanup on component unmount
+        return () => {
+            SignalRService.stopConnection();
+        }
+    }, [currentUserId, targetUserId]); // Re-run effect if the recipient changes
+
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
+
+    const handleSendMessage = (e: any) => {
+        e.preventDefault();
+        if (message.trim() !== "") {
+            console.log('Sending message:', {
+                content: message,
+                receiverId: receiver
+            });
+
+            // Add the message immediately to the sender's chat
+            const sentMessage = {
+                id: Date.now().toString(),
+                content: message,
+                sender: 'You', // or get actual user name
+                senderId: true, // always own message
+                time: new Date().toLocaleTimeString(),
+            };
+
+            const prevMessages = latestMessages.current ?? [];
+            const updatedMessages = [...prevMessages, sentMessage];
+            setMessages(updatedMessages);
+
+            if (typeof targetUserId === "string" && typeof message === "string") {
+                SignalRService.sendMessage(targetUserId, message);
+            }
+            setMessage("");
         }
     }
 
     const users = [
-        { id: 1, name: "Adam", avatar: "/profile/25.jpg", lastMessage: "Same here! Want to play together later?", time: "2:35 PM", unread: 0, online: true },
-        { id: 2, name: "Sarah", avatar: "/profile/15.jpg", lastMessage: "Are you free tonight?", time: "1:20 PM", unread: 2, online: true },
-        { id: 3, name: "Mike", avatar: "/profile/8.jpg", lastMessage: "Thanks for the game!", time: "12:45 PM", unread: 0, online: false },
-        { id: 4, name: "Emma", avatar: "/profile/32.jpg", lastMessage: "Let's play Valorant", time: "11:30 AM", unread: 1, online: true },
-        { id: 5, name: "John", avatar: "/profile/45.jpg", lastMessage: "Great match!", time: "Yesterday", unread: 0, online: false },
+        { id: 'DF568793-F7F0-4D87-8F9E-E19047AE892C', name: "Adam", avatar: "/profile/25.jpg", lastMessage: "Same here! Want to play together later?", time: "2:35 PM", unread: 0, online: true },
+        { id: '3406F2AE-3436-4E42-8D93-7F0994526507', name: "Davee", avatar: "/profile/15.jpg", lastMessage: "Are you free tonight?", time: "1:20 PM", unread: 2, online: true },
+        { id: 'user3-id', name: "Mike", avatar: "/profile/8.jpg", lastMessage: "Thanks for the game!", time: "12:45 PM", unread: 0, online: false },
+        { id: 'user4-id', name: "Emma", avatar: "/profile/32.jpg", lastMessage: "Let's play Valorant", time: "11:30 AM", unread: 1, online: true },
+        { id: 'user5-id', name: "John", avatar: "/profile/45.jpg", lastMessage: "Great match!", time: "Yesterday", unread: 0, online: false },
     ]
 
     return (
@@ -51,9 +210,17 @@ function Content() {
                     </div>
                     <div className="w-full h-full flex ">
                         {/* Main Chat Area */}
-                        <div className="flex-1 flex flex-col min-h-0">
+                        <div className="flex-1 flex flex-col min-h-0 ">
                             {/* Chat Header */}
-                            <div className="p-2 flex gap-3 border-b border-zinc-800 bg-zinc-900/50 flex-shrink-0">
+                            <div className="p-2 flex gap-3 mt-16 border-b border-zinc-800 bg-zinc-900/50 flex-shrink-0 items-center">
+                                {/* Show user list button on small screens */}
+                                <button
+                                    className="block lg:hidden p-2 rounded-md bg-zinc-800 hover:bg-zinc-700 text-white mr-2"
+                                    onClick={() => setShowUserListDialog(true)}
+                                    aria-label="Show user list"
+                                >
+                                    <Menu size={24} />
+                                </button>
                                 <img src="/profile/25.jpg" alt="profile" className="w-12 h-12 rounded-xl border-2 border-zinc-700" />
                                 <div className="flex flex-col justify-center">
                                     <div className="text-xl font-semibold text-white">{selectedUser}</div>
@@ -76,36 +243,36 @@ function Content() {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {/* Chat Messages Area */}
                             <div className="flex-1 p-2 overflow-y-auto bg-zinc-950 min-h-0 max-h-[746px]">
                                 <div className="space-y-4">
                                     {messages.map((msg) => (
-                                        <div key={msg.id} className={`flex gap-3 ${msg.isOwn ? 'justify-end' : ''}`}>
-                                            {!msg.isOwn && (
+                                        <div key={msg.id} className={`flex gap-3 ${msg.senderId ? 'justify-end' : ''}`}>
+                                            {!(msg.senderId) && (
                                                 <img src="/profile/25.jpg" alt={msg.sender} className="w-10 h-10 rounded-full flex-shrink-0" />
                                             )}
-                                            <div className={`rounded-lg p-3 max-w-xs ${msg.isOwn ? 'bg-blue-600' : 'bg-zinc-800'}`}>
-                                                <p className="text-white text-sm">{msg.text}</p>
-                                                <p className={`text-xs mt-1 ${msg.isOwn ? 'text-blue-200' : 'text-zinc-400'}`}>{msg.time}</p>
+                                            <div className={`rounded-xl p-2 px-3 max-w-xs ${msg.senderId ? 'bg-blue-600' : 'bg-zinc-800'}`}>
+                                                <p className="text-white text-sm">{msg.content}</p>
+                                                <p className={`text-xs mt-1 ${msg.senderId ? 'text-blue-200' : 'text-zinc-400'}`}>{msg.time}</p>
                                             </div>
-                                            
+
                                         </div>
                                     ))}
+                                    <div ref={messagesEndRef} />
                                 </div>
                             </div>
-                            
+
                             {/* Message Input Area */}
                             <div className="p-4 border-t border-zinc-800 bg-zinc-900/50 flex-shrink-0">
                                 <div className="flex gap-3">
-                                    <Input 
-                                        placeholder="Type a message..." 
+                                    <Input
+                                        placeholder="Type a message..."
                                         className="flex-1 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400"
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        onKeyPress={handleKeyPress}
                                     />
-                                    <Button 
+                                    <Button
                                         className="bg-blue-600 hover:bg-blue-700"
                                         onClick={handleSendMessage}
                                     >
@@ -114,32 +281,33 @@ function Content() {
                                 </div>
                             </div>
                         </div>
-                        
+
                         {/* User List Sidebar */}
-                        <div className="w-80 border-l border-zinc-800 bg-zinc-900/30 hidden lg:block overflow-y-auto">
+                        <div className="w-80 border-l mt-16 border-zinc-800 bg-zinc-900/30 hidden lg:block overflow-y-auto">
                             <div className="p-4">
                                 <h3 className="text-lg font-semibold text-white mb-4">Conversations</h3>
                                 <div className="space-y-2">
                                     {users.map((user) => (
-                                        <div 
+                                        <div
                                             key={user.id}
-                                            className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                                                selectedUser === user.name 
-                                                    ? 'bg-zinc-700 border-l-4 border-blue-500' 
-                                                    : 'bg-zinc-800 hover:bg-zinc-700'
-                                            }`}
-                                            onClick={() => setSelectedUser(user.name)}
+                                            className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedUser === user.name
+                                                ? 'bg-zinc-700 border-l-4 border-blue-500'
+                                                : 'bg-zinc-800 hover:bg-zinc-700'
+                                                }`}
+                                            onClick={() => {
+                                                setSelectedUser(user.name);
+                                                navigate(`/chat/${user.id}`);
+                                            }}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div className="relative">
-                                                    <img 
-                                                        src={user.avatar} 
-                                                        alt={user.name} 
+                                                    <img
+                                                        src={user.avatar}
+                                                        alt={user.name}
                                                         className="w-10 h-10 rounded-full"
                                                     />
-                                                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-zinc-900 ${
-                                                        user.online ? 'bg-green-500' : 'bg-gray-500'
-                                                    }`}></div>
+                                                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-zinc-900 ${user.online ? 'bg-green-500' : 'bg-gray-500'
+                                                        }`}></div>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center justify-between">
@@ -159,6 +327,59 @@ function Content() {
                                 </div>
                             </div>
                         </div>
+                        {/* User List Dialog for small screens */}
+                        <Dialog open={showUserListDialog} onOpenChange={setShowUserListDialog}>
+                            <DialogContent className="block lg:hidden max-w-xs w-full p-0">
+                                <DialogHeader className="p-4 border-b border-zinc-800">
+                                    <DialogTitle>Conversations</DialogTitle>
+                                    <DialogClose asChild>
+                                        <button className="absolute right-4 top-4 text-zinc-400 hover:text-white">✕</button>
+                                    </DialogClose>
+                                </DialogHeader>
+                                <div className="p-4">
+                                    <div className="space-y-2">
+                                        {users.map((user) => (
+                                            <div
+                                                key={user.id}
+                                                className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedUser === user.name
+                                                    ? 'bg-zinc-700 border-l-4 border-blue-500'
+                                                    : 'bg-zinc-800 hover:bg-zinc-700'
+                                                    }`}
+                                                onClick={() => {
+                                                    setSelectedUser(user.name);
+                                                    navigate(`/chat/${user.id}`);
+                                                    setShowUserListDialog(false);
+                                                }}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="relative">
+                                                        <img
+                                                            src={user.avatar}
+                                                            alt={user.name}
+                                                            className="w-10 h-10 rounded-full"
+                                                        />
+                                                        <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-zinc-900 ${user.online ? 'bg-green-500' : 'bg-gray-500'
+                                                            }`}></div>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center justify-between">
+                                                            <h4 className="text-sm font-medium text-white truncate">{user.name}</h4>
+                                                            <span className="text-xs text-zinc-400">{user.time}</span>
+                                                        </div>
+                                                        <p className="text-xs text-zinc-400 truncate">{user.lastMessage}</p>
+                                                    </div>
+                                                    {user.unread > 0 && (
+                                                        <div className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                                            {user.unread}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
             </div>
@@ -166,3 +387,7 @@ function Content() {
     )
 }
 export default Content
+
+
+
+
