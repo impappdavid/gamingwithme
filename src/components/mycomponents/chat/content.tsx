@@ -6,8 +6,6 @@ import { useState, useEffect, useRef } from "react"
 
 import SignalRService from "../../../api/signalr"
 import { useNavigate, useParams } from "react-router-dom"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
-import { Menu } from "lucide-react"
 
 
 function Content() {
@@ -38,7 +36,6 @@ function Content() {
     // Use the receiverId from props, or default to the hardcoded one for testing
     const targetUserId = receiver;
 
-    const [showUserListDialog, setShowUserListDialog] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -213,14 +210,7 @@ function Content() {
                         <div className="flex-1 flex flex-col min-h-0 ">
                             {/* Chat Header */}
                             <div className="p-2 flex gap-3 mt-16 border-b border-zinc-800 bg-zinc-900/50 flex-shrink-0 items-center">
-                                {/* Show user list button on small screens */}
-                                <button
-                                    className="block lg:hidden p-2 rounded-md bg-zinc-800 hover:bg-zinc-700 text-white mr-2"
-                                    onClick={() => setShowUserListDialog(true)}
-                                    aria-label="Show user list"
-                                >
-                                    <Menu size={24} />
-                                </button>
+                                
                                 <img src="/profile/25.jpg" alt="profile" className="w-12 h-12 rounded-xl border-2 border-zinc-700" />
                                 <div className="flex flex-col justify-center">
                                     <div className="text-xl font-semibold text-white">{selectedUser}</div>

@@ -131,7 +131,7 @@ function LogInForm() {
         } else {
             try {
                 // Call the login API
-                const loginResult = await login(email, password, true);
+                await login(email, password, true);
                 // Store user ID in localStorage (adjust property name as needed)
                 
                 setIsFormVisible(false);
