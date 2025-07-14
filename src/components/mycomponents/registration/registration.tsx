@@ -90,6 +90,7 @@ function RegistrationForm() {
         try {
             await registration(email, password, username, googleId);
             navigate('/login')
+            setShowSuccess(true)
             // Clear form
             setEmail("");
             setPassword("");
@@ -120,7 +121,7 @@ function RegistrationForm() {
         if (success) {
             // Wait for checkmark animation to complete (1.5s) before redirecting
             const redirectTimer = setTimeout(() => {
-                navigate('/signin');
+                navigate('/login');
             }, 2000);
 
             // Cleanup the timer if component unmounts
@@ -165,7 +166,7 @@ function RegistrationForm() {
                     <div className="relative">
                         {!success ? (
                             <div className={`py-3 flex flex-col gap-2 w-full sm:w-84 transition-all duration-500 transform`}>
-                                <Link to="/" className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300">
+                                <Link to="/" onClick={()=> setGoogleId("asd")} className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300">
                                     <div className="p-1 bg-zinc-950/40 border border-zinc-800  rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
                                             <path fill="#ffc107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917" />

@@ -69,7 +69,6 @@ function Carousel() {
     const [selectedDuration, setSelectedDuration] = useState(durationOptions[0]);
     const [price, setPrice] = useState("4.99");
     const [calendarOpen, setCalendarOpen] = useState(false);
-    const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
     const carouselRef = useRef<any>(null);
     const hasScrolledToSelected = useRef(false);
     const [selectedSlots, setSelectedSlots] = useState<{ [slot: string]: string }>(() => ({}));
@@ -184,7 +183,7 @@ function Carousel() {
                 <ShadCarousel className="w-full" opts={{ align: "center" }} setApi={api => (carouselRef.current = api)}>
                     <CarouselPrevious />
                     <CarouselContent className=" ">
-                        {visibleDays.map((d, idx) => {
+                        {visibleDays.map((d) => {
                             const isPast = isDateInPast(d);
                             return (
                                 <CarouselItem key={d.toISOString()} className="basis-1/4 sm:basis-1/7">
@@ -245,7 +244,7 @@ function Carousel() {
 
             {/* List all time slots for the selected duration */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto">
-                {generateTimeSlots(selectedDuration).map((slot, idx) => {
+                {generateTimeSlots(selectedDuration).map((slot) => {
                     const slotKey = `${slot.start}-${slot.end}`;
                     const isSelected = selectedSlots[slotKey] !== undefined;
                     // Disable slot selection if selectedDate is in the past

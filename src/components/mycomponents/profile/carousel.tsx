@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
 import { ArrowRightLeft, ChevronDown } from "lucide-react";
 
@@ -200,13 +200,7 @@ function Carousel() {
         }
     };
 
-    // Handle booking payment
-    const handlePayment = () => {
-        // Here you would integrate with your payment system
-        console.log(`Booking confirmed for ${selectedSlot?.time} at $${selectedSlot?.price}`);
-        setDialogOpen(false);
-        setSelectedSlot(null);
-    };
+    
 
     // Get availability for selected date
     const getDateAvailability = (date: Date) => {
@@ -231,8 +225,7 @@ function Carousel() {
         return date < today;
     };
 
-    // Selected day display
-    const selectedDayLabel = `${getWeekday(selectedDate)}, ${pad(selectedDate.getDate())}`;
+   
 
     return (
         <div className="space-y-6 w-full">
@@ -262,7 +255,7 @@ function Carousel() {
                 <ShadCarousel className="w-full" opts={{ align: "center" }} setApi={api => (carouselRef.current = api)}>
                     <CarouselPrevious />
                     <CarouselContent className=" ">
-                        {visibleDays.map((d, idx) => {
+                        {visibleDays.map((d) => {
                             const availability = getDateAvailability(d);
                             const isPast = isDateInPast(d);
                             

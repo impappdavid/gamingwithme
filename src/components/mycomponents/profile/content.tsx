@@ -1,12 +1,6 @@
-import { CircleDollarSign, MessagesSquare, Music, Wallet } from "lucide-react"
+import { MessagesSquare, Music } from "lucide-react"
 import Navbar from "../global/navbar"
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+
 import { useTranslation } from "react-i18next"
 import Carousel from "./carousel"
 
