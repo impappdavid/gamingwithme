@@ -2,8 +2,9 @@ import { useTranslation } from "react-i18next";
 import Navbar from "../navbar/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Footer from "../global/footer";
+import { GetByTag, type UserInfos } from "@/api/categories";
 
 // User type
 type User = {
@@ -13,34 +14,38 @@ type User = {
   cost: string;
   active: boolean;
 };
+// Helper to map API user to UserCard user
+const mapApiUserToUserCard = (apiUser: UserInfos): User => ({
+  name: apiUser.username,
+  profilePic: apiUser.avatarurl || "/profile/25.jpg",
+  games: apiUser.games,
+  cost: "$0.00/game", // You can update this if your API provides cost info
+  active: apiUser.isActive,
+});
 
 function Content() {
-  // Generate users for Just Chatting category
-  const users: User[] = useMemo(() => {
-    const baseUsers: User[] = [
-      { name: "IAmLiam", profilePic: "/profile/7.jpg", games: ["just-chatting"], cost: "$0.99/game", active: true },
-      { name: "Isla", profilePic: "/profile/35.jpg", games: ["just-chatting"], cost: "$2.99/s", active: false },
-      { name: "Ethan", profilePic: "/profile/17.jpg", games: ["just-chatting"], cost: "$4.99/s", active: true },
-      { name: "Sarah", profilePic: "/profile/42.jpg", games: ["just-chatting"], cost: "$1.99/min", active: true },
-      { name: "Mike", profilePic: "/profile/23.jpg", games: ["just-chatting"], cost: "$3.50/min", active: false },
-      { name: "Emma", profilePic: "/profile/67.jpg", games: ["just-chatting"], cost: "$5.99/min", active: true },
-      { name: "David", profilePic: "/profile/89.jpg", games: ["just-chatting"], cost: "$2.50/min", active: false },
-      { name: "Lisa", profilePic: "/profile/12.jpg", games: ["just-chatting"], cost: "$4.25/min", active: true },
-      { name: "John", profilePic: "/profile/45.jpg", games: ["just-chatting"], cost: "$1.75/min", active: false },
-      { name: "Anna", profilePic: "/profile/78.jpg", games: ["just-chatting"], cost: "$3.99/min", active: true },
-    ];
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    // Add more users for variety
-    for (let i = 1; i <= 50; i++) {
-      baseUsers.push({
-        name: `Chatter${i}`,
-        profilePic: `/profile/${(i % 116) + 1}.jpg`,
-        games: ["just-chatting"],
-        cost: `$${(Math.random() * 8 + 1).toFixed(2)}/min`,
-        active: i % 3 === 0 // some active, some not
-      });
-    }
-    return baseUsers;
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const apiUsers = await GetByTag("just-chatting");
+        if (apiUsers && Array.isArray(apiUsers)) {
+          setUsers(apiUsers.map(mapApiUserToUserCard));
+        } else {
+          setUsers([]);
+        }
+      } catch (err) {
+        setError("Failed to fetch users");
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
   }, []);
 
   // Filter state
@@ -86,7 +91,7 @@ function Content() {
           <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
             <Navbar page={t("JustChatting")} />
           </div>
-          <div >
+          <div className="min-h-[950px]">
             <Filter
               filterText={filterText}
               setFilterText={setFilterText}
@@ -100,10 +105,16 @@ function Content() {
               setShowActive={setShowActive}
             />
             <div className="p-2">
-              <UserCard users={filteredUsers} />
+              {loading ? (
+                <div>Loading users...</div>
+              ) : error ? (
+                <div className="text-red-500">{error}</div>
+              ) : (
+                <UserCard users={filteredUsers} />
+              )}
             </div>
           </div>
-          <div className="mt-34">
+          <div >
             <Footer />
           </div>
         </div>
