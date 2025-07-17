@@ -1,10 +1,68 @@
 import { MessagesSquare, Music } from "lucide-react"
-import Navbar from "../navbar/navbar"
+
 
 import { useTranslation } from "react-i18next"
 import Carousel from "./carousel"
+import Navbar from "../navbar/navbar"
+import type { UserInfos } from "@/api/sidebar";
+import { useEffect, useState } from "react";
+import { GetSpecificProfile } from "@/api/profile";
+import { useParams } from "react-router-dom";
 
+// User type for UserCard
+type User = {
+    id:number
+    username: string
+    avatarurl: string
+    bio: string
+    isActive: boolean
+    languages: string[]
+    games: string[]
+    hasStripeAccount: boolean
+    bookings: {
+        id: string,
+        startTime: Date,
+        duration: string,
+        customerName: string
+    }[]
+    availability: {
+        id:string,
+        date: Date,
+        startTime: string,
+        endTime: string,
+        isAvailable: boolean
+    }[]
+    joined: string
+  };
+  
+
+  
 function Content() {
+    const { slug } = useParams<{ slug: string }>();
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!slug) return;
+        const fetchUser = async () => {
+            setLoading(true);
+            try {
+                const apiUser = await GetSpecificProfile(slug) as User;
+                if (apiUser) {
+                    setUser(apiUser);
+                } else {
+                    setUser(null);
+                }
+            } catch (err) {
+                setError("Failed to fetch user");
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, [slug]);
     const { t } = useTranslation()
     return (
         <>
@@ -19,9 +77,9 @@ function Content() {
                                 <img src="/profile/115.jpg" alt="user" className="w-24 sm:min-w-36 sm:h-36 rounded-2xl" />
                             </div>
                             <div className="flex flex-col gap-2">
-                                <div className="text-2xl">James</div>
+                                <div className="text-2xl">{user?.username}</div>
                                 <div className="text-sm text-zinc-400 max-w-4xl">
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                                    {user?.bio}
                                 </div>
                                 <div className="flex flex-wrap gap-1.5">
                                     <div className="bg-[#ff4654] p-1 rounded-md">

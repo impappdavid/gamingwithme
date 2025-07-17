@@ -96,7 +96,7 @@ function UserCard({ users }: { users: User[] }) {
                     // User grid
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7  gap-3 2xl:gap-6">
                         {currentUsers.map((element, index) => (
-                            <Link to={element.name} key={startIndex + index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
+                            <Link to={`/profile/${element.name}`} key={startIndex + index} className="p-2 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-3xl border border-zinc-800 flex flex-col gap-2 w-full ">
                                 <div className="flex justify-center relative w-full overflow-hidden rounded-2xl">
                                     <img src={element.profilePic} alt={element.name} className="w-full rounded-2xl object-cover  ease-in-out group-hover:scale-105 transition-all duration-300" />
                                     <div className="absolute top-1 right-1 p-1 px-1.5 bg-[#19FF00] backdrop-blur-2xl rounded-full text-black font-semibold text-xs drop-shadow-2xl flex items-center">{element.cost}</div>
