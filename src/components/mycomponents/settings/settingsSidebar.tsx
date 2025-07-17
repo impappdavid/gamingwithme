@@ -8,7 +8,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { getUserCommonInfos } from "@/api/settings"
 
 function SettingsSidebar() {
     // State for current profile picture
@@ -17,6 +18,32 @@ function SettingsSidebar() {
     const [dialogOpen, setDialogOpen] = useState(false)
     // Generate image paths
     const profileImages = Array.from({ length: 116 }, (_, i) => `/profile/${i + 1}.jpg`)
+    const [username, setUsername] = useState("")
+    
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            try {
+                const common = await getUserCommonInfos();
+                if (common && common.username) {
+                    
+                    setUsername(common.username);
+                } else {
+                    setUsername("");
+                }
+            } catch (err) {
+                setError("Failed to fetch user");
+                setUsername("");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, []);
+
     return (
         <div className="w-fit sm:max-w-62 sm:w-full h-full flex flex-col gap-2 border-r">
             <div className="flex flex-col gap-2 p-4">
@@ -53,7 +80,7 @@ function SettingsSidebar() {
                         </DialogHeader>
                     </DialogContent>
                 </Dialog >
-                <div className="px-0.5 text-xl sm:flex hidden">James</div>
+                <div className="px-0.5 text-xl sm:flex hidden">{username}</div>
             </div>
             <div className="w-full h-[1px] bg-zinc-800"></div>
             <div className="p-2 flex flex-col gap-1">
