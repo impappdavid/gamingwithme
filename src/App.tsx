@@ -16,6 +16,7 @@ import Danger from "./pages/Danger";
 import CreateListing from "./pages/CreateListing";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -35,12 +36,15 @@ function App() {
             <Route path="/tiktok" element={<Tiktok />} />{/* ---------------- */}
             <Route path="/youtube" element={<Youtube />} />{/* ---------------- */}
             <Route path="/games" element={<Games />} /> {/* ---------------- */}
-            <Route path="/create-listing" element={<CreateListing />} />
+            {/* Protected routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/create-listing" element={<CreateListing />} />
+              <Route path="/settings/general" element={<Settings />} />
+              <Route path="/settings/history" element={<History />} />
+              <Route path="/settings/active-history" element={<Activehistory />} />
+              <Route path="/settings/danger" element={<Danger />} />
+            </Route>
             <Route path="/games/:slug" element={<Game />} />{/* ---------------- */}
-            <Route path="/settings/general" element={<Settings />} />
-            <Route path="/settings/history" element={<History />} />
-            <Route path="/settings/active-history" element={<Activehistory />} />
-            <Route path="/settings/danger" element={<Danger />} />
             <Route path="/profile/:slug" element={<Profile />} />{/* ---------------- */}
             {/*
               become
