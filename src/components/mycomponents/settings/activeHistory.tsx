@@ -1,49 +1,66 @@
 import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { getUpcomingBookings } from "@/api/settings";
 
-const transactions = [
-    {
-        id: 1,
-        profile: "/profile/94.jpg",
-        name: "Anna",
-        amount: "$100.00",
-        in: 3000,
-        ago: "in 50 minutes",
-    },
-    {
-        id: 2,
-        profile: "/profile/9.jpg",
-        name: "James",
-        amount: "$25.00",
-        in: 7200,
-        ago: "in 2 hours",
-    },
-    {
-        id: 3,
-        profile: "/profile/10.jpg",
-        name: "Alex",
-        amount: "$12.00",
-        in: 46800,
-        ago: "in 13 hours",
-    },
-    {
-        id: 4,
-        profile: "/profile/11.jpg",
-        name: "James",
-        amount: "$25.00",
-        in: 172800,
-        ago: "in 2 days",
+type Book = {
+    bookingId: string,
+    startTime: Date,
+    duration: string,
+    otherPartyUsername: string,
+    otherPartyAvatarUrl: string
+  };
+
+// Helper to get time until booking in human readable form
+function getTimeUntil(startTime: Date | string): { label: string, canRefund: boolean } {
+    const now = new Date();
+    const start = new Date(startTime);
+    const diffMs = start.getTime() - now.getTime();
+    const diffMinutes = Math.floor(diffMs / 60000);
+    if (diffMinutes >= 60) {
+        const hours = Math.floor(diffMinutes / 60);
+        return { label: `${hours} hour${hours > 1 ? 's' : ''}`, canRefund: true };
+    } else if (diffMinutes > 0) {
+        return { label: `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''}`, canRefund: false };
+    } else {
+        return { label: 'Started', canRefund: false };
     }
-];
+}
 
 function ActiveHistory() {
     const { t } = useTranslation()
     const [search, setSearch] = useState("")
-    const filtered = transactions.filter(t => t.name.toLowerCase().includes(search.toLowerCase()))
+    const [books, setBooks] = useState<Book[]>([]);
+
+    const filtered = books.filter(t => t.otherPartyUsername.toLowerCase().includes(search.toLowerCase()))
+    
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    
+    useEffect(() => {
+        const fetchUsers = async () => {
+          setLoading(true);
+          try {
+            const apiUsers = await getUpcomingBookings();
+            if (apiUsers && Array.isArray(apiUsers)) {
+                setBooks(apiUsers);
+            } else {
+                setBooks([]);
+            }
+          } catch (err) {
+            setError("Failed to fetch users");
+            setBooks([]);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchUsers();
+      }, []);
+
+
     return (
         <>
             <div className="w-full h-screen sm:p-2">
@@ -74,31 +91,37 @@ function ActiveHistory() {
 
                             </div>
                             <div className="flex flex-col gap-1.5">
-                                {filtered.length === 0 && <div className="text-zinc-400">No transactions found.</div>}
-                                {filtered.map((item) => (
-                                    <div key={item.id} className="flex items-center justify-between bg-zinc-800/20 rounded-xl p-1.5 px-2 border border-zinc-800 shadow-sm">
-                                        <div className="flex items-center gap-4">
-                                            <img src={item.profile} alt="profile" className="w-12 h-12 rounded-lg border" />
-                                            <div className="flex flex-col">
-                                                <span className="font-semibold text-white">{item.name}</span>
-                                                <div className="flex gap-1 items-center">
-                                                    <span className="font-semibold text-zinc-400 text-xs">{item.amount}</span>
-                                                    <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
-                                                    <span className="text-zinc-400 text-xs">{item.ago}</span>
+                                {filtered.length === 0 && 
+                                    <div className="w-full flex justify-center mt-14">
+                                        <div className="text-sm text-zinc-400">You dont have active transaction.</div>
+                                    </div>
+                                }
+                                {filtered.map((item) => {
+                                    const { label, canRefund } = getTimeUntil(item.startTime);
+                                    return (
+                                        <div key={item.bookingId} className="flex items-center justify-between bg-zinc-800/20 rounded-xl p-1.5 px-2 border border-zinc-800 shadow-sm">
+                                            <div className="flex items-center gap-4">
+                                                <img src={item.otherPartyAvatarUrl} alt="profile" className="w-12 h-12 rounded-lg border" />
+                                                <div className="flex flex-col">
+                                                    <span className="font-semibold text-white">{item.otherPartyUsername}</span>
+                                                    <div className="flex gap-1 items-center">
+                                                        <span className="font-semibold text-zinc-400 text-xs">$19</span>
+                                                        <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                                                        <span className="text-zinc-400 text-xs">{item.duration}</span>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div className="flex flex-col items-end gap-1 min-w-[120px]">
+                                                <span className="text-xs text-zinc-400 mb-1">{label} left</span>
+                                                {canRefund ? (
+                                                    <span className={`text-xs font-bold p-3 px-6 cursor-pointer rounded-xl transition-all duration-300 bg-zinc-800 hover:bg-zinc-700/80`}>Refund</span>
+                                                ) : (
+                                                    <span className={`text-xs font-bold p-3 px-6 rounded-xl transition-all duration-300 bg-zinc-800/40 `}>Final</span>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="flex flex-col items-end gap-1 min-w-[120px]">
-                                            {item.in > 3600 ? (
-                                                <span className={`text-xs font-bold p-3 px-6 cursor-pointer rounded-xl transition-all duration-300 bg-zinc-800 hover:bg-zinc-700/80`}>Refund</span>
-
-                                            ) : (
-                                                <span className={`text-xs font-bold p-3 px-6 rounded-xl transition-all duration-300 bg-zinc-800/40 `}>Final</span>
-                                            )}
-
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
