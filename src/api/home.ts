@@ -1,0 +1,53 @@
+import axios from 'axios';
+
+export type TopCreators = {
+    id:number
+    username: string
+    avatarurl: string
+    bio: string
+    isActive: boolean
+    languages: string[]
+    games: string[]
+    hasStripeAccount: boolean
+    bookings: {
+        id: string,
+        startTime: Date,
+        duration: string,
+        customerName: string
+    }[]
+    availability: {
+        id:string,
+        date: Date,
+        startTime: string,
+        endTime: string,
+        isAvailable: boolean
+    }[]
+    joined: string
+}
+export const GetTopCreators = async () => {
+    try {
+        // TODO: Replace with your actual API URL or use an environment variable
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(
+            `${API_URL}/api/user/top-by-bookings`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        throw error;
+    }
+}
+
+export const GetSuggestedUsersWithConnectedPayment = async () => {
+    try {
+        // TODO: Replace with your actual API URL or use an environment variable
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(
+            `${API_URL}/api/user/random-with-stripe`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        throw error;
+    }
+}

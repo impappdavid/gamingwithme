@@ -16,8 +16,6 @@ import Danger from "./pages/Danger";
 import CreateListing from "./pages/CreateListing";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
-import Chat from "./pages/Chat";
-import ChatChoose from "./pages/ChatChoose";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -28,37 +26,36 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route>
-            <Route index element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/registration" element={<Registration />} />
-            <Route path="/players" element={<Players />} />
-            <Route path="/just-chatting" element={<JustChatting />} />
-            <Route path="/music" element={<Music />} />
-            <Route path="/tiktok" element={<Tiktok />} />
-            <Route path="/youtube" element={<Youtube />} />
-            <Route path="/games" element={<Games />} />
-            <Route path="/chat" element={<ChatChoose />} />
-            <Route path="/chat/:userId" element={<Chat />} />
+            <Route index element={<Home />} /> {/* ---------------- */}
+            <Route path="/login" element={<Login />} />{/* ---------------- */}
+            <Route path="/registration" element={<Registration />} />{/* ---------------- */}
+            <Route path="/players" element={<Players />} />{/* ---------------- */}
+            <Route path="/just-chatting" element={<JustChatting />} />{/* ---------------- */}
+            <Route path="/music" element={<Music />} />{/* ---------------- */}
+            <Route path="/tiktok" element={<Tiktok />} />{/* ---------------- */}
+            <Route path="/youtube" element={<Youtube />} />{/* ---------------- */}
+            <Route path="/games" element={<Games />} /> {/* ---------------- */}
             <Route path="/create-listing" element={<CreateListing />} />
-            <Route path="/games/:slug" element={<Game />} />
+            <Route path="/games/:slug" element={<Game />} />{/* ---------------- */}
             <Route path="/settings/general" element={<Settings />} />
             <Route path="/settings/history" element={<History />} />
             <Route path="/settings/active-history" element={<Activehistory />} />
             <Route path="/settings/danger" element={<Danger />} />
-            <Route path="/profile/:slug" element={<Profile />} />
+            <Route path="/profile/:slug" element={<Profile />} />{/* ---------------- */}
             {/*
               become
-              support
+              support --------------------------
               coupon
-              aboutus
-              faq
-              download
+              aboutus -------------------------
+              faq -------------------------
+              download -------------------------
               admin
               admin/game
               admin/game/create
               admin/game/edit/:slug
               admin/notification
-              terms-and-conditions
+              admin/notification/create
+              terms-and-conditions ---------------------------
             */}
           </Route>
 

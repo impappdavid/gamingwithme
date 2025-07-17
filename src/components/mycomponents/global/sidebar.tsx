@@ -1,6 +1,6 @@
 import { BadgeCheck, Gamepad2, House, Info, MessagesSquare, Music, Plus, Search, Swords, Youtube } from "lucide-react"
 import { NavLink } from "react-router-dom"
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import SearchUserCard from "./searchUsercard"
 import TopCreators from "./topCreators"
 import {
@@ -15,7 +15,10 @@ import {
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 import { Input } from "@/components/ui/input"
-// User type
+import { GetUserInfos, IsLoggedIn, GetAllUser } from "@/api/sidebar"
+import type { UserInfos } from "@/api/sidebar"
+
+// User type for UI components
 type User = {
     name: string;
     profilePic: string;
@@ -24,58 +27,87 @@ type User = {
     active: boolean;
 };
 
-
+// Map UserInfos to User for UI components
+function mapUserInfosToUser(user: UserInfos): User {
+    return {
+        name: user.username,
+        profilePic: user.avatarurl,
+        games: user.games,
+        cost: "$0.00", // Adjust if you have pricing info
+        active: user.isActive,
+    };
+}
 
 function Sidebar() {
     const { t } = useTranslation();
     const [isCreator, setIsCreator] = useState(false);
+    const [currentUser, setCurrentUser] = useState<UserInfos | null>(null);
+    const [allUsers, setAllUsers] = useState<UserInfos[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
-    const users: User[] = useMemo(() => {
-        const baseUsers: User[] = [
-            { name: "IAmLiam", profilePic: "/profile/7.jpg", games: ["valorant", "csgo", "just-chatting", "minecraft"], cost: "$0.99/game", active: true },
-            { name: "Noah", profilePic: "/profile/104.jpg", games: ["youtube"], cost: "$1.99/1h", active: false },
-            { name: "Ava", profilePic: "/profile/58.jpg", games: ["fortnite"], cost: "$4.99/30m", active: true },
-            { name: "Isla", profilePic: "/profile/35.jpg", games: ["just-chatting"], cost: "$2.99/s", active: false },
-            { name: "Ethan", profilePic: "/profile/17.jpg", games: ["just-chatting"], cost: "$4.99/s", active: true },
-            { name: "Maya", profilePic: "/profile/48.jpg", games: ["valorant", "minecraft"], cost: "$14.99/1h", active: false },
-            { name: "Alex", profilePic: "/profile/15.jpg", games: ["tiktok"], cost: "$9.99/video", active: true },
-            { name: "Peter", profilePic: "/profile/77.jpg", games: ["minecraft"], cost: "$5.99/30m", active: false },
-            { name: "Ben", profilePic: "/profile/82.jpg", games: ["musician"], cost: "$14.99/s", active: true },
-            { name: "Ash", profilePic: "/profile/52.jpg", games: ["musician"], cost: "$14.99/s", active: false },
-        ];
-        // Add more users up to 116.jpg
-        for (let i = 1; i <= 116; i++) {
-            baseUsers.push({
-                name: `User${i}`,
-                profilePic: `/profile/${i}.jpg`,
-                games: ["valorant", "minecraft"],
-                cost: `$${(Math.random() * 20 + 1).toFixed(2)}/game`,
-                active: i % 2 === 0 // alternate active status
-            });
-        }
-        return baseUsers;
+    const [filterText, setFilterText] = useState("");
+    const navigate = (window as any).navigate || ((url: string) => { window.location.href = url });
+
+    useEffect(() => {
+        // Fetch current user info
+        const fetchUser = async () => {
+            try {
+                // You may want to get username from localStorage or context
+                const username = localStorage.getItem("username") || "";
+                if (username) {
+                    const user = await GetUserInfos(username);
+                    setCurrentUser(user);
+                    setIsCreator(user.hasStripeAccount);
+                }
+            } catch (err: any) {
+                setError(err?.message || "Unknown error");
+            }
+        };
+        fetchUser();
     }, []);
 
-    // Filter state
-    const [filterText, setFilterText] = useState("");
-
+    useEffect(() => {
+        // Fetch all users for search dialog
+        const fetchAllUsers = async () => {
+            try {
+                const users = await GetAllUser();
+                // If API returns a single object, wrap in array
+                setAllUsers(Array.isArray(users) ? users : [users]);
+            } catch (err: any) {
+                setError(err?.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAllUsers();
+    }, []);
 
     // Filtering logic
-    const filteredUsers = useMemo(() => {
-        let filtered = users.filter(user => {
-            // Text filter (name or game)
-            const textMatch =
-                filterText === "" ||
-                user.name.toLowerCase().includes(filterText.toLowerCase()) ||
-                user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()));
-            ;
-            // Active filter
-            const activeOk = user.active;
-            return textMatch && activeOk;
-        });
+    const filteredUsers: UserInfos[] = useMemo(() => {
+        if (filterText.length === 0) {
+            // Show only first 16 users from allUsers
+            return allUsers.slice(0, 16);
+        }
+        return allUsers.filter(user =>
+            user.username.toLowerCase().includes(filterText.toLowerCase()) ||
+            user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()))
+        );
+    }, [allUsers, filterText]);
 
-        return filtered;
-    }, [users, filterText]);
+    // Handle Become button click
+    const handleBecomeClick = async () => {
+        try {
+            const res = await IsLoggedIn();
+            if (!res || (Array.isArray(res) && res.length === 0)) {
+                navigate("/login");
+            } else {
+                setIsCreator(true);
+            }
+        } catch (err) {
+            navigate("/login");
+        }
+    };
     return (
         <>
             <div className="  xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">
@@ -103,11 +135,11 @@ function Sidebar() {
                                         <div className="h-[1px] bg-zinc-800"></div>
                                         <DialogDescription className="h-full">
                                             {filterText.length > 0 ? (
-                                                <SearchUserCard users={filteredUsers} />
+                                                <SearchUserCard users={filteredUsers.map(mapUserInfosToUser)} />
                                             ) : (
                                                 <div className="flex flex-col gap-2">
                                                     <div className="text-start">{t("TopCreators")}</div>
-                                                    <TopCreators users={users} />
+                                                    <TopCreators users={filteredUsers.map(mapUserInfosToUser)} />
                                                 </div>
                                             )}
                                         </DialogDescription>
@@ -192,7 +224,7 @@ function Sidebar() {
                                 <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
                             </NavLink>
                         ) : (
-                            <NavLink to="" onClick={() => setIsCreator(!isCreator)} className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Become")}</div></NavLink>
+                            <NavLink to="" onClick={handleBecomeClick} className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Become")}</div></NavLink>
 
                         )}
 

@@ -1,4 +1,4 @@
-import { BadgeCheck, Bell, CircleQuestionMark, Download, Headset, House, Info, Languages, LogOut, Menu, MessageSquare, MessagesSquare, Music, Play, Plus, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
+import { BadgeCheck, Bell, CircleQuestionMark, Download, Headset, House, Info, Languages, LogOut, Menu, MessagesSquare, Music, Play, Plus, Settings, Swords, User, Users, X, Youtube } from "lucide-react"
 import {
     Dialog,
     DialogClose,
@@ -26,31 +26,54 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-import { useNavigate, NavLink, Link } from "react-router-dom"
+import { useNavigate, NavLink } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 
 import { useTranslation } from "react-i18next"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { getUserCommonInfos, Logout, type UserCommonInfos } from "@/api/navbar"
+
 
 // User type
-type User = {
-    name: string;
-    profilePic: string;
-    games: string[];
-    cost: string;
-    active: boolean;
-};
+type User = UserCommonInfos | null;
 
 type NavbarProps = {
     page: string;
 };
 
+
 function Navbar({ page }: NavbarProps) {
-    let loggedin = localStorage.getItem('signedin')
     const navigate = useNavigate();
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200"
 
     const [isCreator, setIsCreator] = useState(false);
+    const [userInfo, setUserInfo] = useState<User>(null)
+    const [loading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<string | null>(null)    
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const data = await getUserCommonInfos(); // data now has a value
+                if (data) {
+                    setUserInfo(data);
+                } else {
+                    console.log("The user is not logged in")
+                }
+            } catch (err) {
+                throw err
+            }
+        };
+        checkAuth();
+    }, []);
+
+    const handlelogout = async () => {
+        await Logout(); // Clears the cookie on the backend
+    
+        // ✅ Immediately re-fetch user info to reflect logout
+        const data = await getUserCommonInfos(); // This will return null if the cookie is gone
+        setUserInfo(data); // Will be `null`, triggering the logged-out UI
+    };
 
     const { t, i18n } = useTranslation()
 
@@ -173,7 +196,7 @@ function Navbar({ page }: NavbarProps) {
                 <div className="flex gap-2">
 
 
-                    {loggedin?.length != undefined ? (
+                    {userInfo ? (
                         <>
                             <Dialog>
                                 <DialogTrigger asChild>
@@ -238,15 +261,7 @@ function Navbar({ page }: NavbarProps) {
                                 </DialogContent>
                             </Dialog >
 
-                            <Link to="/chat" className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
-                                <MessageSquare className="w-5 h-5" />
-                                <div className="absolute -top-1 -right-1">
-                                    <span className="relative flex h-3 w-3">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500/80"></span>
-                                    </span>
-                                </div>
-                            </Link>
+
 
 
                             <div className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
@@ -296,7 +311,7 @@ function Navbar({ page }: NavbarProps) {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-36" align="end">
                                     <DropdownMenuGroup>
-                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1 items-center" onClick={() => navigate('/profile/james')}>
+                                        <DropdownMenuItem className=" hover:bg-zinc-500/20 flex gap-1 items-center" onClick={() => userInfo && userInfo.username && navigate(`/profile/${userInfo.username}`)}>
                                             <User className="w-5 h-5" />
                                             {t("profile")}
                                         </DropdownMenuItem>
@@ -305,7 +320,7 @@ function Navbar({ page }: NavbarProps) {
                                             {t("settings")}
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => { localStorage.clear(); navigate('/') }} className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2">
+                                        <DropdownMenuItem onClick={handlelogout} className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2">
                                             <LogOut className="text-red-500" />
                                             {t("logout")}
                                         </DropdownMenuItem>

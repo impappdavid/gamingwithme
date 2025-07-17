@@ -4,7 +4,7 @@ export const login = async (
     email: string,
     password: string,
     useCookies?: boolean
-) => {
+)=> {
     try {
         // TODO: Replace with your actual API URL or use an environment variable
         const API_URL = 'https://localhost:7091';
@@ -20,7 +20,6 @@ export const login = async (
             }
         );
         getUserCommonInfos()
-
         return response.data;
     } catch (error) {
         console.error('Error logging in user:', error);
@@ -43,7 +42,6 @@ export const getUserCommonInfos = async (
         );
         // Ensure response.data is typed to avoid 'unknown' type error
         const data = response.data as { id: string };
-        localStorage.setItem("currentUserId", data.id);
     } catch (error) {
         console.error('Error logging in user:', error);
         throw error;
