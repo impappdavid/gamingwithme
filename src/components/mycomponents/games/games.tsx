@@ -1,11 +1,11 @@
-import { GetAllGames, type Games } from "@/api/game";
+import { GetAllGames, type TypeGames } from "@/api/game";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 function Games({ filterText }: { filterText: string }) {
     const { t } = useTranslation();
-    const [allGames, setAllGames] = useState<Games[]>([]);
+    const [allGames, setAllGames] = useState<TypeGames[]>([]);
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
 
@@ -14,7 +14,7 @@ function Games({ filterText }: { filterText: string }) {
             try {
                 const data = await GetAllGames();
                 if (Array.isArray(data)) {
-                    setAllGames(data as Games[]);
+                    setAllGames(data as TypeGames[]);
                 } else {
                     setAllGames([]);
                     setError("Invalid data format received from server");

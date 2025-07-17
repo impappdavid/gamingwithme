@@ -1,5 +1,5 @@
 import axios from 'axios';
-export type Games = {
+export type TypeGames = {
     id:number
     name: string
     description: string

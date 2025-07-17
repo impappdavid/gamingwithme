@@ -1,8 +1,9 @@
 import Navbar from "../navbar/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Footer from "../global/footer";
+import { GetAllYoutube, type UserInfos } from "@/api/categories";
 
 // User type
 type User = {
@@ -13,33 +14,39 @@ type User = {
   active: boolean;
 };
 
+// Helper to map API user to UserCard user
+const mapApiUserToUserCard = (apiUser: UserInfos): User => ({
+  name: apiUser.username,
+  profilePic: apiUser.avatarurl || "/profile/25.jpg",
+  games: apiUser.games,
+  cost: "$0.00/game", // You can update this if your API provides cost info
+  active: apiUser.isActive,
+});
+
+
 function Content() {
-  // Generate users for YouTube category
-  const users: User[] = useMemo(() => {
-    const baseUsers: User[] = [
-      { name: "Noah", profilePic: "/profile/104.jpg", games: ["youtube"], cost: "$1.99/1h", active: false },
-      { name: "YouTuber1", profilePic: "/profile/22.jpg", games: ["youtube"], cost: "$3.50/1h", active: true },
-      { name: "VideoMaster", profilePic: "/profile/41.jpg", games: ["youtube"], cost: "$2.25/1h", active: false },
-      { name: "ContentCreator", profilePic: "/profile/63.jpg", games: ["youtube"], cost: "$4.99/1h", active: true },
-      { name: "StreamKing", profilePic: "/profile/85.jpg", games: ["youtube"], cost: "$1.75/1h", active: false },
-      { name: "LivePro", profilePic: "/profile/16.jpg", games: ["youtube"], cost: "$6.50/1h", active: true },
-      { name: "ChannelStar", profilePic: "/profile/37.jpg", games: ["youtube"], cost: "$3.25/1h", active: false },
-      { name: "BroadcastQueen", profilePic: "/profile/59.jpg", games: ["youtube"], cost: "$2.99/1h", active: true },
-      { name: "VideoWizard", profilePic: "/profile/81.jpg", games: ["youtube"], cost: "$5.75/1h", active: false },
-      { name: "StreamMaster", profilePic: "/profile/103.jpg", games: ["youtube"], cost: "$2.50/1h", active: true },
-    ];
-    
-    // Add more users for variety
-    for (let i = 1; i <= 70; i++) {
-      baseUsers.push({
-        name: `YouTuber${i}`,
-        profilePic: `/profile/${(i % 116) + 1}.jpg`,
-        games: ["youtube"],
-        cost: `$${(Math.random() * 8 + 1).toFixed(2)}/1h`,
-        active: i % 3 === 0 // some active, some not
-      });
-    }
-    return baseUsers;
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const apiUsers = await GetAllYoutube("youtube");
+        if (apiUsers && Array.isArray(apiUsers)) {
+          setUsers(apiUsers.map(mapApiUserToUserCard));
+        } else {
+          setUsers([]);
+        }
+      } catch (err) {
+        setError("Failed to fetch users");
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
   }, []);
 
   // Filter state
@@ -84,7 +91,7 @@ function Content() {
           <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
             <Navbar page="YouTube" />
           </div>
-          <div >
+          <div className="min-h-[950px]">
             <Filter
               filterText={filterText}
               setFilterText={setFilterText}
@@ -98,10 +105,16 @@ function Content() {
               setShowActive={setShowActive}
             />
             <div className="p-2">
-              <UserCard users={filteredUsers} />
+              {loading ? (
+                <div>Loading users...</div>
+              ) : error ? (
+                <div className="text-red-500">{error}</div>
+              ) : (
+                <UserCard users={filteredUsers} />
+              )}
             </div>
           </div>
-          <div className="mt-34">
+          <div >
             <Footer />
           </div>
         </div>
