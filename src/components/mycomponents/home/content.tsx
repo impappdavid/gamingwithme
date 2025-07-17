@@ -1,9 +1,9 @@
 import Games from "./games"
 import Navbar from "../global/navbar"
 import Suggestions from "./suggestion"
-import TopCreators from "./topcreators"
 import { useTranslation } from "react-i18next"
 import Footer from "../global/footer"
+import TopCreatorsContent from "./topcreators"
 
 function Content() {
     const {t} = useTranslation()
@@ -14,8 +14,8 @@ function Content() {
                     <div className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("home")} />
                     </div>
-                    <div >
-                        <TopCreators />
+                    <div className="min-h-[950px]">
+                        <TopCreatorsContent />
                         <Games />
                         <Suggestions />
                     </div>
