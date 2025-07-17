@@ -170,7 +170,9 @@ function Suggestions() {
                             ))}
                         </>
                     ) : (
-                        <div className="text-sm text-zinc-400">No suggested users.</div>
+                        <div className="h-40 rounded-2xl flex text-zinc-400 items-center justify-center ">
+                            <div className="text-sm">No suggested users yet.</div>
+                        </div>
                     )}
 
                 </div>

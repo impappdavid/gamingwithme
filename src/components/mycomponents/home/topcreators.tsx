@@ -179,7 +179,9 @@ function TopCreatorsContent() {
                             }
                         </>
                     ) : (
-                        <div className="">There are no users</div>
+                        <div className="h-40 rounded-2xl flex text-zinc-400 items-center justify-center ">
+                            <div className="text-sm">No top creators yet.</div>
+                        </div>
                     )}
 
                 </div>
