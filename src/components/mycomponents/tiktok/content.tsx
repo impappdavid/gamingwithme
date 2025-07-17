@@ -112,7 +112,7 @@ function Content() {
               )}
             </div>
           </div>
-          <div className="mt-34">
+          <div >
             <Footer />
           </div>
         </div>

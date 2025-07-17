@@ -2,8 +2,9 @@ import { useTranslation } from "react-i18next";
 import Navbar from "../navbar/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Footer from "../global/footer";
+import { GetByTag, type UserInfos } from "@/api/categories";
 
 // User type
 type User = {
@@ -13,34 +14,39 @@ type User = {
   cost: string;
   active: boolean;
 };
+// Helper to map API user to UserCard user
+const mapApiUserToUserCard = (apiUser: UserInfos): User => ({
+  name: apiUser.username,
+  profilePic: apiUser.avatarurl || "/profile/25.jpg",
+  games: apiUser.games,
+  cost: "$0.00/game", // You can update this if your API provides cost info
+  active: apiUser.isActive,
+});
+
 
 function Content() {
-  // Generate users for Musician category
-  const users: User[] = useMemo(() => {
-    const baseUsers: User[] = [
-      { name: "Ben", profilePic: "/profile/82.jpg", games: ["musician"], cost: "$14.99/s", active: true },
-      { name: "Ash", profilePic: "/profile/52.jpg", games: ["musician"], cost: "$14.99/s", active: false },
-      { name: "Melody", profilePic: "/profile/33.jpg", games: ["musician"], cost: "$12.99/s", active: true },
-      { name: "Harmony", profilePic: "/profile/67.jpg", games: ["musician"], cost: "$18.50/s", active: true },
-      { name: "Rhythm", profilePic: "/profile/44.jpg", games: ["musician"], cost: "$9.99/s", active: false },
-      { name: "Beat", profilePic: "/profile/91.jpg", games: ["musician"], cost: "$22.99/s", active: true },
-      { name: "Chord", profilePic: "/profile/15.jpg", games: ["musician"], cost: "$16.75/s", active: false },
-      { name: "Note", profilePic: "/profile/28.jpg", games: ["musician"], cost: "$11.25/s", active: true },
-      { name: "Tempo", profilePic: "/profile/73.jpg", games: ["musician"], cost: "$19.99/s", active: false },
-      { name: "Scale", profilePic: "/profile/56.jpg", games: ["musician"], cost: "$13.50/s", active: true },
-    ];
-    
-    // Add more users for variety
-    for (let i = 1; i <= 40; i++) {
-      baseUsers.push({
-        name: `Musician${i}`,
-        profilePic: `/profile/${(i % 116) + 1}.jpg`,
-        games: ["musician"],
-        cost: `$${(Math.random() * 25 + 8).toFixed(2)}/s`,
-        active: i % 2 === 0 // alternate active status
-      });
-    }
-    return baseUsers;
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const apiUsers = await GetByTag("music");
+        if (apiUsers && Array.isArray(apiUsers)) {
+          setUsers(apiUsers.map(mapApiUserToUserCard));
+        } else {
+          setUsers([]);
+        }
+      } catch (err) {
+        setError("Failed to fetch users");
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
   }, []);
 
   // Filter state
@@ -86,7 +92,7 @@ function Content() {
           <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
             <Navbar page={t("Music")} />
           </div>
-          <div >
+          <div className="min-h-[950px]">
             <Filter
               filterText={filterText}
               setFilterText={setFilterText}
@@ -100,10 +106,16 @@ function Content() {
               setShowActive={setShowActive}
             />
             <div className="p-2">
-              <UserCard users={filteredUsers} />
+              {loading ? (
+                <div>Loading users...</div>
+              ) : error ? (
+                <div className="text-red-500">{error}</div>
+              ) : (
+                <UserCard users={filteredUsers} />
+              )}
             </div>
           </div>
-          <div className="mt-34">
+          <div >
             <Footer />
           </div>
         </div>
