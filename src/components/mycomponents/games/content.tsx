@@ -15,7 +15,7 @@ function Content() {
                     <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("Games")} />
                     </div>
-                    <div >
+                    <div className="min-h-[950px]">
                         <Filter filterText={filterText} setFilterText={setFilterText} />
                         <Games filterText={filterText} />
                     </div>

@@ -1,9 +1,10 @@
-import Games from "./games"
+
 import Suggestions from "./suggestion"
 import { useTranslation } from "react-i18next"
 import Footer from "../global/footer"
 import TopCreatorsContent from "./topcreators"
 import Navbar from "../navbar/navbar"
+import HomeGames from "./games"
 
 function Content() {
     const {t} = useTranslation()
@@ -16,7 +17,7 @@ function Content() {
                     </div>
                     <div className="min-h-[950px]">
                         <TopCreatorsContent />
-                        <Games />
+                        <HomeGames />
                         <Suggestions />
                     </div>
                     <Footer />

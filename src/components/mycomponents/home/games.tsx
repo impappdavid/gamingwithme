@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom"
 
-function Games() {
+function HomeGames() {
     const { t } = useTranslation();
     const [allGames, setAllGames] = useState<Games[]>([]);
     const [error, setError] = useState<string | null>(null)
@@ -57,4 +57,4 @@ function Games() {
         </>
     )
 }
-export default Games
+export default HomeGames
