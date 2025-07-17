@@ -1,5 +1,5 @@
 import Games from "./games"
-import Navbar from "../global/navbar"
+import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import Filter from "./filter"
 import { useState } from "react"

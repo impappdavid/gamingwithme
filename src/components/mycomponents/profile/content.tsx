@@ -1,5 +1,5 @@
 import { MessagesSquare, Music } from "lucide-react"
-import Navbar from "../global/navbar"
+import Navbar from "../navbar/navbar"
 
 import { useTranslation } from "react-i18next"
 import Carousel from "./carousel"

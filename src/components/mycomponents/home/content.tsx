@@ -1,9 +1,9 @@
 import Games from "./games"
-import Navbar from "../global/navbar"
 import Suggestions from "./suggestion"
 import { useTranslation } from "react-i18next"
 import Footer from "../global/footer"
 import TopCreatorsContent from "./topcreators"
+import Navbar from "../navbar/navbar"
 
 function Content() {
     const {t} = useTranslation()

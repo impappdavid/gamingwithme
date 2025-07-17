@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import Navbar from "../global/navbar"
+import Navbar from "../navbar/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
 import { useState, useMemo } from "react"

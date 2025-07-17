@@ -1,4 +1,4 @@
-import Navbar from "../global/navbar"
+import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
 import { Button } from "@/components/ui/button"
