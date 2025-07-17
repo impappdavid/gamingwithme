@@ -11,9 +11,16 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { DeleteAccount } from "@/api/settings"
+import { useNavigate } from "react-router-dom"
 
 function DangerSettings() {
+    const navigate = useNavigate();
     const { t } = useTranslation()
+    const handleDeleteAccount = async () => {
+        await DeleteAccount()
+        navigate('../')
+    }
     return (
         <>
             <div className="w-full h-screen sm:p-2">
@@ -42,7 +49,7 @@ function DangerSettings() {
                                                 <DialogClose>
                                                     <Button className="bg-transparent w-full border rounded-xl text-zinc-400 hover:bg-zinc-800/60 cursor-pointer">Close</Button>
                                                 </DialogClose>
-                                                <Button className="bg-red-500 border rounded-xl text-black hover:bg-red-500/80 cursor-pointer">Delete</Button>
+                                                <Button onClick={handleDeleteAccount} className="bg-red-500 border rounded-xl text-black hover:bg-red-500/80 cursor-pointer">Delete</Button>
                                             </div>
 
                                         </DialogDescription>
