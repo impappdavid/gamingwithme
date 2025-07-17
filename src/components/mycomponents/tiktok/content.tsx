@@ -1,8 +1,9 @@
 import Navbar from "../navbar/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Footer from "../global/footer";
+import { GetByTag, type UserInfos } from "@/api/categories";
 
 // User type
 type User = {
@@ -12,34 +13,38 @@ type User = {
   cost: string;
   active: boolean;
 };
+// Helper to map API user to UserCard user
+const mapApiUserToUserCard = (apiUser: UserInfos): User => ({
+  name: apiUser.username,
+  profilePic: apiUser.avatarurl || "/profile/25.jpg",
+  games: apiUser.games,
+  cost: "$0.00/game", // You can update this if your API provides cost info
+  active: apiUser.isActive,
+});
 
 function Content() {
-  // Generate users for TikTok category
-  const users: User[] = useMemo(() => {
-    const baseUsers: User[] = [
-      { name: "Alex", profilePic: "/profile/15.jpg", games: ["tiktok"], cost: "$9.99/video", active: true },
-      { name: "TikToker1", profilePic: "/profile/25.jpg", games: ["tiktok"], cost: "$15.99/video", active: false },
-      { name: "ViralVicky", profilePic: "/profile/38.jpg", games: ["tiktok"], cost: "$12.50/video", active: true },
-      { name: "DanceKing", profilePic: "/profile/47.jpg", games: ["tiktok"], cost: "$8.99/video", active: true },
-      { name: "TrendSetter", profilePic: "/profile/62.jpg", games: ["tiktok"], cost: "$20.99/video", active: false },
-      { name: "ComedyQueen", profilePic: "/profile/73.jpg", games: ["tiktok"], cost: "$11.75/video", active: true },
-      { name: "LipSyncPro", profilePic: "/profile/84.jpg", games: ["tiktok"], cost: "$7.50/video", active: false },
-      { name: "SketchMaster", profilePic: "/profile/95.jpg", games: ["tiktok"], cost: "$18.25/video", active: true },
-      { name: "LifeHacker", profilePic: "/profile/12.jpg", games: ["tiktok"], cost: "$13.99/video", active: false },
-      { name: "FoodieFun", profilePic: "/profile/29.jpg", games: ["tiktok"], cost: "$10.50/video", active: true },
-    ];
-    
-    // Add more users for variety
-    for (let i = 1; i <= 60; i++) {
-      baseUsers.push({
-        name: `TikToker${i}`,
-        profilePic: `/profile/${(i % 116) + 1}.jpg`,
-        games: ["tiktok"],
-        cost: `$${(Math.random() * 25 + 5).toFixed(2)}/video`,
-        active: i % 2 === 0 // alternate active status
-      });
-    }
-    return baseUsers;
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const apiUsers = await GetByTag("tiktok");
+        if (apiUsers && Array.isArray(apiUsers)) {
+          setUsers(apiUsers.map(mapApiUserToUserCard));
+        } else {
+          setUsers([]);
+        }
+      } catch (err) {
+        setError("Failed to fetch users");
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
   }, []);
 
   // Filter state
@@ -84,7 +89,7 @@ function Content() {
           <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
             <Navbar page="TikTok" />
           </div>
-          <div >
+          <div className="min-h-[950px]">
             <Filter
               filterText={filterText}
               setFilterText={setFilterText}
@@ -98,7 +103,13 @@ function Content() {
               setShowActive={setShowActive}
             />
             <div className="p-2">
-              <UserCard users={filteredUsers} />
+              {loading ? (
+                <div>Loading users...</div>
+              ) : error ? (
+                <div className="text-red-500">{error}</div>
+              ) : (
+                <UserCard users={filteredUsers} />
+              )}
             </div>
           </div>
           <div className="mt-34">

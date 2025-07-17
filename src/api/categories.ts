@@ -32,8 +32,8 @@ export const GetAllUser = async (
     }
 };
 
-export const GetAllYoutube = async (
-    tag: "youtube",
+export const GetByTag = async (
+    tag: "youtube" | "tiktok" | "just-chatting" | "music",
     useCookies?: boolean
 ): Promise<UserInfos[] | null> => {
     try {
@@ -50,3 +50,4 @@ export const GetAllYoutube = async (
         return null;
     }
 };
+

@@ -3,7 +3,7 @@ import UserCard from "../global/usercard"
 import Filter from "../global/filter"
 import { useState, useMemo, useEffect } from "react"
 import Footer from "../global/footer";
-import { GetAllYoutube, type UserInfos } from "@/api/categories";
+import { GetByTag, type UserInfos } from "@/api/categories";
 
 // User type
 type User = {
@@ -33,7 +33,7 @@ function Content() {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const apiUsers = await GetAllYoutube("youtube");
+        const apiUsers = await GetByTag("youtube");
         if (apiUsers && Array.isArray(apiUsers)) {
           setUsers(apiUsers.map(mapApiUserToUserCard));
         } else {
