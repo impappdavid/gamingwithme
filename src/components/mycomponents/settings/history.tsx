@@ -1,53 +1,49 @@
 import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { getBills } from "@/api/settings";
 
-const transactions = [
-    {
-        id: 1,
-        profile: "/profile/9.jpg",
-        name: "James",
-        other: "Alex",
-        type: "From",
-        amount: "$25.00",
-        ago: "2 hours ago",
-        status: "Received",
-        statusColor: "text-[#19FF00]",
-        statusBg: "bg-green-500/10 hover:bg-green-500/20",
-    },
-    {
-        id: 2,
-        profile: "/profile/10.jpg",
-        name: "Alex",
-        other: "James",
-        type: "To",
-        amount: "$12.00",
-        ago: "1 day ago",
-        status: "Sent",
-        statusColor: "text-[#2856F4]",
-        statusBg: "bg-blue-500/10 hover:bg-blue-500/20",
-    },
-    {
-        id: 3,
-        profile: "/profile/11.jpg",
-        name: "James",
-        other: "Alex",
-        type: "From",
-        amount: "$25.00",
-        ago: "3 days ago",
-        status: "Received",
-        statusColor: "text-[#19FF00]",
-        statusBg: "bg-green-500/10 hover:bg-green-500/20",
-    }
-];
+type Bill = {
+    bookingId: string,
+    transactionDate: string,
+    amount: number,
+    transactionType: string,
+    otherPartyUsername: string,
+    otherPartyAvatarUrl: string
+};
 
 function BillHistory() {
     const { t } = useTranslation()
     const [search, setSearch] = useState("")
-    const filtered = transactions.filter(t => t.name.toLowerCase().includes(search.toLowerCase()))
+    const [bills, setBills] = useState<Bill[]>([]);
+    const filtered = bills.filter(t => t.otherPartyUsername.toLowerCase().includes(search.toLowerCase()))
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoading(true);
+            try {
+                const apiUsers = await getBills();
+                if (apiUsers && Array.isArray(apiUsers)) {
+                    setBills(apiUsers);
+                } else {
+                    setBills([]);
+                }
+            } catch (err) {
+                setError("Failed to fetch users");
+                setBills([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUsers();
+    }, []);
+
     return (
         <>
             <div className="w-full h-screen sm:p-2">
@@ -78,22 +74,26 @@ function BillHistory() {
 
                             </div>
                             <div className="flex flex-col gap-1.5">
-                                {filtered.length === 0 && <div className="text-zinc-400">No transactions found.</div>}
+                                {filtered.length === 0 &&
+                                    <div className="w-full flex justify-center mt-14">
+                                        <div className="text-sm text-zinc-400">You dont have bill history.</div>
+                                    </div>
+                                }
                                 {filtered.map((item) => (
-                                    <div key={item.id} className="flex items-center justify-between bg-zinc-800/20 rounded-xl p-1.5 px-2 border border-zinc-800 shadow-sm">
+                                    <div key={item.bookingId} className="flex items-center justify-between bg-zinc-800/20 rounded-xl p-1.5 px-2 border border-zinc-800 shadow-sm">
                                         <div className="flex items-center gap-4">
-                                            <img src={item.profile} alt="profile" className="w-12 h-12 rounded-lg border" />
+                                            <img src={item.otherPartyAvatarUrl} alt="profile" className="w-12 h-12 rounded-lg border" />
                                             <div className="flex flex-col">
-                                                <span className="font-semibold text-white">{item.name}</span>
+                                                <span className="font-semibold text-white">{item.otherPartyUsername}</span>
                                                 <div className="flex gap-1 items-center">
                                                     <span className="font-semibold text-zinc-400 text-xs">{item.amount}</span>
                                                     <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
-                                                    <span className="text-zinc-400 text-xs">{item.ago}</span>
+                                                    <span className="text-zinc-400 text-xs">{item.transactionDate}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex flex-col items-end gap-1 min-w-[120px]">
-                                            <span className={`text-xs font-bold p-3 px-6 cursor-pointer rounded-xl transition-all duration-300 ${item.statusColor} ${item.statusBg}`}>{item.status}</span>
+                                            <span className={`text-xs font-bold p-3 px-6 cursor-pointer rounded-xl transition-all duration-300 ${item.transactionType} ${item.transactionType}`}>{item.transactionType}</span>
                                         </div>
                                     </div>
                                 ))}

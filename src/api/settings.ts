@@ -90,7 +90,7 @@ export const UpdateUserBio = async (
 
 export const getUpcomingBookings = async (
     useCookies?: boolean
-): Promise<UserCommonInfos | null> => {
+) => {
     try {
         const API_URL = 'https://localhost:7091';
         const response = await axios.get(`${API_URL}/api/user/upcoming-bookings`, {
@@ -99,9 +99,28 @@ export const getUpcomingBookings = async (
         });
 
         // ✅ RETURN the result!
-        return response.data as UserCommonInfos;
+        return response;
     } catch (error) {
         console.error('Error fetching user info:', error);
         return null;
     }
 };
+
+export const getBills = async (
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(`${API_URL}/api/user/billing-history`, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
