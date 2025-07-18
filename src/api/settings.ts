@@ -65,6 +65,29 @@ export const getUserCommonInfos = async (
     }
 };
 
+export const UpdateUsername = async (
+    username: string,
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.put(`${API_URL}/api/user/username`,
+            {
+                username
+            },
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            });
+
+        // ✅ RETURN the result!
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
 export const UpdateUserBio = async (
     bio: string,
     useCookies?: boolean

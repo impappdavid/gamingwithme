@@ -6,7 +6,7 @@ import { CaseLower, KeyRound, Tag, User } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { GetUserAllInformation, getUserCommonInfos, UpdateUserBio, type UserAllInfo } from "@/api/settings"
+import { GetUserAllInformation, getUserCommonInfos, UpdateUserBio, UpdateUsername, type UserAllInfo } from "@/api/settings"
 
 function General() {
     const { t } = useTranslation()
@@ -67,6 +67,10 @@ function General() {
         setTags(tags.filter((_, index) => index !== indexToRemove))
     }
 
+    const handleUsernameChange = async () => {
+        await UpdateUsername(username)
+    }
+
     const handleBioChange = async () => {
         await UpdateUserBio(bio)
     }
@@ -81,27 +85,31 @@ function General() {
                         <SettingsSidebar />
                         <div className="w-full p-4">
                             <div className="flex flex-col gap-4">
-                                <div className="flex flex-col">
-                                    <div className="text-xl font-bold mb-2">Change username</div>
-                                    <div className="flex justify-between gap-2">
-                                        <div className="relative w-full">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <User className="h-4 w-4 text-zinc-500" />
+                                <form className="flex flex-col gap-2">
+                                    <div className="flex flex-col">
+                                        <div className="text-xl font-bold mb-2">Change username</div>
+                                        <div className="flex justify-between gap-2">
+                                            <div className="relative w-full">
+                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                    <User className="h-4 w-4 text-zinc-500" />
+                                                </div>
+                                                <Input
+                                                    id="username"
+                                                    type="text"
+                                                    placeholder="James"
+                                                    className="pl-10 h-10 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300  "
+                                                    value={username}
+                                                    onChange={(e) => setUsername(e.target.value)}
+                                                    required
+                                                />
+
                                             </div>
-                                            <Input
-                                                id="username"
-                                                type="text"
-                                                placeholder="James"
-                                                className="pl-10 h-10 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300  "
-                                                value={username}
-                                                onChange={(e) => setUsername(e.target.value)}
-                                                required
-                                            />
 
                                         </div>
-
                                     </div>
-                                </div>
+                                    <Button onClick={handleUsernameChange} className="h-10 rounded-xl bg-[#19FF00] text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
+
+                                </form>
                                 <form className="flex flex-col gap-2">
                                     <div className="flex flex-col">
                                         <div className="text-xl font-bold mb-2">Bio</div>
