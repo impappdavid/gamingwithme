@@ -111,6 +111,54 @@ export const UpdateUserBio = async (
     }
 };
 
+export const UpdateUserPassword = async (
+    currentPassword: string,
+    newPassword: string,
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.put(`${API_URL}/api/user/password`,
+            {
+                currentPassword,
+                newPassword
+            },
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            });
+
+        // ✅ RETURN the result!
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
+export const UpdateUserAvatar = async (
+    avatarFile: { $binary: string },
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.put(`${API_URL}/api/user/avatar`,
+            {
+                avatarFile
+            },
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            });
+
+        // ✅ RETURN the result!
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
 export const getUpcomingBookings = async (
     useCookies?: boolean
 ) => {
@@ -164,3 +212,4 @@ export const DeleteAccount = async (
         return null;
     }
 };
+

@@ -8,8 +8,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { useEffect, useState } from "react"
-import { getUserCommonInfos } from "@/api/settings"
+import { useEffect, useState, useRef } from "react"
+import { getUserCommonInfos, UpdateUserAvatar } from "@/api/settings"
 
 function SettingsSidebar() {
     // State for current profile picture
@@ -19,9 +19,10 @@ function SettingsSidebar() {
     // Generate image paths
     const profileImages = Array.from({ length: 116 }, (_, i) => `/profile/${i + 1}.jpg`)
     const [username, setUsername] = useState("")
-    
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -29,7 +30,7 @@ function SettingsSidebar() {
             try {
                 const common = await getUserCommonInfos();
                 if (common && common.username) {
-                    
+
                     setUsername(common.username);
                 } else {
                     setUsername("");
@@ -44,42 +45,48 @@ function SettingsSidebar() {
         fetchUser();
     }, []);
 
+    // Handle file input click
+    const handleProfilePicClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    // Handle file selection and upload
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            let base64String = reader.result as string;
+            // Remove the data URL prefix if present
+            const match = base64String.match(/^data:.*;base64,(.*)$/);
+            if (match) base64String = match[1];
+            // Call the API to update avatar with the required format
+            const result = await UpdateUserAvatar({ $binary: base64String });
+            if (result) {
+                setProfilePic(reader.result as string); // Show preview
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
     return (
         <div className="w-fit sm:max-w-62 sm:w-full h-full flex flex-col gap-2 border-r">
             <div className="flex flex-col gap-2 p-4">
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <div className="relative group sm:w-24 ">
-                            <div className="bg-black/40 backdrop-blur-sm z-50 w-24 h-24 absolute rounded-lg text-center text-sm text-zinc-200 hidden group-hover:flex justify-center items-center transition-all duration-300 cursor-pointer">
-                                Change Picture
-                            </div>
-                            <img src={profilePic} alt="profile" className="sm:w-24 w-8 z-1 rounded-lg border " />
-                        </div>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll flex flex-col ">
-                        <DialogHeader>
-                            <DialogTitle className="flex justify-between gap-4">
-                                Select a Profile Picture
-                            </DialogTitle>
-                            <DialogDescription className="h-full">
-                                <div className="grid grid-cols-4 gap-4 p-2">
-                                    {profileImages.map((img, idx) => (
-                                        <button
-                                            key={img}
-                                            className={`focus:outline-none border-2 rounded-lg transition-all duration-200 cursor-pointer ${profilePic === img ? 'border-blue-500' : 'border-transparent'} hover:border-blue-400`}
-                                            onClick={() => {
-                                                setProfilePic(img)
-                                                setDialogOpen(false)
-                                            }}
-                                        >
-                                            <img src={img} alt={`profile ${idx + 1}`} className="w-full h-20 object-cover rounded-lg" />
-                                        </button>
-                                    ))}
-                                </div>
-                            </DialogDescription>
-                        </DialogHeader>
-                    </DialogContent>
-                </Dialog >
+
+                <div className="relative group sm:w-24 ">
+                    <div className="bg-black/40 backdrop-blur-sm z-50 w-24 h-24 absolute rounded-lg text-center text-sm text-zinc-200 hidden group-hover:flex justify-center items-center transition-all duration-300 cursor-pointer" onClick={handleProfilePicClick}>
+                        Change Picture
+                    </div>
+                    <img src={profilePic} alt="profile" className="sm:w-24 w-8 z-1 rounded-lg border " onClick={handleProfilePicClick} style={{ cursor: 'pointer' }} />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                    />
+                </div>
+
                 <div className="px-0.5 text-xl sm:flex hidden">{username}</div>
             </div>
             <div className="w-full h-[1px] bg-zinc-800"></div>

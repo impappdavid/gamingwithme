@@ -6,12 +6,13 @@ import { CaseLower, KeyRound, Tag, User } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { GetUserAllInformation, getUserCommonInfos, UpdateUserBio, UpdateUsername, type UserAllInfo } from "@/api/settings"
+import { GetUserAllInformation, getUserCommonInfos, UpdateUserBio, UpdateUsername, UpdateUserPassword, type UserAllInfo } from "@/api/settings"
 
 function General() {
     const { t } = useTranslation()
     const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
     const [bio, setBio] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -74,6 +75,10 @@ function General() {
     const handleBioChange = async () => {
         await UpdateUserBio(bio)
     }
+
+    const handlePasswordChange = async () => {
+        await UpdateUserPassword(currentPassword, newPassword)
+    }
     return (
         <>
             <div className="w-full h-screen sm:p-2">
@@ -107,7 +112,7 @@ function General() {
 
                                         </div>
                                     </div>
-                                    <Button onClick={handleUsernameChange} className="h-10 rounded-xl bg-[#19FF00] text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
+                                    <Button onClick={handleUsernameChange} className="h-10 rounded-xl bg-[#2856F4] text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Save</Button>
 
                                 </form>
                                 <form className="flex flex-col gap-2">
@@ -126,7 +131,7 @@ function General() {
                                             />
                                         </div>
                                     </div>
-                                    <Button onClick={handleBioChange} className="h-10 rounded-xl bg-[#19FF00] text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
+                                    <Button onClick={handleBioChange} className="h-10 rounded-xl bg-[#2856F4] text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Save</Button>
 
                                 </form>
                                 <div className="flex flex-col">
@@ -187,30 +192,46 @@ function General() {
                                     </div>
 
                                 </div>
-                                <Button className="h-10 rounded-xl bg-[#19FF00] text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer">Save</Button>
+                                <Button className="h-10 rounded-xl bg-[#2856F4] text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Save</Button>
+                                <form className="flex flex-col gap-2">
+                                        <div className="text-xl font-bold mb-2">Change password</div>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex flex-col gap-2 w-full">
+                                                <div className="relative w-full">
+                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                        <KeyRound className="h-4 w-4 text-zinc-500" />
+                                                    </div>
+                                                    <Input
+                                                        id="currentPassword"
+                                                        type="password"
+                                                        placeholder="Current password"
+                                                        className="pl-10 h-10 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300  "
+                                                        value={currentPassword}
+                                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                                        required
+                                                    />
 
-                                <div className="flex flex-col">
-                                    <div className="text-xl font-bold mb-2">Change password</div>
-                                    <div className="flex justify-between gap-2">
-                                        <div className="relative w-full">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <KeyRound className="h-4 w-4 text-zinc-500" />
-                                            </div>
-                                            <Input
-                                                id="password"
-                                                type="password"
-                                                placeholder="Password"
-                                                className="pl-10 h-10 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300  "
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                required
-                                            />
+                                                </div>
+                                                <div className="relative w-full">
+                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                        <KeyRound className="h-4 w-4 text-zinc-500" />
+                                                    </div>
+                                                    <Input
+                                                        id="newpassword"
+                                                        type="password"
+                                                        placeholder="New password"
+                                                        className="pl-10 h-10 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300  "
+                                                        value={newPassword}
+                                                        onChange={(e) => setNewPassword(e.target.value)}
+                                                        required
+                                                    />
+
+                                                </div>
+                                            <Button onClick={handlePasswordChange} className="h-10 rounded-xl bg-[#2856F4] text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Save new password</Button>
 
                                         </div>
-                                        <Button className="h-10 rounded-xl bg-[#2856F4] text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Send email</Button>
-
                                     </div>
-                                </div>
+                                </form>
 
 
 
