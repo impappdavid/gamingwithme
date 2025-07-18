@@ -1,13 +1,5 @@
 import { SettingsIcon, History, TriangleAlert } from "lucide-react"
 import { NavLink } from "react-router-dom"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import { useEffect, useState, useRef } from "react"
 import { getUserCommonInfos, UpdateUserAvatar } from "@/api/settings"
 

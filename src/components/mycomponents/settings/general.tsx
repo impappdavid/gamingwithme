@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { GetUserAllInformation, getUserCommonInfos, UpdateUserBio, UpdateUsername, UpdateUserPassword, type UserAllInfo } from "@/api/settings"
+import { fetchPopularGames, type Game } from "@/api/rawg"
 
 function General() {
     const { t } = useTranslation()
@@ -18,22 +19,11 @@ function General() {
     const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<UserAllInfo | null>(null);
     const [tagInput, setTagInput] = useState("");
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<Game[]>([]);
+    const [gameTags, setGameTags] = useState<Game[]>([]);
 
     const [inputValue, setInputValue] = useState("")
-    const [filteredData, setFilteredData] = useState<string[]>([]);
-    const fixedTags = [
-        //games
-        "valorant", "cs2", "RainbowSixSiege", "Minecraft", "LoL",
-        //youtube
-        "youtube",
-        //tiktok
-        "tiktok",
-        //music
-        "music",
-        //just-chatting
-        "just-chatting",
-    ];
+    const [filteredData, setFilteredData] = useState<Game[]>([]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -56,16 +46,25 @@ function General() {
             }
         };
         fetchUser();
+        // Fetch games for tags
+        const fetchGames = async () => {
+            const games = await fetchPopularGames();
+            setGameTags(games);
+        };
+        fetchGames();
     }, []);
 
-    const addTag = (addName: string) => {
-        setTags([...tags, addName]);
+    const addTag = (game: Game) => {
+        // Prevent duplicates
+        if (!tags.some(t => t.name === game.name)) {
+            setTags([...tags, game]);
+        }
         setInputValue("");
-        setFilteredData([])
+        setFilteredData([]);
     }
 
     const removeTag = (indexToRemove: number) => {
-        setTags(tags.filter((_, index) => index !== indexToRemove))
+        setTags(tags.filter((_, index) => index !== indexToRemove));
     }
 
     const handleUsernameChange = async () => {
@@ -135,7 +134,7 @@ function General() {
 
                                 </form>
                                 <div className="flex flex-col">
-                                    <div className="text-xl font-bold mb-2">Tags</div>
+                                    <div className="text-xl font-bold mb-2">Games</div>
 
                                     <div className="w-full transition-all duration-500 bg-zinc-800/20 border-zinc-800/20 hover:border-zinc-800 hover:bg-zinc-800/60 rounded-xl">
                                         <div className="relative transition-all duration-500">
@@ -148,7 +147,7 @@ function General() {
                                                 className="pl-10 h-10 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                                                 value={inputValue}
                                                 onChange={(e) => {
-                                                    setFilteredData(fixedTags.filter(m => m.toLowerCase().includes(inputValue.toLowerCase())))
+                                                    setFilteredData(gameTags.filter(m => m.name.toLowerCase().includes(inputValue.toLowerCase())))
                                                     setInputValue(e.target.value)
                                                 }
                                                 }
@@ -157,13 +156,21 @@ function General() {
                                         {tags.length > 0 ? (
                                             <div className="px-1 py-2 transition-all duration-500">
                                                 <div className="flex flex-wrap w-full gap-2 transition-all duration-500">
-                                                    {tags.map((tag, index) => (
+                                                    {tags.map((game, index) => (
                                                         <span
                                                             key={index}
                                                             onClick={() => removeTag(index)}
-                                                            className="bg-[#28a74634] border border-[#238b3b] hover:border-red-500 text-white px-4 py-1.5 rounded-lg text-xs flex items-center hover:bg-red-500/20 cursor-pointer transition-all duration-300"
+                                                            className="bg-zinc-900/60 border text-white px-4 py-1.5 rounded-lg text-xs flex items-center hover:bg-red-500/20 hover:border-red-500 cursor-pointer transition-all duration-300"
                                                         >
-                                                            {tag}
+                                                            <img 
+                                                                src={game.background_image} 
+                                                                alt={game.name}
+                                                                className="w-10 h-10 rounded mr-2 object-cover"
+                                                                onError={(e) => {
+                                                                    e.currentTarget.style.display = 'none';
+                                                                }}
+                                                            />
+                                                            {game.name}
                                                         </span>
                                                     ))}
                                                 </div>
@@ -174,13 +181,21 @@ function General() {
                                         {filteredData.length > 0 ? (
                                             <div className="px-1 py-2 transition-all duration-500">
                                                 <div className="flex flex-wrap w-full gap-2 transition-all duration-500">
-                                                    {filteredData.slice(0, 6).map((tag, index) => (
+                                                    {filteredData.slice(0, 6).map((game, index) => (
                                                         <span
                                                             key={index}
-                                                            onClick={() => addTag(tag)}
+                                                            onClick={() => addTag(game)}
                                                             className="bg-zinc-900/60 border text-white px-4 py-1.5 rounded-lg text-xs flex items-center hover:bg-[#28a74634] hover:border-[#238b3b] cursor-pointer transition-all duration-300"
                                                         >
-                                                            {tag}
+                                                            <img 
+                                                                src={game.background_image} 
+                                                                alt={game.name}
+                                                                className="w-10 h-10 rounded mr-2 object-cover"
+                                                                onError={(e) => {
+                                                                    e.currentTarget.style.display = 'none';
+                                                                }}
+                                                            />
+                                                            {game.name}
                                                         </span>
                                                     ))}
                                                 </div>
