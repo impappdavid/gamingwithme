@@ -17,6 +17,8 @@ import '../../../i18n';
 import { Input } from "@/components/ui/input"
 import { GetUserInfos, IsLoggedIn, GetAllUser } from "@/api/sidebar"
 import type { UserInfos } from "@/api/sidebar"
+import { BecomeACreator } from "@/api/creator"
+import { GetUserAllInformation, getUserCommonInfos, type UserAllInfo } from "@/api/settings"
 
 // User type for UI components
 type User = {
@@ -37,6 +39,12 @@ function mapUserInfosToUser(user: UserInfos): User {
         active: user.isActive,
     };
 }
+// User type for UI components
+type Become = {
+    onboardingUrl: string;
+    connectedAccountId: string;
+};
+
 
 function Sidebar() {
     const { t } = useTranslation();
@@ -54,11 +62,12 @@ function Sidebar() {
         const fetchUser = async () => {
             try {
                 // You may want to get username from localStorage or context
-                const username = localStorage.getItem("username") || "";
-                if (username) {
-                    const user = await GetUserInfos(username);
-                    setCurrentUser(user);
-                    setIsCreator(user.hasStripeAccount);
+                const common = await getUserCommonInfos();
+                if (common && common.username) {
+                    const full = await GetUserAllInformation(common.username) as UserAllInfo;
+                    setIsCreator(full.hasStripeAccount);
+                } else {
+                    setIsCreator(false);
                 }
             } catch (err: any) {
                 setError(err?.message || "Unknown error");
@@ -102,7 +111,13 @@ function Sidebar() {
             if (!res || (Array.isArray(res) && res.length === 0)) {
                 navigate("/login");
             } else {
-                setIsCreator(true);
+                const response = await BecomeACreator();
+                if (response && response.data) {
+                    const data = response.data as { onboardingUrl: string; connectedAccountId: string };
+                    if (data && data.onboardingUrl) {
+                        navigate(data.onboardingUrl, '_blank');
+                    }
+                }
             }
         } catch (err) {
             navigate("/login");
