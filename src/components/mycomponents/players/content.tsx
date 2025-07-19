@@ -19,7 +19,7 @@ type User = {
 // Helper to map API user to UserCard user
 const mapApiUserToUserCard = (apiUser: UserInfos): User => ({
   name: apiUser.username,
-  profilePic: apiUser.avatarurl || "/profile/default.jpg",
+  profilePic: apiUser.avatarurl || "/profile/6.jpg",
   games: apiUser.games,
   cost: "$0.00/game", // You can update this if your API provides cost info
   active: apiUser.isActive,

@@ -74,7 +74,7 @@ function Content() {
                     <div className="p-2 sm:p-4 flex flex-col gap-4">
                         <div className=" pl-4 flex gap-2">
                             <div className="border rounded-2xl w-fit ">
-                                <img src="/profile/115.jpg" alt="user" className="w-24 sm:min-w-36 sm:h-36 rounded-2xl" />
+                                <img src={user?.avatarurl} alt="user" className="w-24 sm:min-w-36 sm:h-36 rounded-2xl" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="text-2xl">{user?.username}</div>
