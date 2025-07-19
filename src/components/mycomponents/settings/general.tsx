@@ -207,8 +207,7 @@ function General() {
                                     </div>
 
                                 </div>
-                                <Button className="h-10 rounded-xl bg-[#2856F4] text-white hover:bg-blue-500/80 transition-all duration-300 cursor-pointer">Save</Button>
-                                <form className="flex flex-col gap-2">
+                               <form className="flex flex-col gap-2">
                                         <div className="text-xl font-bold mb-2">Change password</div>
                                         <div className="flex flex-col gap-2">
                                             <div className="flex flex-col gap-2 w-full">

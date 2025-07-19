@@ -46,19 +46,14 @@ function SettingsSidebar() {
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-            let base64String = reader.result as string;
-            // Remove the data URL prefix if present
-            const match = base64String.match(/^data:.*;base64,(.*)$/);
-            if (match) base64String = match[1];
-            // Call the API to update avatar with the required format
-            const result = await UpdateUserAvatar({ $binary: base64String });
-            if (result) {
-                setProfilePic(reader.result as string); // Show preview
-            }
-        };
-        reader.readAsDataURL(file);
+
+        // Call the API with the file directly
+        const result = await UpdateUserAvatar(file);
+        if (result) {
+            // Create a preview URL for immediate display
+            const previewUrl = URL.createObjectURL(file);
+            setProfilePic(previewUrl);
+        }
     };
 
     return (
