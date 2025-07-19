@@ -1,24 +1,33 @@
 
-import Suggestions from "./suggestion"
+import Categories from "./categories"
 import { useTranslation } from "react-i18next"
 import Footer from "../global/footer"
-import TopCreatorsContent from "./topcreators"
+import JustChatting from "./CategoryRows/just-chatting"
 import Navbar from "../navbar/navbar"
 import HomeGames from "./games"
+import Gamers from "./CategoryRows/gamers"
+import Musician from "./CategoryRows/musician"
+import Tiktok from "./CategoryRows/tiktok"
+import Youtube from "./CategoryRows/youtube"
 
 function Content() {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     return (
         <>
             <div className="w-full xl:h-screen sm:p-2">
-                <div className="w-full h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
-                    <div className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-2xl sm:rounded-t-2xl">
+                <div className="w-full h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
+                    <div className="sticky top-0 z-50 bg-black/10 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("home")} />
                     </div>
                     <div className="min-h-[950px]">
-                        <TopCreatorsContent />
+
+                        <Categories />
+                        <JustChatting />
+                        <Gamers />
+                        <Musician />
+                        <Tiktok />
+                        <Youtube />
                         <HomeGames />
-                        <Suggestions />
                     </div>
                     <Footer />
                 </div>
