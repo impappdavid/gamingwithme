@@ -1,60 +1,24 @@
-import { BadgeCheck, Gamepad2, House, Info, MessagesSquare, Music, Plus, Search, Swords, Youtube } from "lucide-react"
+import { BadgeCheck, Gamepad2, Info, MessagesSquare, Music, Plus, Swords, Youtube } from "lucide-react"
 import { Link, NavLink } from "react-router-dom"
-import { useMemo, useState, useEffect } from "react"
-import SearchUserCard from "./searchUsercard"
-import TopCreators from "./topCreators"
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
+import { useState, useEffect } from "react"
+
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
-import { Input } from "@/components/ui/input"
-import { GetUserInfos, IsLoggedIn, GetAllUser } from "@/api/sidebar"
-import type { UserInfos } from "@/api/sidebar"
+
+import { IsLoggedIn } from "@/api/sidebar"
 import { BecomeACreator } from "@/api/creator"
 import { GetUserAllInformation, getUserCommonInfos, type UserAllInfo } from "@/api/settings"
 
-// User type for UI components
-type User = {
-    name: string;
-    profilePic: string;
-    games: string[];
-    cost: string;
-    active: boolean;
-};
 
-// Map UserInfos to User for UI components
-function mapUserInfosToUser(user: UserInfos): User {
-    return {
-        name: user.username,
-        profilePic: user.avatarurl,
-        games: user.games,
-        cost: "$0.00", // Adjust if you have pricing info
-        active: user.isActive,
-    };
-}
-// User type for UI components
-type Become = {
-    onboardingUrl: string;
-    connectedAccountId: string;
-};
 
 
 function Sidebar() {
     const { t } = useTranslation();
     const [isCreator, setIsCreator] = useState(false);
-    const [currentUser, setCurrentUser] = useState<UserInfos | null>(null);
-    const [allUsers, setAllUsers] = useState<UserInfos[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
-    const [filterText, setFilterText] = useState("");
+
     const navigate = (window as any).navigate || ((url: string) => { window.location.href = url });
 
     useEffect(() => {
@@ -76,33 +40,9 @@ function Sidebar() {
         fetchUser();
     }, []);
 
-    useEffect(() => {
-        // Fetch all users for search dialog
-        const fetchAllUsers = async () => {
-            try {
-                const users = await GetAllUser();
-                // If API returns a single object, wrap in array
-                setAllUsers(Array.isArray(users) ? users : [users]);
-            } catch (err: any) {
-                setError(err?.message || "Unknown error");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchAllUsers();
-    }, []);
 
-    // Filtering logic
-    const filteredUsers: UserInfos[] = useMemo(() => {
-        if (filterText.length === 0) {
-            // Show only first 16 users from allUsers
-            return allUsers.slice(0, 16);
-        }
-        return allUsers.filter(user =>
-            user.username.toLowerCase().includes(filterText.toLowerCase()) ||
-            user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()))
-        );
-    }, [allUsers, filterText]);
+
+
 
     // Handle Become button click
     const handleBecomeClick = async () => {
@@ -132,51 +72,6 @@ function Sidebar() {
                         <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
                     </Link>
                     <div className="flex flex-col gap-1 p-2">
-                        <div className="mb-2">
-                            <Dialog>
-                                <DialogTrigger asChild className="">
-                                    <div className=" rounded-lg h-9 w-10 xl:w-full  bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
-                                        <Search className="w-5 h-5" />
-                                        <div className="hidden xl:flex">Search...</div>
-                                    </div>
-
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col ">
-                                    <DialogHeader>
-                                        <DialogTitle className="flex justify-between gap-4">
-                                            <Input type="text" placeholder={t("Search")} className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                                            <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">{t("close")}</DialogClose>
-                                        </DialogTitle>
-                                        <div className="h-[1px] bg-zinc-800"></div>
-                                        <DialogDescription className="h-full">
-                                            {filterText.length > 0 ? (
-                                                <SearchUserCard users={filteredUsers.map(mapUserInfosToUser)} />
-                                            ) : (
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="text-start">{t("TopCreators")}</div>
-                                                    <TopCreators users={filteredUsers.map(mapUserInfosToUser)} />
-                                                </div>
-                                            )}
-                                        </DialogDescription>
-
-                                    </DialogHeader>
-
-                                </DialogContent>
-                            </Dialog >
-                        </div>
-                        
-
-
-
-
-                        <NavLink to="../players" className={({ isActive }) =>
-                            isActive
-                                ? `${baseClass} bg-[#19FF00] text-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
-                        }>
-                            <Gamepad2 className="w-5 h-5 text-[#2856F4]" />
-                            <div className="text-md font-medium hidden xl:flex">{t("Players")}</div>
-                        </NavLink>
                         <NavLink to="../just-chatting" className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`
@@ -185,6 +80,15 @@ function Sidebar() {
                             <MessagesSquare className="w-5 h-5 text-[#2856F4]" />
                             <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
                         </NavLink>
+                        <NavLink to="../gamers" className={({ isActive }) =>
+                            isActive
+                                ? `${baseClass} bg-[#19FF00] text-black`
+                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
+                        }>
+                            <Gamepad2 className="w-5 h-5 text-[#2856F4]" />
+                            <div className="text-md font-medium hidden xl:flex">{t("Gamers")}</div>
+                        </NavLink>
+
                         <NavLink to="../music" className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`

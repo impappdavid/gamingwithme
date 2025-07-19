@@ -9,6 +9,7 @@ import Gamers from "./CategoryRows/gamers"
 import Musician from "./CategoryRows/musician"
 import Tiktok from "./CategoryRows/tiktok"
 import Youtube from "./CategoryRows/youtube"
+import SearchBar from "../global/search"
 
 function Content() {
     const { t } = useTranslation()
@@ -20,7 +21,7 @@ function Content() {
                         <Navbar page={t("home")} />
                     </div>
                     <div className="min-h-[950px]">
-
+                        <SearchBar />
                         <Categories />
                         <JustChatting />
                         <Gamers />
