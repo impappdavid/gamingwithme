@@ -1,7 +1,7 @@
 import Sidebar from "@/components/mycomponents/global/sidebar"
 import Content from "@/components/mycomponents/players/content"
 
-function Players() {
+function Gamers() {
     return (
         <>
             <div className="flex">
@@ -11,4 +11,4 @@ function Players() {
         </>
     )
 }
-export default Players
+export default Gamers

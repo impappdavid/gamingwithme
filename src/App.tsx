@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
 import Home from "./pages/Home";
-import Players from "./pages/Players";
 import { lazy } from "react";
 import JustChatting from "./pages/JustChatting";
 import Music from "./pages/Music";
@@ -17,6 +16,7 @@ import CreateListing from "./pages/CreateListing";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Gamers from "./pages/Gamers";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -30,7 +30,7 @@ function App() {
             <Route index element={<Home />} /> {/* ---------------- */}
             <Route path="/login" element={<Login />} />{/* ---------------- */}
             <Route path="/registration" element={<Registration />} />{/* ---------------- */}
-            <Route path="/players" element={<Players />} />{/* ---------------- */}
+            <Route path="/gamers" element={<Gamers />} />{/* ---------------- */}
             <Route path="/just-chatting" element={<JustChatting />} />{/* ---------------- */}
             <Route path="/music" element={<Music />} />{/* ---------------- */}
             <Route path="/tiktok" element={<Tiktok />} />{/* ---------------- */}
