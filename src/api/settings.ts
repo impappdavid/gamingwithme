@@ -217,12 +217,14 @@ export const DeleteAccount = async (
 
 export const AddGameTags = async (
     gameName: string,
+    useCookies?: boolean
 ) => {
     try {
         const API_URL = 'https://localhost:7091';
-        const response = await axios.post(`${API_URL}/api/user/games`,
+        const response = await axios.post(`${API_URL}/api/user/games/${gameName}`,
+            {},
             {
-                params: { gameName },
+                params: useCookies !== undefined ? { useCookies } : {},
                 withCredentials: true,
             });
 
@@ -236,13 +238,52 @@ export const AddGameTags = async (
 
 export const DeleteGameTag = async (
     gameName: string,
+    useCookies?: boolean
 ) => {
     try {
         const API_URL = 'https://localhost:7091';
-        const response = await axios.delete(`${API_URL}/api/user/games`, {
-            params: { gameName },
+        const response = await axios.delete(`${API_URL}/api/user/games/${gameName}`, {
+            params: useCookies !== undefined ? { useCookies } : {},
             withCredentials: true,
         });
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
+export const AddNewTag = async (
+    tagName: string,
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(`${API_URL}/api/user/tags/${tagName}`,
+            {},
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            });
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
+export const DeleteTag = async (
+    tagId: string,
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.delete(`${API_URL}/api/user/tags/${tagId}`,
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+
+            });
         return response;
     } catch (error) {
         console.error('Error fetching user info:', error);
