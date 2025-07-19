@@ -137,24 +137,26 @@ export const UpdateUserPassword = async (
 };
 
 export const UpdateUserAvatar = async (
-    avatarFile: { $binary: string },
+    file: File,
     useCookies?: boolean
 ) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.put(`${API_URL}/api/user/avatar`,
-            {
-                avatarFile
-            },
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-            });
+        const API_URL = 'https://localhost:7091/';
 
-        // ✅ RETURN the result!
+        const formData = new FormData();
+        formData.append('avatarFile', file);
+
+        const response = await axios.put(`${API_URL}/api/user/avatar`, formData, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
+        console.error('Error updating user avatar:', error);
         return null;
     }
 };
