@@ -1,5 +1,5 @@
 import { BadgeCheck, Gamepad2, House, Info, MessagesSquare, Music, Plus, Search, Swords, Youtube } from "lucide-react"
-import { NavLink } from "react-router-dom"
+import { Link, NavLink } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import SearchUserCard from "./searchUsercard"
 import TopCreators from "./topCreators"
@@ -127,10 +127,10 @@ function Sidebar() {
         <>
             <div className="  xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">
                 <div className="flex flex-col gap-2">
-                    <div className="flex gap-1 items-center p-3 px-4">
+                    <Link to={'../'} className="flex gap-1 items-center p-3 px-4">
                         <img src="/logo.png" alt="" className="w-8 h-8" />
                         <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
-                    </div>
+                    </Link>
                     <div className="flex flex-col gap-1 p-2">
                         <div className="mb-2">
                             <Dialog>
@@ -164,18 +164,7 @@ function Sidebar() {
                                 </DialogContent>
                             </Dialog >
                         </div>
-                        <NavLink
-                            to="/"
-                            end
-                            className={({ isActive }) =>
-                                isActive
-                                    ? `${baseClass} bg-[#19FF00] text-black`
-                                    : `${baseClass} text-[#19FF00] hover:text-green-500`
-                            }
-                        >
-                            <House className="w-5 h-5 text-[#2856F4]" />
-                            <div className="text-md font-medium hidden xl:flex">{t("home")}</div>
-                        </NavLink>
+                        
 
 
 
