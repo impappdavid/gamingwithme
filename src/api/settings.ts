@@ -215,3 +215,37 @@ export const DeleteAccount = async (
     }
 };
 
+export const AddGameTags = async (
+    gameName: string,
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(`${API_URL}/api/user/games`,
+            {
+                params: { gameName },
+                withCredentials: true,
+            });
+
+        // ✅ RETURN the result!
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
+export const DeleteGameTag = async (
+    gameName: string,
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.delete(`${API_URL}/api/user/games`, {
+            params: { gameName },
+            withCredentials: true,
+        });
+        return response;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};

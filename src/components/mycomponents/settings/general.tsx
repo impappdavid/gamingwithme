@@ -6,8 +6,9 @@ import { CaseLower, KeyRound, Tag, User } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { GetUserAllInformation, getUserCommonInfos, UpdateUserBio, UpdateUsername, UpdateUserPassword, type UserAllInfo } from "@/api/settings"
+import { GetUserAllInformation, getUserCommonInfos, UpdateUserBio, UpdateUsername, UpdateUserPassword, type UserAllInfo, AddGameTags, DeleteGameTag } from "@/api/settings"
 import { fetchPopularGames, type Game } from "@/api/rawg"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectLabel } from "@/components/ui/select"
 
 function General() {
     const { t } = useTranslation()
@@ -24,6 +25,21 @@ function General() {
 
     const [inputValue, setInputValue] = useState("")
     const [filteredData, setFilteredData] = useState<Game[]>([]);
+    const [selectedTag, setSelectedTag] = useState("");
+    const [selectedLanguage, setSelectedLanguage] = useState("");
+    const languageOptions = [
+        { value: "en", label: "English" },
+        { value: "hu", label: "Hungary" },
+        { value: "de", label: "Deutsch" },
+        { value: "sp", label: "Spanish" },
+    ];
+    const tagOptions = [
+        { value: "gamer", label: "Gamer" },
+        { value: "justchatting", label: "Just Chatting" },
+        { value: "music", label: "Music" },
+        { value: "tiktok", label: "Tiktok" },
+        { value: "youtube", label: "Youtube" },
+    ];
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -54,17 +70,33 @@ function General() {
         fetchGames();
     }, []);
 
-    const addTag = (game: Game) => {
+    const addTag = async (game: Game) => {
         // Prevent duplicates
         if (!tags.some(t => t.name === game.name)) {
-            setTags([...tags, game]);
+            // Call API to add tag
+            try {
+                await AddGameTags(game.name);
+                setTags([...tags, game]);
+            } catch (err) {
+                // Optionally handle error
+                console.error("Failed to add game tag", err);
+            }
         }
         setInputValue("");
         setFilteredData([]);
     }
 
-    const removeTag = (indexToRemove: number) => {
-        setTags(tags.filter((_, index) => index !== indexToRemove));
+    const removeTag = async (indexToRemove: number) => {
+        const gameToRemove = tags[indexToRemove];
+        if (gameToRemove) {
+            try {
+                await DeleteGameTag(gameToRemove.name);
+                setTags(tags.filter((_, index) => index !== indexToRemove));
+            } catch (err) {
+                // Optionally handle error
+                console.error("Failed to remove game tag", err);
+            }
+        }
     }
 
     const handleUsernameChange = async () => {
@@ -89,6 +121,36 @@ function General() {
                         <SettingsSidebar />
                         <div className="w-full p-4">
                             <div className="flex flex-col gap-4">
+                                {/* Tag Select */}
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-semibold">Tags</label>
+                                    <Select value={selectedTag} onValueChange={setSelectedTag}>
+                                        <SelectTrigger className="w-60">
+                                            <SelectValue placeholder="Select a tag" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectLabel>Tags</SelectLabel>
+                                            {tagOptions.map(opt => (
+                                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                {/* Language Select */}
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-semibold">Languages</label>
+                                    <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                                        <SelectTrigger className="w-60">
+                                            <SelectValue placeholder="Select a language" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectLabel>Languages</SelectLabel>
+                                            {languageOptions.map(opt => (
+                                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                                 <form className="flex flex-col gap-2">
                                     <div className="flex flex-col">
                                         <div className="text-xl font-bold mb-2">Change username</div>
