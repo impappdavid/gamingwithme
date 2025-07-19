@@ -37,7 +37,7 @@ function Navbar({ page }: NavbarProps) {
 
     return (
         <>
-            <div className="flex justify-between p-4 items-center bg-zinc-950 border-b border-zinc-800">
+            <div className="flex justify-between p-4 items-center bg-black/60 border-b border-zinc-800">
                 <div className="text-xl font-semibold hidden sm:flex">{page}</div>
 
                 <div className="flex sm:hidden">
