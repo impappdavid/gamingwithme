@@ -2,23 +2,23 @@ import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
 import { Input } from "@/components/ui/input"
-import { CaseLower, KeyRound, Tag, User } from "lucide-react"
-import { useEffect, useState } from "react"
+import { CaseLower, KeyRound, Tag, User, X } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { 
-    getUserAllInformation, 
-    getUserCommonInfos, 
-    updateUserBio, 
-    updateUsername, 
-    updateUserPassword, 
-    addGameTag, 
-    deleteGameTag, 
-    addNewTag, 
-    deleteTag 
+import {
+    getUserAllInformation,
+    getUserCommonInfos,
+    updateUserBio,
+    updateUsername,
+    updateUserPassword,
+    addGameTag,
+    deleteGameTag,
+    addNewTag,
+    deleteTag
 } from "@/api/settings"
 import type { UserProfile } from "@/api/types"
-import { fetchPopularGamesFromRAWG } from "@/api/games"
+import { fetchPopularGamesFromRAWG, fetchGameFromRAWG } from "@/api/games"
 import type { RAWGGame } from "@/api/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
@@ -35,12 +35,15 @@ function General() {
     const [tagInput, setTagInput] = useState("");
     const [tags, setTags] = useState<RAWGGame[]>([]);
     const [gameTags, setGameTags] = useState<RAWGGame[]>([]);
+    const [userGames, setUserGames] = useState<string[]>([]); // store game names from profile
+    const [rawgGameTags, setRawgGameTags] = useState<RAWGGame[]>([]); // store RAWG data for user's games
 
     const [inputValue, setInputValue] = useState("")
     const [filteredData, setFilteredData] = useState<RAWGGame[]>([]);
+    const searchTimeout = useRef<NodeJS.Timeout | null>(null);
     const [selectedTag, setSelectedTag] = useState("");
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-    
+
     const languageOptions = [
         { value: "en", label: "English" },
         { value: "es", label: "Spanish" },
@@ -51,7 +54,7 @@ function General() {
         { value: "zh", label: "Chinese" },
         { value: "ja", label: "Japanese" },
     ];
-    
+
     const tagOptions = [
         { value: "gamer", label: "Gamer" },
         { value: "justchatting", label: "Just chatting" },
@@ -59,7 +62,7 @@ function General() {
         { value: "tiktoker", label: "Tiktoker" },
         { value: "youtuber", label: "Youtuber" },
     ];
-    
+
     const [languageSearch, setLanguageSearch] = useState("");
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -73,6 +76,14 @@ function General() {
                     setUser(full);
                     setUsername(full.username);
                     setBio(full.bio);
+                    setUserGames(full.games || []); // set games from profile
+                    // Only set selectedTags if 'tags' exists on the profile
+                    if ('tags' in full && Array.isArray((full as any).tags)) {
+                        setSelectedTags((full as any).tags);
+                    } else {
+                        setSelectedTags([]);
+                    }
+                    setSelectedLanguages(full.languages || []); // set languages from profile
                 } else {
                     setUser(null);
                 }
@@ -84,8 +95,7 @@ function General() {
             }
         };
         fetchUser();
-        
-        // Fetch games for tags
+        // Fetch games for tags (for search dropdown)
         const fetchGames = async () => {
             try {
                 const games = await fetchPopularGamesFromRAWG();
@@ -97,12 +107,51 @@ function General() {
         fetchGames();
     }, []);
 
+    // Fetch RAWG data for each game in userGames
+    useEffect(() => {
+        const fetchRAWGForGames = async () => {
+            if (!userGames.length) {
+                setRawgGameTags([]);
+                return;
+            }
+            const results: RAWGGame[] = [];
+            for (const gameName of userGames) {
+                const rawg = await fetchGameFromRAWG(gameName);
+                if (rawg) results.push(rawg);
+            }
+            setRawgGameTags(results);
+        };
+        fetchRAWGForGames();
+    }, [userGames]);
+
+    // Game search: use RAWG API for live search
+    useEffect(() => {
+        if (inputValue.trim() === "") {
+            setFilteredData([]);
+            return;
+        }
+        // Debounce API call
+        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        searchTimeout.current = setTimeout(async () => {
+            const result = await fetchGameFromRAWG(inputValue);
+            if (result) {
+                setFilteredData([result]);
+            } else {
+                setFilteredData([]);
+            }
+        }, 400);
+        // Cleanup
+        return () => {
+            if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        };
+    }, [inputValue]);
+
+    // Add game tag (from search dropdown)
     const addTag = async (game: RAWGGame) => {
-        // Prevent duplicates
-        if (!tags.some(t => t.name === game.name)) {
+        if (!userGames.includes(game.name)) {
             try {
                 await addGameTag(game.name);
-                setTags([...tags, game]);
+                setUserGames([...userGames, game.name]);
             } catch (err) {
                 console.error("Failed to add game tag", err);
             }
@@ -111,12 +160,13 @@ function General() {
         setFilteredData([]);
     }
 
+    // Remove game tag by index
     const removeTag = async (indexToRemove: number) => {
-        const gameToRemove = tags[indexToRemove];
+        const gameToRemove = rawgGameTags[indexToRemove];
         if (gameToRemove) {
             try {
                 await deleteGameTag(gameToRemove.name);
-                setTags(tags.filter((_, index) => index !== indexToRemove));
+                setUserGames(userGames.filter((name) => name !== gameToRemove.name));
             } catch (err) {
                 console.error("Failed to remove game tag", err);
             }
@@ -239,7 +289,7 @@ function General() {
                                         </PopoverContent>
                                     </Popover>
                                 </div>
-                                
+
                                 {/* Language Multi-Select Combobox */}
                                 <div className="flex flex-col gap-2 w-full">
                                     <label className="text-sm font-semibold">Languages</label>
@@ -355,7 +405,7 @@ function General() {
                             {/* Game Tags Section */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-sm font-semibold">Game Tags</label>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 relative">
                                     <div className="relative flex-1">
                                         <Tag className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
                                         <Input
@@ -363,26 +413,42 @@ function General() {
                                             placeholder="Search games..."
                                             className="pl-10 h-11 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                                             value={inputValue}
-                                            onChange={(e) => setInputValue(e.target.value)}
+                                            onChange={(e) => {
+                                                setInputValue(e.target.value);
+                                            }}
+                                            autoComplete="off"
                                         />
+                                        {/* Dropdown for filtered games */}
+                                        {filteredData.length > 0 && (
+                                            <div className="absolute left-0 right-0 mt-1 bg-zinc-900 border border-zinc-800 rounded-xl shadow-lg z-10 max-h-60 overflow-y-auto">
+                                                {filteredData.map((game, idx) => (
+                                                    <button
+                                                        key={game.name}
+                                                        type="button"
+                                                        className="flex items-center gap-3 w-full px-3 py-2 hover:bg-zinc-800/60 text-left cursor-pointer"
+                                                        onClick={() => addTag(game)}
+                                                    >
+                                                        {game.background_image && (
+                                                            <img src={game.background_image} alt={game.name} className="w-8 h-8 rounded object-cover" />
+                                                        )}
+                                                        <span className="text-sm">{game.name}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
-                                    <Button onClick={() => addTag(gameTags[0])} className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300">
-                                        Add
-                                    </Button>
                                 </div>
-                                
                                 {/* Display current tags */}
                                 <div className="flex flex-wrap gap-2">
-                                    {tags.map((tag, index) => (
-                                        <div key={index} className="flex items-center gap-2 bg-zinc-800/40 px-3 py-1 rounded-lg">
+                                    {rawgGameTags.map((tag, index) => (
+                                        <button key={index} onClick={() => removeTag(index)} className="flex items-center gap-2 bg-zinc-800/40 hover:bg-red-500/20 px-3 py-2 rounded-lg transition-all duration-300 cursor-pointer">
+                                            {tag.background_image && (
+                                                <img src={tag.background_image} alt={tag.name} className="w-6 h-6 rounded object-cover" />
+                                            )}
                                             <span className="text-sm">{tag.name}</span>
-                                            <button
-                                                onClick={() => removeTag(index)}
-                                                className="text-red-400 hover:text-red-300 text-sm"
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
+
+                                            <X className="w-4 h-4" />
+                                        </button>
                                     ))}
                                 </div>
                             </div>
