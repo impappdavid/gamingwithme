@@ -22,6 +22,7 @@ import { fetchPopularGamesFromRAWG, fetchGameFromRAWG } from "@/api/games"
 import type { RAWGGame } from "@/api/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Label } from "@/components/ui/label"
 
 function General() {
     const { t } = useTranslation()
@@ -39,7 +40,7 @@ function General() {
     const [inputValue, setInputValue] = useState("")
     const [filteredData, setFilteredData] = useState<RAWGGame[]>([]);
     const searchTimeout = useRef<NodeJS.Timeout | null>(null);
-    const [selectedTag, setSelectedTag] = useState("");
+
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
     const languageOptions = [
@@ -62,7 +63,7 @@ function General() {
     ];
 
     const [languageSearch, setLanguageSearch] = useState("");
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [userAlreadyHasTags, setUserAlreadyHasTags] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -75,11 +76,14 @@ function General() {
                     setUsername(full.username);
                     setBio(full.bio);
                     setUserGames(full.games || []); // set games from profile
-                    // Only set selectedTags if 'tags' exists on the profile
-                    if ('tags' in full && Array.isArray((full as any).tags)) {
-                        setSelectedTags((full as any).tags);
+                    // Set userAlreadyHasTags from backend if present
+                    const tagsFromBackend = (full as any).tags;
+                    if (Array.isArray(tagsFromBackend)) {
+                        setUserAlreadyHasTags(tagsFromBackend);
+                        console.log('User tags from backend:', tagsFromBackend);
                     } else {
-                        setSelectedTags([]);
+                        setUserAlreadyHasTags([]);
+                        console.log('User tags from backend: []');
                     }
                     setSelectedLanguages(full.languages || []); // set languages from profile
                 } else {
@@ -187,6 +191,9 @@ function General() {
         }
     }
 
+
+
+
     if (loading) {
         return (
             <div className="w-full h-screen sm:p-2">
@@ -237,10 +244,17 @@ function General() {
                                                 type="button"
                                                 className="w-full h-11 border rounded-xl bg-zinc-800/40 px-3 flex items-center justify-between text-left"
                                             >
-                                                <span className="truncate text-xs">
-                                                    {selectedTags.length > 0
-                                                        ? tagOptions.filter(opt => selectedTags.includes(opt.value)).map(opt => opt.label).join(", ")
-                                                        : "Select tags..."}
+                                                <span className="truncate text-xs flex gap-1">
+                                                    {userAlreadyHasTags.length > 0 ? (
+                                                        <>
+                                                            {userAlreadyHasTags.map((Element, index) => (
+                                                                <div className="">{Element},</div>
+                                                            ))}
+                                                        </>
+                                                    ) : (
+                                                        <div className="">Select tags...</div>
+                                                    )}
+
                                                 </span>
                                                 <svg className="w-4 h-4 ml-2 opacity-50" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -249,32 +263,37 @@ function General() {
                                         </PopoverTrigger>
                                         <PopoverContent className="w-[var(--radix-popover-trigger-width)] min-w-[200px] p-2 rounded-xl">
                                             <div className="overflow-y-auto flex flex-col gap-1">
-                                                {tagOptions.map(opt => (
-                                                    <label key={opt.value} className="flex items-center gap-2 cursor-pointer text-xs px-2 py-2 rounded-lg hover:bg-zinc-700/30">
-                                                        <Checkbox
-                                                            checked={selectedTags.includes(opt.value)}
-                                                            onCheckedChange={async checked => {
-                                                                if (checked) {
-                                                                    try {
-                                                                        await addNewTag(opt.value);
-                                                                        setSelectedTags(prev => [...prev, opt.value]);
-                                                                    } catch (err) {
-                                                                        console.error("Failed to add tag", err);
+                                                {tagOptions.map((element, index) => {
+                                                    const isChecked = userAlreadyHasTags.includes(element.label);
+
+                                                    return (
+                                                        <div className="flex items-center gap-3" key={index}>
+                                                            <Checkbox
+                                                                id={`tag-${index}`}
+                                                                checked={isChecked}
+                                                                onCheckedChange={async (checked) => {
+                                                                    const tag = element.label;
+                                                                    if (checked) {
+                                                                        try {
+                                                                            await addNewTag(tag);
+                                                                            setUserAlreadyHasTags((prev) => [...prev, tag]);
+                                                                        } catch (err) {
+                                                                            console.error("Failed to add tag", err);
+                                                                        }
+                                                                    } else {
+                                                                        try {
+                                                                            await deleteTag(tag);
+                                                                            setUserAlreadyHasTags((prev) => prev.filter((t) => t !== tag));
+                                                                        } catch (err) {
+                                                                            console.error("Failed to remove tag", err);
+                                                                        }
                                                                     }
-                                                                } else {
-                                                                    try {
-                                                                        await deleteTag(opt.value);
-                                                                        setSelectedTags(prev => prev.filter(v => v !== opt.value));
-                                                                    } catch (err) {
-                                                                        console.error("Failed to remove tag", err);
-                                                                    }
-                                                                }
-                                                            }}
-                                                            id={`tag-${opt.value}`}
-                                                        />
-                                                        <span>{opt.label}</span>
-                                                    </label>
-                                                ))}
+                                                                }}
+                                                            />
+                                                            <Label htmlFor={`tag-${index}`}>{element.label}</Label>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </PopoverContent>
                                     </Popover>
