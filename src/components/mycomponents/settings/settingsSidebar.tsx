@@ -1,4 +1,4 @@
-import { SettingsIcon, History, TriangleAlert, TicketPercent } from "lucide-react"
+import { SettingsIcon, History, TriangleAlert, TicketPercent, LibraryBig, ShieldCheck } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import { useEffect, useState, useRef } from "react"
 import { getUserCommonInfos, updateUserAvatar } from "@/api/settings"
@@ -97,8 +97,8 @@ function SettingsSidebar() {
                         }`
                     }
                 >
-                    <History className="w-4 h-4" />
-                    <div className="sm:flex hidden">Active purchases</div>
+                    <LibraryBig className="w-4 h-4" />
+                    <div className="sm:flex hidden">Upcoming bookings</div>
                 </NavLink>
 
                 <NavLink
@@ -120,6 +120,16 @@ function SettingsSidebar() {
                 >
                     <TicketPercent className="w-4 h-4" />
                     <div className="sm:flex hidden">Coupons</div>
+                </NavLink>
+                <NavLink
+                    to="/settings/security"
+                    className={({ isActive }) =>
+                        `flex gap-2 items-center py-2 px-2 rounded-xl transition-all duration-300 hover:bg-zinc-800/60 ${isActive ? "text-white" : "text-zinc-400 hover:text-white"
+                        }`
+                    }
+                >
+                    <ShieldCheck className="w-4 h-4" />
+                    <div className="sm:flex hidden">Security</div>
                 </NavLink>
                 <NavLink
                     to="/settings/danger"

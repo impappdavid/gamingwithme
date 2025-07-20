@@ -26,8 +26,6 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 function General() {
     const { t } = useTranslation()
     const [username, setUsername] = useState("");
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
     const [bio, setBio] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -186,14 +184,6 @@ function General() {
             await updateUserBio(bio);
         } catch (err) {
             console.error("Failed to update bio", err);
-        }
-    }
-
-    const handlePasswordChange = async () => {
-        try {
-            await updateUserPassword(currentPassword, newPassword);
-        } catch (err) {
-            console.error("Failed to update password", err);
         }
     }
 
@@ -368,36 +358,6 @@ function General() {
                                     </div>
                                     <Button onClick={handleBioChange} className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300">
                                         Update
-                                    </Button>
-                                </div>
-                            </div>
-
-                            {/* Password Section */}
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm font-semibold">Change Password</label>
-                                <div className="grid grid-cols-1 gap-2">
-                                    <div className="relative">
-                                        <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
-                                        <Input
-                                            type="password"
-                                            placeholder="Current Password"
-                                            className="pl-10 h-11 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
-                                            value={currentPassword}
-                                            onChange={(e) => setCurrentPassword(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="relative">
-                                        <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
-                                        <Input
-                                            type="password"
-                                            placeholder="New Password"
-                                            className="pl-10 h-11 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                        />
-                                    </div>
-                                    <Button onClick={handlePasswordChange} className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300">
-                                        Update Password
                                     </Button>
                                 </div>
                             </div>

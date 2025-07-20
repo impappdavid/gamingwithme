@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Gamers from "./pages/Gamers";
+import SecurityPage from "./pages/Security";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -42,6 +43,7 @@ function App() {
               <Route path="/settings/general" element={<Settings />} />
               <Route path="/settings/history" element={<History />} />
               <Route path="/settings/active-history" element={<Activehistory />} />
+              <Route path="/settings/security" element={<SecurityPage />} />
               <Route path="/settings/danger" element={<Danger />} />
             </Route>
             <Route path="/games/:slug" element={<Game />} />{/* ---------------- */}
