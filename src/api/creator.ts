@@ -1,20 +1,12 @@
-import axios from "axios";
+import { apiClient, createRequestConfig, handleApiError } from './client';
 
-export const BecomeACreator = async (
-    useCookies?: boolean
-) => {
+// Become a creator by creating Stripe connected account
+export const becomeACreator = async (useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.post(`${API_URL}/api/stripe/create-connected-account`,
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-            });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.post('/api/stripe/create-connected-account', {}, createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
+        console.error('Error creating connected account:', error);
         return null;
     }
 };

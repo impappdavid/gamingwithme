@@ -1,159 +1,76 @@
-import axios from "axios";
+import { apiClient, createRequestConfig, handleApiError } from './client';
+import type { UserCommonInfos, UserProfile } from './types';
 
-export interface UserCommonInfos {
-    id: string;
-    username: string;
-}
-
-export type UserAllInfo = {
-    id: number
-    username: string
-    avatarurl: string
-    bio: string
-    isActive: boolean
-    languages: string[]
-    games: string[]
-    hasStripeAccount: boolean
-    bookings: {
-        id: string,
-        startTime: Date,
-        duration: string,
-        customerName: string
-    }[]
-    availability: {
-        id: string,
-        date: Date,
-        startTime: string,
-        endTime: string,
-        isAvailable: boolean
-    }[]
-    joined: string
-}
-
-export const GetUserAllInformation = async (
-    username: string
-) => {
+// Get current user's basic info
+export const getUserCommonInfos = async (useCookies?: boolean): Promise<UserCommonInfos | null> => {
     try {
-        // TODO: Replace with your actual API URL or use an environment variable
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.get(
-            `${API_URL}/api/user/profile/${username}`
-        );
-        return response.data;
+        const response = await apiClient.get('/api/user/me', createRequestConfig(useCookies));
+        return response.data as UserCommonInfos;
     } catch (error) {
-        console.error('Error logging in user:', error);
+        console.error('Error fetching user info:', error);
+        return null;
+    }
+};
+
+// Get user's full profile information
+export const getUserAllInformation = async (username: string): Promise<UserProfile> => {
+    try {
+        const response = await apiClient.get(`/api/user/profile/${username}`);
+        return response.data as UserProfile;
+    } catch (error) {
+        handleApiError(error, 'fetching user information');
         throw error;
     }
-}
-
-
-export const getUserCommonInfos = async (
-    useCookies?: boolean
-): Promise<UserCommonInfos | null> => {
-    try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.get(`${API_URL}/api/user/me`, {
-            params: useCookies !== undefined ? { useCookies } : {},
-            withCredentials: true,
-        });
-
-        // ✅ RETURN the result!
-        return response.data as UserCommonInfos;
-    } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
-    }
 };
 
-export const UpdateUsername = async (
-    username: string,
-    useCookies?: boolean
-) => {
+// Update username
+export const updateUsername = async (username: string, useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.put(`${API_URL}/api/user/username`,
-            {
-                username
-            },
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-            });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.put('/api/user/username', { username }, createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'updating username');
+        throw error;
     }
 };
 
-export const UpdateUserBio = async (
-    bio: string,
-    useCookies?: boolean
-): Promise<UserCommonInfos | null> => {
+// Update user bio
+export const updateUserBio = async (bio: string, useCookies?: boolean): Promise<UserCommonInfos | null> => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.put(`${API_URL}/api/user/bio`,
-            {
-                bio
-            },
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-            });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.put('/api/user/bio', { bio }, createRequestConfig(useCookies));
         return response.data as UserCommonInfos;
     } catch (error) {
-        console.error('Error fetching user info:', error);
+        console.error('Error updating user bio:', error);
         return null;
     }
 };
 
-export const UpdateUserPassword = async (
-    currentPassword: string,
-    newPassword: string,
-    useCookies?: boolean
-) => {
+// Update user password
+export const updateUserPassword = async (currentPassword: string, newPassword: string, useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.put(`${API_URL}/api/user/password`,
-            {
-                currentPassword,
-                newPassword
-            },
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-            });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.put('/api/user/password', {
+            currentPassword,
+            newPassword
+        }, createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'updating password');
+        throw error;
     }
 };
 
-export const UpdateUserAvatar = async (
-    file: File,
-    useCookies?: boolean
-) => {
+// Update user avatar
+export const updateUserAvatar = async (file: File, useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091/';
-
         const formData = new FormData();
         formData.append('avatarFile', file);
 
-        const response = await axios.put(`${API_URL}/api/user/avatar`, formData, {
-            params: useCookies !== undefined ? { useCookies } : {},
-            withCredentials: true,
+        const response = await apiClient.put('/api/user/avatar', formData, {
+            ...createRequestConfig(useCookies),
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
         });
-
         return response;
     } catch (error) {
         console.error('Error updating user avatar:', error);
@@ -161,131 +78,79 @@ export const UpdateUserAvatar = async (
     }
 };
 
-export const getUpcomingBookings = async (
-    useCookies?: boolean
-) => {
+// Get upcoming bookings
+export const getUpcomingBookings = async (useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.get(`${API_URL}/api/user/upcoming-bookings`, {
-            params: useCookies !== undefined ? { useCookies } : {},
-            withCredentials: true,
-        });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.get('/api/user/upcoming-bookings', createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'fetching upcoming bookings');
+        throw error;
     }
 };
 
-export const getBills = async (
-    useCookies?: boolean
-) => {
+// Get billing history
+export const getBills = async (useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.get(`${API_URL}/api/user/billing-history`, {
-            params: useCookies !== undefined ? { useCookies } : {},
-            withCredentials: true,
-        });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.get('/api/user/billing-history', createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'fetching billing history');
+        throw error;
     }
 };
 
-export const DeleteAccount = async (
-    useCookies?: boolean
-) => {
+// Delete account
+export const deleteAccount = async (useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.delete(`${API_URL}/api/account/delete`, {
-            params: useCookies !== undefined ? { useCookies } : {},
-            withCredentials: true,
-        });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.delete('/api/account/delete', createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'deleting account');
+        throw error;
     }
 };
 
-export const AddGameTags = async (
-    gameName: string,
-    useCookies?: boolean
-) => {
+// Add game tag
+export const addGameTag = async (gameName: string, useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.post(`${API_URL}/api/user/games/${gameName}`,
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-            });
-
-        // ✅ RETURN the result!
+        const response = await apiClient.post(`/api/user/games/${gameName}`, {}, createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'adding game tag');
+        throw error;
     }
 };
 
-export const DeleteGameTag = async (
-    gameName: string,
-    useCookies?: boolean
-) => {
+// Delete game tag
+export const deleteGameTag = async (gameName: string, useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.delete(`${API_URL}/api/user/games/${gameName}`, {
-            params: useCookies !== undefined ? { useCookies } : {},
-            withCredentials: true,
-        });
+        const response = await apiClient.delete(`/api/user/games/${gameName}`, createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'deleting game tag');
+        throw error;
     }
 };
 
-export const AddNewTag = async (
-    tagName: string,
-    useCookies?: boolean
-) => {
+// Add new tag
+export const addNewTag = async (tagName: string, useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.post(`${API_URL}/api/user/tags/${tagName}`,
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-
-            });
+        const response = await apiClient.post(`/api/user/tags/${tagName}`, {}, createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'adding new tag');
+        throw error;
     }
 };
 
-export const DeleteTag = async (
-    tagId: string,
-    useCookies?: boolean
-) => {
+// Delete tag
+export const deleteTag = async (tagId: string, useCookies?: boolean) => {
     try {
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.delete(`${API_URL}/api/user/tags/${tagId}`,
-            {
-                params: useCookies !== undefined ? { useCookies } : {},
-                withCredentials: true,
-
-            });
+        const response = await apiClient.delete(`/api/user/tags/${tagId}`, createRequestConfig(useCookies));
         return response;
     } catch (error) {
-        console.error('Error fetching user info:', error);
-        return null;
+        handleApiError(error, 'deleting tag');
+        throw error;
     }
 };
