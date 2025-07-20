@@ -1,5 +1,15 @@
 import axios from 'axios';
 
+export interface GoogleAuthResponse {
+    authorizationUrl?: string;
+    message?: string;
+}
+
+export interface FacebookAuthResponse {
+    authorizationUrl?: string;
+    message?: string;
+}
+
 export const login = async (
     email: string,
     password: string,
@@ -47,3 +57,38 @@ export const getUserCommonInfos = async (
         throw error;
     }
 }
+
+export const Google = async (
+): Promise<GoogleAuthResponse> => {
+    try {
+        // TODO: Replace with your actual API URL or use an environment variable
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(
+            `${API_URL}/api/account/login/google`
+        );
+        
+        // Return the authorization URL from the backend
+        return response.data as GoogleAuthResponse;
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        throw error;
+    }
+}
+
+export const Facebook = async (
+): Promise<FacebookAuthResponse> => {
+    try {
+        // TODO: Replace with your actual API URL or use an environment variable
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(
+            `${API_URL}/api/account/login/facebook`
+        );
+        
+        // Return the authorization URL from the backend
+        return response.data as FacebookAuthResponse;
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        throw error;
+    }
+}
+
