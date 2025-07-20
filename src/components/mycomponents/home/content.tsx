@@ -10,6 +10,7 @@ import Musician from "./CategoryRows/musician"
 import Tiktok from "./CategoryRows/tiktok"
 import Youtube from "./CategoryRows/youtube"
 import SearchBar from "../global/search"
+import Infos from "./infos"
 
 function Content() {
     const { t } = useTranslation()
@@ -20,8 +21,11 @@ function Content() {
                     <div className="sticky top-0 z-50 bg-black/10 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("home")} />
                     </div>
-                    <div className="min-h-[950px]">
-                        <SearchBar />
+                    <div className="min-h-[950px] p-4 flex flex-col gap-4">
+                        <div className="flex flex-col gap-2">
+                            <SearchBar />
+                            <Infos />
+                        </div>
                         <Categories />
                         <JustChatting />
                         <Gamers />

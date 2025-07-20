@@ -8,7 +8,7 @@ function Categories() {
 
     return (
         <>
-            <div className="flex flex-col gap-4 p-4">
+            <div className="flex flex-col gap-4">
                 <div className="flex w-full justify-between items-center">
                     <div className="text-xl font-medium">{t("Categories")}</div>
                 </div>

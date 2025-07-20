@@ -30,11 +30,11 @@ function Musician() {
         getTopCreators()
     }, [])
     if (loading) {
-        return <div className="p-4">Loading...</div>
+        return <div >Loading...</div>
     }
     return (
         <>
-            <div className="flex flex-col gap-4 p-4">
+            <div className="flex flex-col gap-4 ">
                 <div className="flex w-full justify-between items-center">
                     <div className="text-xl font-medium">{t("Music")}</div>
                 </div>

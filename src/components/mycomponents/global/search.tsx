@@ -71,38 +71,41 @@ function SearchBar() {
     }, []);
     return (
         <>
-            <div className="mb-2 p-4">
-                <Dialog>
-                    <DialogTrigger asChild className="">
-                        <div className=" rounded-lg h-9 w-10 xl:w-full  bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
-                            <Search className="w-5 h-5" />
-                            <div className="hidden xl:flex">Search between all users...</div>
-                        </div>
+            <div className="mb-2 ">
+                <div className="flex gap-1 ">
+                    <Dialog>
+                        <DialogTrigger asChild className="">
+                            <div className=" rounded-lg h-9  xl:w-full  bg-zinc-950 hover:bg-zinc-900/50 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
+                                <Search className="w-5 h-5" />
+                                <div className="hidden xl:flex">Search between all users...</div>
+                            </div>
 
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col ">
-                        <DialogHeader>
-                            <DialogTitle className="flex justify-between gap-4">
-                                <Input type="text" placeholder={t("Search")} className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                                <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">{t("close")}</DialogClose>
-                            </DialogTitle>
-                            <div className="h-[1px] bg-zinc-800"></div>
-                            <DialogDescription className="h-full">
-                                {filterText.length > 0 ? (
-                                    <SearchUserCard users={filteredUsers.map(mapUserInfosToUser)} />
-                                ) : (
-                                    <div className="flex flex-col gap-2">
-                                        <div className="text-start">{t("TopCreators")}</div>
-                                        <TopCreators users={filteredUsers.map(mapUserInfosToUser)} />
-                                    </div>
-                                )}
-                            </DialogDescription>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col ">
+                            <DialogHeader>
+                                <DialogTitle className="flex justify-between gap-4">
+                                    <Input type="text" placeholder={t("Search")} className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+                                    <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">{t("close")}</DialogClose>
+                                </DialogTitle>
+                                <div className="h-[1px] bg-zinc-800"></div>
+                                <DialogDescription className="h-full">
+                                    {filterText.length > 0 ? (
+                                        <SearchUserCard users={filteredUsers.map(mapUserInfosToUser)} />
+                                    ) : (
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-start">{t("TopCreators")}</div>
+                                            <TopCreators users={filteredUsers.map(mapUserInfosToUser)} />
+                                        </div>
+                                    )}
+                                </DialogDescription>
 
-                        </DialogHeader>
+                            </DialogHeader>
 
-                    </DialogContent>
-                </Dialog >
+                        </DialogContent>
+                    </Dialog >
+                </div>
             </div>
+
         </>
     )
 }

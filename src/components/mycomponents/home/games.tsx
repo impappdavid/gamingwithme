@@ -1,11 +1,11 @@
-import { GetAllGames, type Games } from "@/api/game";
+import { GetAllGames, type TypeGames } from "@/api/game";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom"
 
 function HomeGames() {
     const { t } = useTranslation();
-    const [allGames, setAllGames] = useState<Games[]>([]);
+    const [allGames, setAllGames] = useState<TypeGames[]>([]);
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     useEffect(() => {
@@ -13,7 +13,7 @@ function HomeGames() {
             try {
                 const data = await GetAllGames();
                 if (Array.isArray(data)) {
-                    setAllGames(data as Games[]);
+                    setAllGames(data as TypeGames[]);
                 } else {
                     setAllGames([]);
                     setError("Invalid data format received from server");
@@ -28,7 +28,7 @@ function HomeGames() {
     }, [])
     return (
         <>
-            <div className="flex flex-col gap-4 p-4 ">
+            <div className="flex flex-col gap-4  ">
                 <div className="flex w-full justify-between items-center">
                     <div className="text-xl font-medium">{t("Games")}</div>
                     <Link to={`/games`} className="text-xs text-zinc-400 hover:underline ">View All</Link>
