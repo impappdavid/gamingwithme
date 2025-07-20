@@ -222,7 +222,6 @@ export const AddGameTags = async (
     try {
         const API_URL = 'https://localhost:7091';
         const response = await axios.post(`${API_URL}/api/user/games/${gameName}`,
-            {},
             {
                 params: useCookies !== undefined ? { useCookies } : {},
                 withCredentials: true,
@@ -260,10 +259,10 @@ export const AddNewTag = async (
     try {
         const API_URL = 'https://localhost:7091';
         const response = await axios.post(`${API_URL}/api/user/tags/${tagName}`,
-            {},
             {
                 params: useCookies !== undefined ? { useCookies } : {},
                 withCredentials: true,
+
             });
         return response;
     } catch (error) {
