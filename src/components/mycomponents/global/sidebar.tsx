@@ -1,155 +1,198 @@
 import { BadgeCheck, Gamepad2, Info, MessagesSquare, Music, Plus, Swords, Youtube } from "lucide-react"
 import { Link, NavLink } from "react-router-dom"
 import { useState, useEffect } from "react"
-
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 
-import { IsLoggedIn } from "@/api/sidebar"
-import { BecomeACreator } from "@/api/creator"
-import { GetUserAllInformation, getUserCommonInfos, type UserAllInfo } from "@/api/settings"
-
-
-
+import { getUserCommonInfos, getUserProfile } from "@/api/user"
+import { becomeACreator } from "@/api/creator"
+import type { UserProfile } from "@/api/types"
 
 function Sidebar() {
     const { t } = useTranslation();
     const [isCreator, setIsCreator] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const baseClass = "flex gap-2 items-center  p-2 rounded-lg transition-all duration-200";
+    const baseClass = "flex gap-2 items-center p-2 rounded-lg transition-all duration-200";
 
     const navigate = (window as any).navigate || ((url: string) => { window.location.href = url });
 
     useEffect(() => {
-        // Fetch current user info
         const fetchUser = async () => {
             try {
-                // You may want to get username from localStorage or context
+                setLoading(true);
                 const common = await getUserCommonInfos();
                 if (common && common.username) {
-                    const full = await GetUserAllInformation(common.username) as UserAllInfo;
+                    const full = await getUserProfile(common.username);
                     setIsCreator(full.hasStripeAccount);
                 } else {
                     setIsCreator(false);
                 }
             } catch (err: any) {
-                setError(err?.message || "Unknown error");
+                setError(err?.message || "Failed to fetch user info");
+                setIsCreator(false);
+            } finally {
+                setLoading(false);
             }
         };
         fetchUser();
     }, []);
 
-
-
-
-
     // Handle Become button click
     const handleBecomeClick = async () => {
         try {
-            const res = await IsLoggedIn();
-            if (!res || (Array.isArray(res) && res.length === 0)) {
+            const common = await getUserCommonInfos();
+            if (!common) {
                 navigate("/login");
-            } else {
-                const response = await BecomeACreator();
-                if (response && response.data) {
-                    const data = response.data as { onboardingUrl: string; connectedAccountId: string };
-                    if (data && data.onboardingUrl) {
-                        navigate(data.onboardingUrl, '_blank');
-                    }
+                return;
+            }
+            
+            const response = await becomeACreator();
+            if (response && response.data) {
+                const data = response.data as { onboardingUrl: string; connectedAccountId: string };
+                if (data && data.onboardingUrl) {
+                    window.open(data.onboardingUrl, '_blank');
                 }
             }
         } catch (err) {
+            console.error("Failed to become creator:", err);
             navigate("/login");
         }
     };
+
     return (
-        <>
-            <div className="  xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">
-                <div className="flex flex-col gap-2">
-                    <Link to={'../'} className="flex gap-1 items-center p-3 px-4">
-                        <img src="/logo.png" alt="" className="w-8 h-8" />
-                        <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
-                    </Link>
-                    <div className="flex flex-col gap-1 p-2">
-                        <NavLink to="../just-chatting" className={({ isActive }) =>
+        <div className="xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">
+            <div className="flex flex-col gap-2">
+                <Link to={'../'} className="flex gap-1 items-center p-3 px-4">
+                    <img src="/logo.png" alt="Logo" className="w-8 h-8" />
+                    <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
+                </Link>
+                
+                <div className="flex flex-col gap-1 p-2">
+                    <NavLink 
+                        to="../just-chatting" 
+                        className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
-                        }>
-                            <MessagesSquare className="w-5 h-5 text-[#2856F4]" />
-                            <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
-                        </NavLink>
-                        <NavLink to="../gamers" className={({ isActive }) =>
+                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
+                        }
+                    >
+                        <MessagesSquare className="w-5 h-5 text-[#2856F4]" />
+                        <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
+                    </NavLink>
+                    
+                    <NavLink 
+                        to="../gamers" 
+                        className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
-                        }>
-                            <Gamepad2 className="w-5 h-5 text-[#2856F4]" />
-                            <div className="text-md font-medium hidden xl:flex">{t("Gamers")}</div>
-                        </NavLink>
+                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
+                        }
+                    >
+                        <Gamepad2 className="w-5 h-5 text-[#2856F4]" />
+                        <div className="text-md font-medium hidden xl:flex">{t("Gamers")}</div>
+                    </NavLink>
 
-                        <NavLink to="../music" className={({ isActive }) =>
+                    <NavLink 
+                        to="../music" 
+                        className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
-                        }>
-                            <Music className="w-5 h-5 text-[#2856F4]" />
-                            <div className="text-md font-medium hidden xl:flex">{t("Music")}</div>
-                        </NavLink>
-                        <NavLink to="../tiktok" className={({ isActive }) =>
+                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
+                        }
+                    >
+                        <Music className="w-5 h-5 text-[#2856F4]" />
+                        <div className="text-md font-medium hidden xl:flex">{t("Music")}</div>
+                    </NavLink>
+                    
+                    <NavLink 
+                        to="../tiktok" 
+                        className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-[#19FF00] text-black  fill-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0] fill-[#19FF00] hover:fill-[#1aff00c0]`
-                        }>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="fill-[#2856F4]">
-                                <path d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48" />
-                            </svg>
-                            <div className="text-md font-medium hidden xl:flex">Tiktok</div>
-                        </NavLink>
-                        <NavLink to="../youtube" className={({ isActive }) =>
+                                ? `${baseClass} bg-[#19FF00] text-black fill-black`
+                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0] fill-[#19FF00] hover:fill-[#1aff00c0]`
+                        }
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" className="fill-[#2856F4]">
+                            <path d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48" />
+                        </svg>
+                        <div className="text-md font-medium hidden xl:flex">Tiktok</div>
+                    </NavLink>
+                    
+                    <NavLink 
+                        to="../youtube" 
+                        className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-[#19FF00] text-black  fill-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
-                        }>
-                            <Youtube className="w-5 h-5 text-[#2856F4]" />
-                            <div className="text-md font-medium hidden xl:flex">Youtube</div>
-                        </NavLink>
-                        <NavLink to="../games" className={({ isActive }) =>
+                                ? `${baseClass} bg-[#19FF00] text-black fill-black`
+                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
+                        }
+                    >
+                        <Youtube className="w-5 h-5 text-[#2856F4]" />
+                        <div className="text-md font-medium hidden xl:flex">Youtube</div>
+                    </NavLink>
+                    
+                    <NavLink 
+                        to="../games" 
+                        className={({ isActive }) =>
                             isActive
-                                ? `${baseClass} bg-[#19FF00] text-black  fill-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0] `
-                        }><Swords className="w-5 h-5 text-[#2856F4]" /> <div className="text-md font-medium hidden xl:flex">{t("Games")}</div></NavLink>
-
-                    </div>
-                    <div className="px-2">
-                        <div className="h-[1.5px] w-full bg-zinc-900"></div>
-                    </div>
-                    <div className="flex flex-col gap-1 p-2">
-                        {isCreator ? (
-                            <NavLink to={"/create-listing"} className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}>
-                                <Plus className="w-5 h-5" />
-                                <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
-                            </NavLink>
-                        ) : (
-                            <NavLink to="" onClick={handleBecomeClick} className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}><BadgeCheck className="w-5 h-5" /> <div className="text-md font-medium hidden xl:flex">{t("Become")}</div></NavLink>
-
-                        )}
-
-                    </div>
-                    <div className="px-2">
-                        <div className="h-[1.5px] w-full bg-zinc-900"></div>
-                    </div>
-                    <div className="flex flex-col gap-1 p-2">
-                        <NavLink to="../about-us" className={({ isActive }) =>
-                            isActive
-                                ? `${baseClass} bg-[#19FF00] text-black  fill-black`
-                                : `${baseClass} text-[#19FF00]  hover:text-[#1aff00c0]`
-                        }><Info className="w-5 h-5 text-[#2856F4]" /> <div className="text-md font-medium hidden xl:flex">{t("About")}</div></NavLink>
-                    </div>
+                                ? `${baseClass} bg-[#19FF00] text-black fill-black`
+                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
+                        }
+                    >
+                        <Swords className="w-5 h-5 text-[#2856F4]" />
+                        <div className="text-md font-medium hidden xl:flex">{t("Games")}</div>
+                    </NavLink>
                 </div>
-            </div >
-        </>
+                
+                <div className="px-2">
+                    <div className="h-[1.5px] w-full bg-zinc-900"></div>
+                </div>
+                
+                <div className="flex flex-col gap-1 p-2">
+                    {loading ? (
+                        <div className={`${baseClass} opacity-50`}>
+                            <div className="w-5 h-5 bg-zinc-700 rounded animate-pulse"></div>
+                            <div className="w-20 h-4 bg-zinc-700 rounded animate-pulse hidden xl:block"></div>
+                        </div>
+                    ) : isCreator ? (
+                        <NavLink 
+                            to="/create-listing" 
+                            className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                        >
+                            <Plus className="w-5 h-5" />
+                            <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
+                        </NavLink>
+                    ) : (
+                        <button 
+                            onClick={handleBecomeClick}
+                            className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                        >
+                            <BadgeCheck className="w-5 h-5" />
+                            <div className="text-md font-medium hidden xl:flex">{t("Become")}</div>
+                        </button>
+                    )}
+                </div>
+                
+                <div className="px-2">
+                    <div className="h-[1.5px] w-full bg-zinc-900"></div>
+                </div>
+                
+                <div className="flex flex-col gap-1 p-2">
+                    <NavLink 
+                        to="../about-us" 
+                        className={({ isActive }) =>
+                            isActive
+                                ? `${baseClass} bg-[#19FF00] text-black fill-black`
+                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
+                        }
+                    >
+                        <Info className="w-5 h-5 text-[#2856F4]" />
+                        <div className="text-md font-medium hidden xl:flex">{t("About")}</div>
+                    </NavLink>
+                </div>
+            </div>
+        </div>
     )
 }
+
 export default Sidebar

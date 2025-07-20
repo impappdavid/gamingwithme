@@ -37,6 +37,15 @@ export interface Availability {
     isAvailable: boolean;
 }
 
+export interface Bill {
+    bookingId: string;
+    transactionDate: string;
+    amount: number;
+    transactionType: string;
+    otherPartyUsername: string;
+    otherPartyAvatarUrl: string;
+}
+
 export interface Game {
     id: number;
     name: string;

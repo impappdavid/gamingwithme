@@ -11,7 +11,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { useEffect, useMemo, useState } from "react";
-import { GetAllUser, type UserInfos } from "@/api/sidebar";
+import { getAllUsers } from "@/api/user";
+import type { UserProfileWithTags } from "@/api/types";
 import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 
@@ -24,28 +25,27 @@ type User = {
     active: boolean;
 };
 
-// Map UserInfos to User for UI components
-function mapUserInfosToUser(user: UserInfos): User {
+// Map API user to UI user
+function mapApiUserToUI(user: UserProfileWithTags): User {
     return {
         name: user.username,
         profilePic: user.avatarurl,
         games: user.games,
-        cost: "$0.00", // Adjust if you have pricing info
+        cost: "$0.00", // Update when pricing is available
         active: user.isActive,
     };
 }
 
 function SearchBar() {
-    const [allUsers, setAllUsers] = useState<UserInfos[]>([]);
+    const [allUsers, setAllUsers] = useState<UserProfileWithTags[]>([]);
     const [filterText, setFilterText] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { t } = useTranslation();
 
-    // Filtering logic
-    const filteredUsers: UserInfos[] = useMemo(() => {
+    // Filter users based on search text
+    const filteredUsers: UserProfileWithTags[] = useMemo(() => {
         if (filterText.length === 0) {
-            // Show only first 16 users from allUsers
             return allUsers.slice(0, 16);
         }
         return allUsers.filter(user =>
@@ -55,58 +55,69 @@ function SearchBar() {
     }, [allUsers, filterText]);
 
     useEffect(() => {
-        // Fetch all users for search dialog
-        const fetchAllUsers = async () => {
+        const fetchUsers = async () => {
             try {
-                const users = await GetAllUser();
-                // If API returns a single object, wrap in array
-                setAllUsers(Array.isArray(users) ? users : [users]);
+                setLoading(true);
+                const users = await getAllUsers();
+                setAllUsers(users);
             } catch (err: any) {
-                setError(err?.message || "Unknown error");
+                setError(err?.message || "Failed to load users");
             } finally {
                 setLoading(false);
             }
         };
-        fetchAllUsers();
+        fetchUsers();
     }, []);
+
     return (
-        <>
-            <div className="mb-2 ">
-                <div className="flex gap-1 ">
-                    <Dialog>
-                        <DialogTrigger asChild className="">
-                            <div className=" rounded-lg h-9  xl:w-full  bg-zinc-950 hover:bg-zinc-900/50 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
-                                <Search className="w-5 h-5" />
-                                <div className="hidden xl:flex">Search between all users...</div>
-                            </div>
-
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col ">
-                            <DialogHeader>
-                                <DialogTitle className="flex justify-between gap-4">
-                                    <Input type="text" placeholder={t("Search")} className="font-normal placeholder:text-sm text-sm" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
-                                    <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">{t("close")}</DialogClose>
-                                </DialogTitle>
-                                <div className="h-[1px] bg-zinc-800"></div>
-                                <DialogDescription className="h-full">
-                                    {filterText.length > 0 ? (
-                                        <SearchUserCard users={filteredUsers.map(mapUserInfosToUser)} />
-                                    ) : (
-                                        <div className="flex flex-col gap-2">
-                                            <div className="text-start">{t("TopCreators")}</div>
-                                            <TopCreators users={filteredUsers.map(mapUserInfosToUser)} />
-                                        </div>
-                                    )}
-                                </DialogDescription>
-
-                            </DialogHeader>
-
-                        </DialogContent>
-                    </Dialog >
-                </div>
+        <div className="mb-2">
+            <div className="flex gap-1">
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className="rounded-lg h-9 xl:w-full bg-zinc-950 hover:bg-zinc-900/50 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
+                            <Search className="w-5 h-5" />
+                            <div className="hidden xl:flex">Search between all users...</div>
+                        </div>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col">
+                        <DialogHeader>
+                            <DialogTitle className="flex justify-between gap-4">
+                                <Input 
+                                    type="text" 
+                                    placeholder={t("Search")} 
+                                    className="font-normal placeholder:text-sm text-sm" 
+                                    value={filterText} 
+                                    onChange={(e) => setFilterText(e.target.value)} 
+                                />
+                                <DialogClose className="text-sm text-zinc-400 underline cursor-pointer hover:text-white transition-all duration-300">
+                                    {t("close")}
+                                </DialogClose>
+                            </DialogTitle>
+                            <div className="h-[1px] bg-zinc-800"></div>
+                            <DialogDescription className="h-full">
+                                {loading ? (
+                                    <div className="flex items-center justify-center h-32">
+                                        <div className="text-zinc-400">Loading users...</div>
+                                    </div>
+                                ) : error ? (
+                                    <div className="flex items-center justify-center h-32">
+                                        <div className="text-red-400">{error}</div>
+                                    </div>
+                                ) : filterText.length > 0 ? (
+                                    <SearchUserCard users={filteredUsers.map(mapApiUserToUI)} />
+                                ) : (
+                                    <div className="flex flex-col gap-2">
+                                        <div className="text-start">{t("TopCreators")}</div>
+                                        <TopCreators users={filteredUsers.map(mapApiUserToUI)} />
+                                    </div>
+                                )}
+                            </DialogDescription>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
             </div>
-
-        </>
+        </div>
     )
 }
+
 export default SearchBar

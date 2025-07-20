@@ -11,14 +11,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { DeleteAccount } from "@/api/settings"
+import { deleteAccount } from "@/api/settings"
 import { useNavigate } from "react-router-dom"
 
 function DangerSettings() {
     const navigate = useNavigate();
     const { t } = useTranslation()
     const handleDeleteAccount = async () => {
-        await DeleteAccount()
+        await deleteAccount()
         navigate('../')
     }
     return (

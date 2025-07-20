@@ -1,5 +1,5 @@
 import { apiClient, createRequestConfig, handleApiError } from './client';
-import type { UserCommonInfos, UserProfile } from './types';
+import type { UserCommonInfos, UserProfile, Bill } from './types';
 
 // Get current user's basic info
 export const getUserCommonInfos = async (useCookies?: boolean): Promise<UserCommonInfos | null> => {
@@ -90,10 +90,10 @@ export const getUpcomingBookings = async (useCookies?: boolean) => {
 };
 
 // Get billing history
-export const getBills = async (useCookies?: boolean) => {
+export const getBills = async (useCookies?: boolean): Promise<Bill[]> => {
     try {
         const response = await apiClient.get('/api/user/billing-history', createRequestConfig(useCookies));
-        return response;
+        return response.data as Bill[];
     } catch (error) {
         handleApiError(error, 'fetching billing history');
         throw error;

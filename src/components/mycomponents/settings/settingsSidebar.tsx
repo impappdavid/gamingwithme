@@ -1,7 +1,7 @@
 import { SettingsIcon, History, TriangleAlert, TicketPercent } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import { useEffect, useState, useRef } from "react"
-import { getUserCommonInfos, UpdateUserAvatar } from "@/api/settings"
+import { getUserCommonInfos, updateUserAvatar } from "@/api/settings"
 
 function SettingsSidebar() {
     // State for current profile picture
@@ -48,7 +48,7 @@ function SettingsSidebar() {
         if (!file) return;
 
         // Call the API with the file directly
-        const result = await UpdateUserAvatar(file);
+        const result = await updateUserAvatar(file);
         if (result) {
             // Create a preview URL for immediate display
             const previewUrl = URL.createObjectURL(file);
