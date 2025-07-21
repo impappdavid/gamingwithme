@@ -76,10 +76,8 @@ function General() {
                     const tagsFromBackend = (full as any).tags;
                     if (Array.isArray(tagsFromBackend)) {
                         setUserAlreadyHasTags(tagsFromBackend);
-                        console.log('User tags from backend:', tagsFromBackend);
                     } else {
                         setUserAlreadyHasTags([]);
-                        console.log('User tags from backend: []');
                     }
                     setSelectedLanguages(full.languages || []); // set languages from profile
                 } else {
@@ -189,7 +187,6 @@ function General() {
         }
     }
 
-    console.log(selectedLanguages)
 
 
     if (loading) {
@@ -263,13 +260,26 @@ function General() {
                                             <div className="overflow-y-auto flex flex-col gap-1 ">
                                                 {tagOptions.map((element, index) => {
                                                     const isChecked = userAlreadyHasTags.includes(element.label);
-
+                                                    const gamerSelected = userAlreadyHasTags.includes("Gamer");
+                                                    const otherTagsSelected = userAlreadyHasTags.some(tag => ["Just chatting", "Musician", "Tiktoker", "Youtuber"].includes(tag));
+                                                    let isDisabled = false;
+                                                    let disabledReason = "";
+                                                    if (element.label === "Gamer" && otherTagsSelected) {
+                                                        isDisabled = true;
+                                                        disabledReason = "Cannot select Gamer with other tags.";
+                                                    } else if (["Just chatting", "Musician", "Tiktoker", "Youtuber"].includes(element.label) && gamerSelected) {
+                                                        isDisabled = true;
+                                                        disabledReason = "Cannot select this tag with Gamer.";
+                                                    }
                                                     return (
                                                         <div className="flex items-center gap-3 p-2 hover:bg-zinc-900 rounded-md cursor-pointer" key={index}>
                                                             <Checkbox
                                                                 id={`tag-${index}`}
                                                                 checked={isChecked}
+                                                                disabled={isDisabled}
+                                                                title={isDisabled ? disabledReason : undefined}
                                                                 onCheckedChange={async (checked) => {
+                                                                    if (isDisabled) return;
                                                                     const tag = element.label;
                                                                     if (checked) {
                                                                         try {

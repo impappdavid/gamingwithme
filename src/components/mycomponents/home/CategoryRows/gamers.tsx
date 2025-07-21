@@ -92,7 +92,6 @@ function Gamers() {
                                             <div className="flex gap-1 items-center">
                                                 <div className="text-lg">{element.username}</div>
                                             </div>
-                                            <div className="text-xs text-zinc-400">I will make you a beat.</div>
                                             <div className="flex items-center">
                                                 <div className="grid grid-cols-4 gap-1">
                                                     {gameImages[element.username] && gameImages[element.username].length > 0 && (
@@ -118,7 +117,7 @@ function Gamers() {
                                                 </div>
                                             </div>
                                             <div className="py-2 w-full">
-                                                <Link to={`/profile/${element.username}`} className="py-1.5 justify-center bg-[#19FF00] hover:bg-[#1aff0096] transition-all duration-200 px-3 rounded-lg flex items-center text-sm text-black font-semibold">$2.19</Link>
+                                                <Link to={`/profile/${element.username}`} className="py-1.5 justify-center bg-[#19FF00] hover:bg-[#1aff0096] transition-all duration-200 px-3 rounded-lg flex items-center text-sm text-black font-semibold">BOOK</Link>
                                             </div>
                                         </div>
                                     </div>
