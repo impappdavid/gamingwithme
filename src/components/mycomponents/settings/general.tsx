@@ -18,7 +18,6 @@ import {
     addUserLanguage,
     deleteUserLanguage
 } from "@/api/settings"
-import type { UserProfile } from "@/api/types"
 import { fetchPopularGamesFromRAWG, fetchGameFromRAWG } from "@/api/games"
 import type { RAWGGame } from "@/api/types"
 import { Checkbox } from "@/components/ui/checkbox"
