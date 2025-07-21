@@ -28,15 +28,15 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route>
-            <Route index element={<Home />} /> {/* ---------------- */}
-            <Route path="/login" element={<Login />} />{/* ---------------- */}
-            <Route path="/registration" element={<Registration />} />{/* ---------------- */}
-            <Route path="/gamers" element={<Gamers />} />{/* ---------------- */}
-            <Route path="/just-chatting" element={<JustChatting />} />{/* ---------------- */}
-            <Route path="/music" element={<Music />} />{/* ---------------- */}
-            <Route path="/tiktok" element={<Tiktok />} />{/* ---------------- */}
-            <Route path="/youtube" element={<Youtube />} />{/* ---------------- */}
-            <Route path="/games" element={<Games />} /> {/* ---------------- */}
+            <Route index element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/registration" element={<Registration />} />
+            <Route path="/gamers" element={<Gamers />} />
+            <Route path="/just-chatting" element={<JustChatting />} />
+            <Route path="/music" element={<Music />} />
+            <Route path="/tiktok" element={<Tiktok />} />
+            <Route path="/youtube" element={<Youtube />} />
+            <Route path="/games" element={<Games />} /> 
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/create-listing" element={<CreateListing />} />
@@ -46,8 +46,8 @@ function App() {
               <Route path="/settings/security" element={<SecurityPage />} />
               <Route path="/settings/danger" element={<Danger />} />
             </Route>
-            <Route path="/games/:slug" element={<Game />} />{/* ---------------- */}
-            <Route path="/profile/:slug" element={<Profile />} />{/* ---------------- */}
+            <Route path="/games/:slug" element={<Game />} />
+            <Route path="/profile/:slug" element={<Profile />} />
             {/*
               become
               support --------------------------
