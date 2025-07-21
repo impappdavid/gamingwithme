@@ -2,11 +2,14 @@ import { GetAllGames, type TypeGames } from "@/api/game";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchGameFromRAWG } from "@/api/games";
 
 function Games({ filterText }: { filterText: string }) {
     const [allGames, setAllGames] = useState<TypeGames[]>([]);
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
+    const [rawgImages, setRawgImages] = useState<{ [name: string]: string }>({});
+    const [rawgLoading, setRawgLoading] = useState<{ [name: string]: boolean }>({});
 
     useEffect(() => {
         const getSuggestedUsersWithConnectedPayment = async () => {
@@ -26,6 +29,25 @@ function Games({ filterText }: { filterText: string }) {
         }
         getSuggestedUsersWithConnectedPayment()
     }, [])
+
+    // Fetch RAWG image for games missing thumbnailUrl
+    useEffect(() => {
+        const fetchMissingImages = async () => {
+            const missing = allGames.filter(g => !g.thumbnailUrl || g.thumbnailUrl === "");
+            for (const game of missing) {
+                if (!rawgImages[game.name] && !rawgLoading[game.name]) {
+                    setRawgLoading(prev => ({ ...prev, [game.name]: true }));
+                    const rawg = await fetchGameFromRAWG(game.name);
+                    if (rawg && rawg.background_image) {
+                        setRawgImages(prev => ({ ...prev, [game.name]: rawg.background_image }));
+                    }
+                    setRawgLoading(prev => ({ ...prev, [game.name]: false }));
+                }
+            }
+        };
+        if (allGames.length > 0) fetchMissingImages();
+        // eslint-disable-next-line
+    }, [allGames]);
 
     const filteredGames = allGames.filter(game =>
         game.name.toLowerCase().includes(filterText.toLowerCase())
@@ -52,14 +74,26 @@ function Games({ filterText }: { filterText: string }) {
                                 {
                                     filteredGames.map(game => (
                                         <Link to={`/games/${game.slug}`} key={game.slug}>
-                                            <img src={game.thumbnailUrl} className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                            {(!game.thumbnailUrl || game.thumbnailUrl === "") ? (
+                                                rawgImages[game.name] ? (
+                                                    <img src={rawgImages[game.name]} className="bg-cover  rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                                ) : (
+                                                    rawgLoading[game.name] ? (
+                                                        <Skeleton className="w-full h-18 rounded-2xl" />
+                                                    ) : (
+                                                        <div className="w-full h-18 rounded-2xl flex items-center justify-center bg-zinc-800 text-zinc-400">No picture</div>
+                                                    )
+                                                )
+                                            ) : (
+                                                <img src={game.thumbnailUrl} className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                            )}
                                         </Link>
                                     ))
                                 }
                             </>
                         ) : (
                             // No users found message
-                            <div className="flex flex-col items-center justify-center h-64 text-center">
+                            <div className="flex flex-col items-center justify-center h-18 text-center">
                                 <div className="text-6xl mb-4">🔍</div>
                                 <h3 className="text-xl font-semibold text-zinc-200 mb-2">No game found</h3>
                                 <p className="text-zinc-400 max-w-md">

@@ -3,12 +3,16 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom"
 import { Skeleton } from "@/components/ui/skeleton"
+import { fetchGameFromRAWG } from "@/api/games";
 
 function HomeGames() {
     const { t } = useTranslation();
     const [allGames, setAllGames] = useState<TypeGames[]>([]);
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
+    const [rawgImages, setRawgImages] = useState<{ [name: string]: string }>({});
+    const [rawgLoading, setRawgLoading] = useState<{ [name: string]: boolean }>({});
+
     useEffect(() => {
         const getSuggestedUsersWithConnectedPayment = async () => {
             try {
@@ -27,6 +31,25 @@ function HomeGames() {
         }
         getSuggestedUsersWithConnectedPayment()
     }, [])
+
+    useEffect(() => {
+        const fetchMissingImages = async () => {
+            const missing = allGames.filter(g => !g.thumbnailUrl || g.thumbnailUrl === "");
+            for (const game of missing) {
+                if (!rawgImages[game.name] && !rawgLoading[game.name]) {
+                    setRawgLoading(prev => ({ ...prev, [game.name]: true }));
+                    const rawg = await fetchGameFromRAWG(game.name);
+                    if (rawg && rawg.background_image) {
+                        setRawgImages(prev => ({ ...prev, [game.name]: rawg.background_image }));
+                    }
+                    setRawgLoading(prev => ({ ...prev, [game.name]: false }));
+                }
+            }
+        };
+        if (allGames.length > 0) fetchMissingImages();
+        // eslint-disable-next-line
+    }, [allGames]);
+
     return (
         <>
             <div className="flex flex-col gap-4  ">
@@ -50,7 +73,19 @@ function HomeGames() {
                             {
                                 allGames.map((element, index) => (
                                     <Link key={index} to={`/games/${element.slug}`}>
-                                        <img src={element.thumbnailUrl} className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                        {(!element.thumbnailUrl || element.thumbnailUrl === "") ? (
+                                            rawgImages[element.name] ? (
+                                                <img src={rawgImages[element.name]} className="bg-cover  rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                            ) : (
+                                                rawgLoading[element.name] ? (
+                                                    <Skeleton className="h-24 rounded-2xl w-full" />
+                                                ) : (
+                                                    <div className="h-24 rounded-2xl w-full flex items-center justify-center bg-zinc-800 text-zinc-400">No picture</div>
+                                                )
+                                            )
+                                        ) : (
+                                            <img src={element.thumbnailUrl} className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                        )}
                                     </Link>
                                 ))
                             }
