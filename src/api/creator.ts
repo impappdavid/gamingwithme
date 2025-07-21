@@ -1,4 +1,4 @@
-import { apiClient, createRequestConfig, handleApiError } from './client';
+import { apiClient, createRequestConfig } from './client';
 
 // Become a creator by creating Stripe connected account
 export const becomeACreator = async (useCookies?: boolean) => {

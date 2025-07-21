@@ -154,3 +154,25 @@ export const deleteTag = async (tagId: string, useCookies?: boolean) => {
         throw error;
     }
 };
+
+// Add user language
+export const addUserLanguage = async (languageName: string, useCookies?: boolean) => {
+    try {
+        const response = await apiClient.post(`/api/user/languages/${languageName}`, {}, createRequestConfig(useCookies));
+        return response;
+    } catch (error) {
+        handleApiError(error, 'adding user language');
+        throw error;
+    }
+};
+
+// Delete user language
+export const deleteUserLanguage = async (languageName: string, useCookies?: boolean) => {
+    try {
+        const response = await apiClient.delete(`/api/user/languages/${languageName}`, createRequestConfig(useCookies));
+        return response;
+    } catch (error) {
+        handleApiError(error, 'deleting user language');
+        throw error;
+    }
+};

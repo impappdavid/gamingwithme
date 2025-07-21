@@ -14,7 +14,9 @@ import {
     addGameTag,
     deleteGameTag,
     addNewTag,
-    deleteTag
+    deleteTag,
+    addUserLanguage,
+    deleteUserLanguage
 } from "@/api/settings"
 import type { UserProfile } from "@/api/types"
 import { fetchPopularGamesFromRAWG, fetchGameFromRAWG } from "@/api/games"
@@ -29,7 +31,6 @@ function General() {
     const [bio, setBio] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [user, setUser] = useState<UserProfile | null>(null);
     const [gameTags, setGameTags] = useState<RAWGGame[]>([]);
     const [userGames, setUserGames] = useState<string[]>([]); // store game names from profile
     const [rawgGameTags, setRawgGameTags] = useState<RAWGGame[]>([]); // store RAWG data for user's games
@@ -38,7 +39,7 @@ function General() {
     const [filteredData, setFilteredData] = useState<RAWGGame[]>([]);
     const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
-    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+
 
     const languageOptions = [
         { value: "en", label: "English" },
@@ -59,8 +60,8 @@ function General() {
         { value: "youtuber", label: "Youtuber" },
     ];
 
-    const [languageSearch, setLanguageSearch] = useState("");
     const [userAlreadyHasTags, setUserAlreadyHasTags] = useState<string[]>([]);
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -69,7 +70,6 @@ function General() {
                 const common = await getUserCommonInfos();
                 if (common && common.username) {
                     const full = await getUserAllInformation(common.username);
-                    setUser(full);
                     setUsername(full.username);
                     setBio(full.bio);
                     setUserGames(full.games || []); // set games from profile
@@ -84,11 +84,12 @@ function General() {
                     }
                     setSelectedLanguages(full.languages || []); // set languages from profile
                 } else {
-                    setUser(null);
+                    
                 }
             } catch (err) {
+                console.error(gameTags)
                 setError("Failed to fetch user");
-                setUser(null);
+                
             } finally {
                 setLoading(false);
             }
@@ -100,6 +101,7 @@ function General() {
                 const games = await fetchPopularGamesFromRAWG();
                 setGameTags(games);
             } catch (err) {
+                
                 console.error("Failed to fetch games:", err);
             }
         };
@@ -188,7 +190,7 @@ function General() {
         }
     }
 
-
+    console.log(selectedLanguages)
 
 
     if (loading) {
@@ -245,7 +247,7 @@ function General() {
                                                     {userAlreadyHasTags.length > 0 ? (
                                                         <>
                                                             {userAlreadyHasTags.map((Element, index) => (
-                                                                <div className="">{Element},</div>
+                                                                <div className="" key={index}>{Element},</div>
                                                             ))}
                                                         </>
                                                     ) : (
@@ -305,10 +307,16 @@ function General() {
                                                 type="button"
                                                 className="w-full h-11 border rounded-xl bg-zinc-800/40 px-3 flex items-center justify-between text-left"
                                             >
-                                                <span className="truncate text-xs">
-                                                    {selectedLanguages.length > 0
-                                                        ? languageOptions.filter(opt => selectedLanguages.includes(opt.value)).map(opt => opt.label).join(", ")
-                                                        : "Select languages..."}
+                                                <span className="truncate text-xs flex gap-1">
+                                                    {selectedLanguages.length > 0 ? (
+                                                        <>
+                                                            {selectedLanguages.map((Element, index) => (
+                                                                <div className="" key={index}>{Element},</div>
+                                                            ))}
+                                                        </>
+                                                    ) : (
+                                                        <div className="">Select languages...</div>
+                                                    )}
                                                 </span>
                                                 <svg className="w-4 h-4 ml-2 opacity-50" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -317,22 +325,37 @@ function General() {
                                         </PopoverTrigger>
                                         <PopoverContent className="w-[var(--radix-popover-trigger-width)] min-w-[200px] p-2 rounded-xl">
                                             <div className="overflow-y-auto flex flex-col gap-1">
-                                                {languageOptions.map(opt => (
-                                                    <label key={opt.value} className="flex items-center gap-2 cursor-pointer text-xs px-2 py-2 rounded-lg hover:bg-zinc-700/30">
-                                                        <Checkbox
-                                                            checked={selectedLanguages.includes(opt.value)}
-                                                            onCheckedChange={checked => {
-                                                                setSelectedLanguages(prev =>
-                                                                    checked
-                                                                        ? [...prev, opt.value]
-                                                                        : prev.filter(v => v !== opt.value)
-                                                                );
-                                                            }}
-                                                            id={`lang-${opt.value}`}
-                                                        />
-                                                        <span>{opt.label}</span>
-                                                    </label>
-                                                ))}
+                                                {languageOptions.map((element, index) => {
+                                                    const isChecked = selectedLanguages.includes(element.label);
+
+                                                    return (
+                                                        <div className="flex items-center gap-3" key={index}>
+                                                            <Checkbox
+                                                                id={`tag-${index}`}
+                                                                checked={isChecked}
+                                                                onCheckedChange={async (checked) => {
+                                                                    const language = element.label;
+                                                                    if (checked) {
+                                                                        try {
+                                                                            await addUserLanguage(language);
+                                                                            setSelectedLanguages((prev) => [...prev, language]);
+                                                                        } catch (err) {
+                                                                            console.error("Failed to add tag", err);
+                                                                        }
+                                                                    } else {
+                                                                        try {
+                                                                            await deleteUserLanguage(language);
+                                                                            setSelectedLanguages((prev) => prev.filter((t) => t !== language));
+                                                                        } catch (err) {
+                                                                            console.error("Failed to remove tag", err);
+                                                                        }
+                                                                    }
+                                                                }}
+                                                            />
+                                                            <Label htmlFor={`tag-${index}`}>{element.label}</Label>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </PopoverContent>
                                     </Popover>
@@ -399,7 +422,7 @@ function General() {
                                             <div className="absolute left-0 right-0 mt-1 bg-zinc-900 border border-zinc-800 rounded-xl shadow-lg z-10 max-h-60 overflow-y-auto">
                                                 {filteredData.map((game, idx) => (
                                                     <button
-                                                        key={game.name}
+                                                        key={idx}
                                                         type="button"
                                                         className="flex items-center gap-3 w-full px-3 py-2 hover:bg-zinc-800/60 text-left cursor-pointer"
                                                         onClick={() => addTag(game)}

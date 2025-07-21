@@ -51,7 +51,7 @@ export const getUserCommonInfos = async (
             }
         );
         // Ensure response.data is typed to avoid 'unknown' type error
-        const data = response.data as { id: string };
+        return response.data as { id: string };
     } catch (error) {
         console.error('Error logging in user:', error);
         throw error;
