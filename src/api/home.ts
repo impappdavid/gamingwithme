@@ -24,13 +24,24 @@ export type TopCreators = {
     }[]
     joined: string
 }
-export const GetTopCreators = async () => {
+export const GetRandomsByTagAndTop = async (
+    tag: string,
+    top: number
+) => {
+
     try {
         // TODO: Replace with your actual API URL or use an environment variable
         const API_URL = 'https://localhost:7091';
         const response = await axios.get(
-            `${API_URL}/api/user/top-by-bookings`
-        );
+            // Pass tag and top as query parameters using the 'params' option
+            `${API_URL}/api/user/profiles`,
+            {
+                params: {
+                    tag,
+                    top
+                }
+            }
+        )
         return response.data;
     } catch (error) {
         console.error('Error logging in user:', error);

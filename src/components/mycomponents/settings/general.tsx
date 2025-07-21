@@ -53,7 +53,7 @@ function General() {
 
     const tagOptions = [
         { value: "gamer", label: "Gamer" },
-        { value: "justchatting", label: "Just chatting" },
+        { value: "just-chatting", label: "Just chatting" },
         { value: "musician", label: "Musician" },
         { value: "tiktoker", label: "Tiktoker" },
         { value: "youtuber", label: "Youtuber" },
