@@ -18,6 +18,10 @@ import Registration from "./pages/Registration";
 import ProtectedRoute, { AdminProtectedRoute } from "@/components/ProtectedRoute";
 import Gamers from "./pages/Gamers";
 import SecurityPage from "./pages/Security";
+import AdminPage from "./pages/Admin/Admin";
+import AdminGames from "./pages/Admin/Games";
+import AddGamePage from "./pages/Admin/AddGame";
+import EditGamePage from "./pages/Admin/EditGame";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -48,12 +52,12 @@ function App() {
             </Route>
             {/* Admin protected routes */}
             <Route element={<AdminProtectedRoute />}>
-              <Route path="/admin" element={<div>Admin Home</div>} />
-              <Route path="/admin/game" element={<div>Admin Game List</div>} />
-              <Route path="/admin/game/create" element={<div>Admin Create Game</div>} />
-              <Route path="/admin/game/edit/:slug" element={<div>Admin Edit Game</div>} />
-              <Route path="/admin/notification" element={<div>Admin Notifications</div>} />
-              <Route path="/admin/notification/create" element={<div>Admin Create Notification</div>} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/admin/games" element={<AdminGames />} />
+              <Route path="/admin/games/create" element={<AddGamePage />} />
+              <Route path="/admin/games/edit/:slug" element={<EditGamePage />} />
+              <Route path="/admin/notifications" element={<div>Admin Notifications</div>} />
+              <Route path="/admin/notifications/create" element={<div>Admin Create Notification</div>} />
             </Route>
             <Route path="/games/:slug" element={<Game />} />
             <Route path="/profile/:slug" element={<Profile />} />
