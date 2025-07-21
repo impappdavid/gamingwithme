@@ -3,6 +3,7 @@ import axios from "axios";
 export interface UserCommonInfos {
     id: string;
     username: string;
+    isAdmin: boolean;
 }
 
 export const getUserCommonInfos = async (

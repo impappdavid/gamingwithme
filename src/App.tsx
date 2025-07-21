@@ -15,7 +15,7 @@ import Danger from "./pages/Danger";
 import CreateListing from "./pages/CreateListing";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedRoute, { AdminProtectedRoute } from "@/components/ProtectedRoute";
 import Gamers from "./pages/Gamers";
 import SecurityPage from "./pages/Security";
 
@@ -46,6 +46,15 @@ function App() {
               <Route path="/settings/security" element={<SecurityPage />} />
               <Route path="/settings/danger" element={<Danger />} />
             </Route>
+            {/* Admin protected routes */}
+            <Route element={<AdminProtectedRoute />}>
+              <Route path="/admin" element={<div>Admin Home</div>} />
+              <Route path="/admin/game" element={<div>Admin Game List</div>} />
+              <Route path="/admin/game/create" element={<div>Admin Create Game</div>} />
+              <Route path="/admin/game/edit/:slug" element={<div>Admin Edit Game</div>} />
+              <Route path="/admin/notification" element={<div>Admin Notifications</div>} />
+              <Route path="/admin/notification/create" element={<div>Admin Create Notification</div>} />
+            </Route>
             <Route path="/games/:slug" element={<Game />} />
             <Route path="/profile/:slug" element={<Profile />} />
             {/*
@@ -55,12 +64,6 @@ function App() {
               aboutus -------------------------
               faq -------------------------
               download -------------------------
-              admin
-              admin/game
-              admin/game/create
-              admin/game/edit/:slug
-              admin/notification
-              admin/notification/create
               terms-and-conditions ---------------------------
             */}
           </Route>

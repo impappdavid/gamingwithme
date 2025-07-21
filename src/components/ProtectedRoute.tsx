@@ -32,4 +32,34 @@ export default function ProtectedRoute() {
 
   // Otherwise, redirect to login
   return <Navigate to="/login" replace />;
+}
+
+// Admin protected route
+export function AdminProtectedRoute() {
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const user = await getUserCommonInfos();
+        setIsAdmin(!!user && user.isAdmin === true);
+      } catch {
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
+        setChecked(true);
+      }
+    };
+    checkAdmin();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
+  if (checked && isAdmin) return <Outlet />;
+
+  // Not admin, redirect to home
+  return <Navigate to="/" replace />;
 } 
