@@ -6,7 +6,6 @@ import '../../../i18n';
 
 import { getUserCommonInfos, getUserProfile } from "@/api/user"
 import { becomeACreator } from "@/api/creator"
-import type { UserProfile } from "@/api/types"
 
 function Sidebar() {
     const { t } = useTranslation();
@@ -46,7 +45,7 @@ function Sidebar() {
                 navigate("/login");
                 return;
             }
-            
+
             const response = await becomeACreator();
             if (response && response.data) {
                 const data = response.data as { onboardingUrl: string; connectedAccountId: string };
@@ -67,10 +66,10 @@ function Sidebar() {
                     <img src="/logo.png" alt="Logo" className="w-8 h-8" />
                     <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
                 </Link>
-                
+
                 <div className="flex flex-col gap-1 p-2">
-                    <NavLink 
-                        to="../just-chatting" 
+                    <NavLink
+                        to="../just-chatting"
                         className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`
@@ -80,9 +79,9 @@ function Sidebar() {
                         <MessagesSquare className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
                     </NavLink>
-                    
-                    <NavLink 
-                        to="../gamers" 
+
+                    <NavLink
+                        to="../gamers"
                         className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`
@@ -93,8 +92,8 @@ function Sidebar() {
                         <div className="text-md font-medium hidden xl:flex">{t("Gamers")}</div>
                     </NavLink>
 
-                    <NavLink 
-                        to="../music" 
+                    <NavLink
+                        to="../music"
                         className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black`
@@ -104,9 +103,9 @@ function Sidebar() {
                         <Music className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">{t("Music")}</div>
                     </NavLink>
-                    
-                    <NavLink 
-                        to="../tiktok" 
+
+                    <NavLink
+                        to="../tiktok"
                         className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black fill-black`
@@ -118,9 +117,9 @@ function Sidebar() {
                         </svg>
                         <div className="text-md font-medium hidden xl:flex">Tiktok</div>
                     </NavLink>
-                    
-                    <NavLink 
-                        to="../youtube" 
+
+                    <NavLink
+                        to="../youtube"
                         className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black fill-black`
@@ -130,9 +129,9 @@ function Sidebar() {
                         <Youtube className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">Youtube</div>
                     </NavLink>
-                    
-                    <NavLink 
-                        to="../games" 
+
+                    <NavLink
+                        to="../games"
                         className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black fill-black`
@@ -143,43 +142,51 @@ function Sidebar() {
                         <div className="text-md font-medium hidden xl:flex">{t("Games")}</div>
                     </NavLink>
                 </div>
-                
+
                 <div className="px-2">
                     <div className="h-[1.5px] w-full bg-zinc-900"></div>
                 </div>
-                
+
                 <div className="flex flex-col gap-1 p-2">
+
                     {loading ? (
                         <div className={`${baseClass} opacity-50`}>
                             <div className="w-5 h-5 bg-zinc-700 rounded animate-pulse"></div>
                             <div className="w-20 h-4 bg-zinc-700 rounded animate-pulse hidden xl:block"></div>
                         </div>
-                    ) : isCreator ? (
-                        <NavLink 
-                            to="/create-listing" 
-                            className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
-                        >
-                            <Plus className="w-5 h-5" />
-                            <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
-                        </NavLink>
-                    ) : (
-                        <button 
-                            onClick={handleBecomeClick}
-                            className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
-                        >
-                            <BadgeCheck className="w-5 h-5" />
-                            <div className="text-md font-medium hidden xl:flex">{t("Become")}</div>
-                        </button>
-                    )}
+                    ) : error ? (
+                        <div className="flex flex-col items-center justify-center h-64 text-center">
+                            <div className="text-6xl mb-4">❌</div>
+                            <h3 className="text-xl font-semibold text-red-400 mb-2">Error</h3>
+                            <p className="text-zinc-400 max-w-md">{error}</p>
+                        </div>
+                    )
+                        : isCreator ? (
+                            <NavLink
+                                to="/create-listing"
+                                className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                            >
+                                <Plus className="w-5 h-5" />
+                                <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
+                            </NavLink>
+                        ) : (
+                            <button
+                                onClick={handleBecomeClick}
+                                className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                            >
+                                <BadgeCheck className="w-5 h-5" />
+                                <div className="text-md font-medium hidden xl:flex">{t("Become")}</div>
+                            </button>
+                        )}
                 </div>
-                
+
                 <div className="px-2">
                     <div className="h-[1.5px] w-full bg-zinc-900"></div>
                 </div>
-                
+
                 <div className="flex flex-col gap-1 p-2">
-                    <NavLink 
-                        to="../about-us" 
+                    <NavLink
+                        to="../about-us"
                         className={({ isActive }) =>
                             isActive
                                 ? `${baseClass} bg-[#19FF00] text-black fill-black`

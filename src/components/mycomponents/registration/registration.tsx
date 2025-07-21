@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { register, googleRegister, facebookRegister } from "@/api/auth"
+import { register } from "@/api/auth"
 
 interface CheckmarkProps {
     size?: number
@@ -107,6 +107,7 @@ function RegistrationForm() {
             const API_URL = 'https://localhost:7091';
             window.location.href = `${API_URL}/api/account/register/google`;
         } catch (error) {
+            setGoogleId("")
             console.error('Google authentication error:', error);
             showError('Google authentication failed. Please try again.');
         }

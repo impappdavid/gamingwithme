@@ -2,14 +2,12 @@ import { SettingsIcon, History, TriangleAlert, TicketPercent, LibraryBig, Shield
 import { NavLink } from "react-router-dom"
 import { useEffect, useState, useRef } from "react"
 import { getUserCommonInfos, updateUserAvatar } from "@/api/settings"
+import { Skeleton } from "@/components/ui/skeleton"
 
 function SettingsSidebar() {
     // State for current profile picture
     const [profilePic, setProfilePic] = useState("/profile/9.jpg")
-    // State to control dialog open/close
-    const [dialogOpen, setDialogOpen] = useState(false)
-    // Generate image paths
-    const profileImages = Array.from({ length: 116 }, (_, i) => `/profile/${i + 1}.jpg`)
+    
     const [username, setUsername] = useState("")
 
     const [loading, setLoading] = useState(true);
@@ -59,22 +57,35 @@ function SettingsSidebar() {
     return (
         <div className="w-fit sm:max-w-62 sm:w-full h-full flex flex-col gap-2 border-r">
             <div className="flex flex-col gap-2 p-4">
-
-                <div className="relative group sm:w-24 ">
-                    <div className="bg-black/40 backdrop-blur-sm z-50 w-24 h-24 absolute rounded-lg text-center text-sm text-zinc-200 hidden group-hover:flex justify-center items-center transition-all duration-300 cursor-pointer" onClick={handleProfilePicClick}>
-                        Change Picture
+                {loading ? (
+                    <div className="flex flex-col gap-2 items-center">
+                        <Skeleton className="sm:w-24 w-8 h-24 rounded-lg" />
+                        <Skeleton className="w-20 h-6" />
                     </div>
-                    <img src={profilePic} alt="profile" className="sm:w-24 w-8 z-1 rounded-lg border " onClick={handleProfilePicClick} style={{ cursor: 'pointer' }} />
-                    <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                    />
-                </div>
-
-                <div className="px-0.5 text-xl sm:flex hidden">{username}</div>
+                ) : error ? (
+                    <div className="flex flex-col items-center justify-center h-24 text-center">
+                        <div className="text-md mb-1">❌</div>
+                        <h3 className="text-md font-semibold text-red-400 mb-1">Error</h3>
+                        <p className="text-zinc-400 max-w-md text-xs">{error}</p>
+                    </div>
+                ) : (
+                    <>
+                        <div className="relative group sm:w-24 ">
+                            <div className="bg-black/40 backdrop-blur-sm z-50 w-24 h-24 absolute rounded-lg text-center text-sm text-zinc-200 hidden group-hover:flex justify-center items-center transition-all duration-300 cursor-pointer" onClick={handleProfilePicClick}>
+                                Change Picture
+                            </div>
+                            <img src={profilePic} alt="profile" className="sm:w-24 w-8 z-1 rounded-lg border " onClick={handleProfilePicClick} style={{ cursor: 'pointer' }} />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                            />
+                        </div>
+                        <div className="px-0.5 text-xl sm:flex hidden">{username}</div>
+                    </>
+                )}
             </div>
             <div className="w-full h-[1px] bg-zinc-800"></div>
             <div className="p-2 flex flex-col gap-1">

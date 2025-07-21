@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { getUpcomingBookings } from "@/api/settings";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Book = {
     bookingId: string,
@@ -86,42 +87,63 @@ function ActiveHistory() {
                                         onChange={(e) => setSearch(e.target.value)}
                                         required
                                     />
-
                                 </div>
-
                             </div>
                             <div className="flex flex-col gap-1.5">
-                                {filtered.length === 0 && 
-                                    <div className="w-full flex justify-center mt-14">
-                                        <div className="text-sm text-zinc-400">You dont have active transaction.</div>
-                                    </div>
-                                }
-                                {filtered.map((item) => {
-                                    const { label, canRefund } = getTimeUntil(item.startTime);
-                                    return (
-                                        <div key={item.bookingId} className="flex items-center justify-between bg-zinc-800/20 rounded-xl p-1.5 px-2 border border-zinc-800 shadow-sm">
+                                {loading ? (
+                                    Array.from({ length: 3 }).map((_, idx) => (
+                                        <div key={idx} className="flex items-center justify-between bg-zinc-800/20 rounded-xl p-1.5 px-2 border border-zinc-800 shadow-sm">
                                             <div className="flex items-center gap-4">
-                                                <img src={item.otherPartyAvatarUrl} alt="profile" className="w-12 h-12 rounded-lg border" />
-                                                <div className="flex flex-col">
-                                                    <span className="font-semibold text-white">{item.otherPartyUsername}</span>
-                                                    <div className="flex gap-1 items-center">
-                                                        <span className="font-semibold text-zinc-400 text-xs">$19</span>
-                                                        <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
-                                                        <span className="text-zinc-400 text-xs">{item.duration}</span>
-                                                    </div>
+                                                <Skeleton className="w-12 h-12 rounded-lg" />
+                                                <div className="flex flex-col gap-2">
+                                                    <Skeleton className="w-24 h-4" />
+                                                    <Skeleton className="w-16 h-3" />
                                                 </div>
                                             </div>
                                             <div className="flex flex-col items-end gap-1 min-w-[120px]">
-                                                <span className="text-xs text-zinc-400 mb-1">{label} left</span>
-                                                {canRefund ? (
-                                                    <span className={`text-xs font-bold p-3 px-6 cursor-pointer rounded-xl transition-all duration-300 bg-zinc-800 hover:bg-zinc-700/80`}>Refund</span>
-                                                ) : (
-                                                    <span className={`text-xs font-bold p-3 px-6 rounded-xl transition-all duration-300 bg-zinc-800/40 `}>Final</span>
-                                                )}
+                                                <Skeleton className="w-20 h-4 mb-1" />
+                                                <Skeleton className="w-16 h-6" />
                                             </div>
                                         </div>
-                                    );
-                                })}
+                                    ))
+                                ) : error ? (
+                                    <div className="flex flex-col items-center justify-center h-24 text-center">
+                                        <div className="text-md mb-1">❌</div>
+                                        <h3 className="text-md font-semibold text-red-400 mb-1">Error</h3>
+                                        <p className="text-zinc-400 max-w-md text-xs">{error}</p>
+                                    </div>
+                                ) : filtered.length === 0 ? (
+                                    <div className="w-full flex justify-center mt-14">
+                                        <div className="text-sm text-zinc-400">You dont have active transaction.</div>
+                                    </div>
+                                ) : (
+                                    filtered.map((item) => {
+                                        const { label, canRefund } = getTimeUntil(item.startTime);
+                                        return (
+                                            <div key={item.bookingId} className="flex items-center justify-between bg-zinc-800/20 rounded-xl p-1.5 px-2 border border-zinc-800 shadow-sm">
+                                                <div className="flex items-center gap-4">
+                                                    <img src={item.otherPartyAvatarUrl} alt="profile" className="w-12 h-12 rounded-lg border" />
+                                                    <div className="flex flex-col">
+                                                        <span className="font-semibold text-white">{item.otherPartyUsername}</span>
+                                                        <div className="flex gap-1 items-center">
+                                                            <span className="font-semibold text-zinc-400 text-xs">$19</span>
+                                                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                                                            <span className="text-zinc-400 text-xs">{item.duration}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col items-end gap-1 min-w-[120px]">
+                                                    <span className="text-xs text-zinc-400 mb-1">{label} left</span>
+                                                    {canRefund ? (
+                                                        <span className={`text-xs font-bold p-3 px-6 cursor-pointer rounded-xl transition-all duration-300 bg-zinc-800 hover:bg-zinc-700/80`}>Refund</span>
+                                                    ) : (
+                                                        <span className={`text-xs font-bold p-3 px-6 rounded-xl transition-all duration-300 bg-zinc-800/40 `}>Final</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                )}
                             </div>
                         </div>
                     </div>

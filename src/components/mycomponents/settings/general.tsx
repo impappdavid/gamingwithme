@@ -2,7 +2,7 @@ import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
 import { Input } from "@/components/ui/input"
-import { CaseLower, KeyRound, Tag, User, X } from "lucide-react"
+import { CaseLower, Tag, User, X } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,7 +11,6 @@ import {
     getUserCommonInfos,
     updateUserBio,
     updateUsername,
-    updateUserPassword,
     addGameTag,
     deleteGameTag,
     addNewTag,
@@ -31,8 +30,6 @@ function General() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<UserProfile | null>(null);
-    const [tagInput, setTagInput] = useState("");
-    const [tags, setTags] = useState<RAWGGame[]>([]);
     const [gameTags, setGameTags] = useState<RAWGGame[]>([]);
     const [userGames, setUserGames] = useState<string[]>([]); // store game names from profile
     const [rawgGameTags, setRawgGameTags] = useState<RAWGGame[]>([]); // store RAWG data for user's games
