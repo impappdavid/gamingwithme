@@ -195,8 +195,8 @@ function General() {
     if (loading) {
         return (
             <div className="w-full h-screen sm:p-2">
-                <div className="w-full h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
-                    <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
+                <div className="w-full h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 relative flex flex-col">
+                    <div className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("settings")} />
                     </div>
                     <div className="flex items-center justify-center flex-1">
@@ -210,8 +210,8 @@ function General() {
     if (error) {
         return (
             <div className="w-full h-screen sm:p-2">
-                <div className="w-full h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
-                    <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
+                <div className="w-full h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 relative flex flex-col">
+                    <div className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("settings")} />
                     </div>
                     <div className="flex items-center justify-center flex-1">
@@ -224,8 +224,8 @@ function General() {
 
     return (
         <div className="w-full h-screen sm:p-2">
-            <div className="w-full h-full sm:max-h-screen bg-zinc-950 sm:rounded-2xl border border-zinc-800 relative flex flex-col">
-                <div className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-2xl sm:rounded-t-2xl">
+            <div className="w-full h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 relative flex flex-col">
+                <div className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl sm:rounded-t-2xl">
                     <Navbar page={t("settings")} />
                 </div>
                 <div className="flex w-full flex-1">
@@ -240,7 +240,7 @@ function General() {
                                         <PopoverTrigger asChild className="w-full">
                                             <button
                                                 type="button"
-                                                className="w-full h-11 border rounded-xl bg-zinc-800/40 px-3 flex items-center justify-between text-left"
+                                                className="w-full h-11 border rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 cursor-pointer px-3 flex items-center justify-between text-left transition-all duration-300"
                                             >
                                                 <span className="truncate text-xs flex gap-1">
                                                     {userAlreadyHasTags.length > 0 ? (
@@ -259,13 +259,13 @@ function General() {
                                                 </svg>
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] min-w-[200px] p-2 rounded-xl">
-                                            <div className="overflow-y-auto flex flex-col gap-1">
+                                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] min-w-[200px] p-1 rounded-xl bg-zinc-950">
+                                            <div className="overflow-y-auto flex flex-col gap-1 ">
                                                 {tagOptions.map((element, index) => {
                                                     const isChecked = userAlreadyHasTags.includes(element.label);
 
                                                     return (
-                                                        <div className="flex items-center gap-3" key={index}>
+                                                        <div className="flex items-center gap-3 p-2 hover:bg-zinc-900 rounded-md cursor-pointer" key={index}>
                                                             <Checkbox
                                                                 id={`tag-${index}`}
                                                                 checked={isChecked}
@@ -288,7 +288,7 @@ function General() {
                                                                     }
                                                                 }}
                                                             />
-                                                            <Label htmlFor={`tag-${index}`}>{element.label}</Label>
+                                                            <Label className="cursor-pointer" htmlFor={`tag-${index}`}>{element.label}</Label>
                                                         </div>
                                                     );
                                                 })}
@@ -304,7 +304,7 @@ function General() {
                                         <PopoverTrigger asChild className="w-full">
                                             <button
                                                 type="button"
-                                                className="w-full h-11 border rounded-xl bg-zinc-800/40 px-3 flex items-center justify-between text-left"
+                                                className="w-full h-11 border rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 cursor-pointer px-3 flex items-center justify-between text-left transition-all duration-300"
                                             >
                                                 <span className="truncate text-xs flex gap-1">
                                                     {selectedLanguages.length > 0 ? (
@@ -322,16 +322,17 @@ function General() {
                                                 </svg>
                                             </button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] min-w-[200px] p-2 rounded-xl">
+                                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] min-w-[200px] p-1 rounded-xl bg-zinc-950">
                                             <div className="overflow-y-auto flex flex-col gap-1">
                                                 {languageOptions.map((element, index) => {
                                                     const isChecked = selectedLanguages.includes(element.label);
 
                                                     return (
-                                                        <div className="flex items-center gap-3" key={index}>
+                                                        <div className="flex items-center gap-3 p-2 hover:bg-zinc-900 rounded-md cursor-pointer" key={index}>
                                                             <Checkbox
                                                                 id={`tag-${index}`}
                                                                 checked={isChecked}
+                                                                className="cursor-pointer"
                                                                 onCheckedChange={async (checked) => {
                                                                     const language = element.label;
                                                                     if (checked) {
@@ -351,7 +352,7 @@ function General() {
                                                                     }
                                                                 }}
                                                             />
-                                                            <Label htmlFor={`tag-${index}`}>{element.label}</Label>
+                                                            <Label className="cursor-pointer" htmlFor={`tag-${index}`}>{element.label}</Label>
                                                         </div>
                                                     );
                                                 })}
@@ -370,7 +371,7 @@ function General() {
                                         <Input
                                             type="text"
                                             placeholder="Username"
-                                            className="pl-10 h-11 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
+                                            className="pl-10 h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
                                         />
@@ -389,7 +390,7 @@ function General() {
                                         <CaseLower className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
                                         <Textarea
                                             placeholder="Tell us about yourself..."
-                                            className="pl-10 h-20 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300 resize-none"
+                                            className="pl-10 h-20 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300 resize-none"
                                             value={bio}
                                             onChange={(e) => setBio(e.target.value)}
                                         />
@@ -409,7 +410,7 @@ function General() {
                                         <Input
                                             type="text"
                                             placeholder="Search games..."
-                                            className="pl-10 h-11 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
+                                            className="pl-10 h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300"
                                             value={inputValue}
                                             onChange={(e) => {
                                                 setInputValue(e.target.value);
