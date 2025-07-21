@@ -1,4 +1,4 @@
-import { BadgeCheck, Gamepad2, Info, MessagesSquare, Music, Plus, Swords, Youtube } from "lucide-react"
+import { BadgeCheck, Crown, Gamepad2, Info, MessagesSquare, Music, Plus, Swords, Youtube } from "lucide-react"
 import { Link, NavLink } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,7 @@ import { becomeACreator } from "@/api/creator"
 function Sidebar() {
     const { t } = useTranslation();
     const [isCreator, setIsCreator] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const baseClass = "flex gap-2 items-center p-2 rounded-lg transition-all duration-200";
@@ -21,9 +22,15 @@ function Sidebar() {
             try {
                 setLoading(true);
                 const common = await getUserCommonInfos();
+                console.log(common)
                 if (common && common.username) {
                     const full = await getUserProfile(common.username);
                     setIsCreator(full.hasStripeAccount);
+                    if (common.isAdmin) {
+                        setIsAdmin(true)
+                    } else {
+                        setIsAdmin(true)
+                    }
                 } else {
                     setIsCreator(false);
                 }
@@ -185,17 +192,23 @@ function Sidebar() {
                 </div>
 
                 <div className="flex flex-col gap-1 p-2">
-                    <NavLink
-                        to="../about-us"
-                        className={({ isActive }) =>
-                            isActive
-                                ? `${baseClass} bg-[#19FF00] text-black fill-black`
-                                : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
-                        }
-                    >
-                        <Info className="w-5 h-5 text-[#2856F4]" />
-                        <div className="text-md font-medium hidden xl:flex">{t("About")}</div>
-                    </NavLink>
+                   
+                    {isAdmin === true ? (
+                        <NavLink
+                            to="../about-us"
+                            className={({ isActive }) =>
+                                isActive
+                                    ? `${baseClass} bg-[#19FF00] text-black fill-black`
+                                    : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
+                            }
+                        >
+                            <Crown className="w-5 h-5 text-[#2856F4]" />
+                            <div className="text-md font-medium hidden xl:flex">{t("Admin")}</div>
+                        </NavLink>
+                    ) : (
+                        <div className=""></div>
+                    )}
+
                 </div>
             </div>
         </div>

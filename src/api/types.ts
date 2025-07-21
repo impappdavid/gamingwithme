@@ -2,6 +2,7 @@
 export interface UserCommonInfos {
     id: string;
     username: string;
+    isAdmin: boolean;
 }
 
 export interface UserProfile {
