@@ -25,6 +25,24 @@ function Categories() {
                         </div>
                         <div className="text-sm text-zinc-200 group-hover:text-green-500 transition-colors duration-300">Gamers</div>
                     </Link>
+                    <Link to={`/music`} className="flex flex-col gap-1 group">
+                        <div className="overflow-hidden rounded-lg">
+                            <img src="/categories/music.png" alt="gamers" className="max-w-36 rounded-lg transition-transform duration-300 group-hover:scale-105 transform-gpu" />
+                        </div>
+                        <div className="text-sm text-zinc-200 group-hover:text-orange-500 transition-colors duration-300">Music</div>
+                    </Link>
+                    <Link to={`/tiktok`} className="flex flex-col gap-1 group">
+                        <div className="overflow-hidden rounded-lg">
+                            <img src="/categories/tiktok.png" alt="gamers" className="max-w-36 rounded-lg transition-transform duration-300 group-hover:scale-105 transform-gpu" />
+                        </div>
+                        <div className="text-sm text-zinc-200 group-hover:text-white transition-colors duration-300">Tiktok</div>
+                    </Link>
+                    <Link to={`/youtube`} className="flex flex-col gap-1 group">
+                        <div className="overflow-hidden rounded-lg">
+                            <img src="/categories/youtube.png" alt="gamers" className="max-w-36 rounded-lg transition-transform duration-300 group-hover:scale-105 transform-gpu" />
+                        </div>
+                        <div className="text-sm text-zinc-200 group-hover:text-red-400 transition-colors duration-300">Youtube</div>
+                    </Link>
                 </div>
             </div>
         </>
