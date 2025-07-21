@@ -40,7 +40,7 @@ function Content() {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const apiUsers = await getUsersByTag("music");
+        const apiUsers = await getUsersByTag("Musician");
         if (apiUsers) {
           setUsers(apiUsers.map(mapApiUserToUI));
         } else {

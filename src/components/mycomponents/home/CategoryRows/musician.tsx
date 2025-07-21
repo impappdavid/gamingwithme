@@ -15,7 +15,7 @@ function Musician() {
     useEffect(() => {
         const getTopCreators = async () => {
             try {
-                const data = await GetRandomsByTagAndTop("Music", 4);
+                const data = await GetRandomsByTagAndTop("Musician", 4);
                 if (Array.isArray(data)) {
                     setTopCreators(data as TopCreators[]);
                 } else {

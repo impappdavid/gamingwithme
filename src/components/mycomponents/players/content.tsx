@@ -3,7 +3,7 @@ import Navbar from "../navbar/navbar"
 import UserCard from "../global/usercard"
 import Filter from "../global/filter"
 import { useState, useMemo, useEffect } from "react"
-import { getAllUsers } from "@/api/user";
+import {  getUsersByTag } from "@/api/user";
 import type { UserProfileWithTags } from "@/api/types";
 import Footer from "../global/footer";
 
@@ -41,8 +41,12 @@ function Content() {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const apiUsers = await getAllUsers();
-        setUsers(apiUsers.map(mapApiUserToUI));
+        const apiUsers = await getUsersByTag("Gamer");
+        if (apiUsers) {
+          setUsers(apiUsers.map(mapApiUserToUI));
+        } else {
+          setUsers([]);
+        }
       } catch (err) {
         setError("Failed to fetch users");
         setUsers([]);

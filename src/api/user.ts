@@ -27,7 +27,9 @@ export const getUserProfile = async (username: string, useCookies?: boolean): Pr
 };
 
 // Get all users
-export const getAllUsers = async (useCookies?: boolean): Promise<UserProfileWithTags[]> => {
+export const getAllUsers = async (
+    useCookies?: boolean
+): Promise<UserProfileWithTags[]> => {
     try {
         const response = await apiClient.get('/api/user/profiles', createRequestConfig(useCookies));
         return response.data as UserProfileWithTags[];
@@ -39,7 +41,7 @@ export const getAllUsers = async (useCookies?: boolean): Promise<UserProfileWith
 
 // Get users by tag
 export const getUsersByTag = async (
-    tag: "youtube" | "tiktok" | "just-chatting" | "music",
+    tag: "Youtube" | "Tiktok" | "Just chatting" | "Musician" | "Gamer",
     useCookies?: boolean
 ): Promise<UserProfileWithTags[] | null> => {
     try {
