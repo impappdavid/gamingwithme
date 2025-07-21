@@ -195,12 +195,8 @@ function Sidebar() {
                    
                     {isAdmin === true ? (
                         <NavLink
-                            to="../about-us"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? `${baseClass} bg-[#19FF00] text-black fill-black`
-                                    : `${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`
-                            }
+                            to="../admin"
+                            className={`${baseClass} text-[#19FF00] hover:text-[#1aff00c0]`}
                         >
                             <Crown className="w-5 h-5 text-[#2856F4]" />
                             <div className="text-md font-medium hidden xl:flex">{t("Admin")}</div>
