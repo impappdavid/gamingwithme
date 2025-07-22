@@ -41,7 +41,7 @@ export const getAllUsers = async (
 
 // Get users by tag
 export const getUsersByTag = async (
-    tag: "Youtube" | "Tiktok" | "Just chatting" | "Musician" | "Gamer",
+    tag: "Youtuber" | "Tiktoker" | "Just chatting" | "Musician" | "Gamer",
     useCookies?: boolean
 ): Promise<UserProfileWithTags[] | null> => {
     try {

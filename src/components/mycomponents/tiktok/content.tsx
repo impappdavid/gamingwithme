@@ -8,20 +8,45 @@ import type { UserProfileWithTags } from "@/api/types";
 
 // User type for UI
 type User = {
-  name: string;
-  profilePic: string;
-  games: string[];
-  cost: string;
-  active: boolean;
+  id: number
+  username: string
+  avatarurl: string
+  bio: string
+  isActive: boolean
+  languages: string[]
+  games: string[]
+  tags: string[]
+  hasStripeAccount: boolean
+  bookings: {
+    id: string,
+    startTime: Date,
+    duration: string,
+    customerName: string
+  }[]
+  availability: {
+    id: string,
+    date: Date,
+    startTime: string,
+    endTime: string,
+    isAvailable: boolean
+  }[]
+  joined: string
 };
 
 // Map API user to UI user
 const mapApiUserToUI = (apiUser: UserProfileWithTags): User => ({
-  name: apiUser.username,
-  profilePic: apiUser.avatarurl || "/profile/25.jpg",
+  id: apiUser.id,
+  username: apiUser.username,
+  avatarurl: apiUser.avatarurl,
+  bio: apiUser.bio,
+  isActive: apiUser.isActive,
+  languages: apiUser.languages,
   games: apiUser.games,
-  cost: "$0.00/game", // Update when pricing is available
-  active: apiUser.isActive,
+  tags: apiUser.tags,
+  hasStripeAccount: apiUser.hasStripeAccount,
+  bookings: apiUser.bookings,
+  availability: apiUser.availability,
+  joined: apiUser.joined,
 });
 
 function Content() {
@@ -40,7 +65,7 @@ function Content() {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const apiUsers = await getUsersByTag("tiktok");
+        const apiUsers = await getUsersByTag("Tiktoker");
         if (apiUsers) {
           setUsers(apiUsers.map(mapApiUserToUI));
         } else {
@@ -56,37 +81,23 @@ function Content() {
     fetchUsers();
   }, []);
 
-  // Filter and sort users
-  const filteredUsers = useMemo(() => {
+   // Filter and sort users
+   const filteredUsers = useMemo(() => {
     let filtered = users.filter(user => {
       // Text filter (name or game)
       const textMatch =
         filterText === "" ||
-        user.name.toLowerCase().includes(filterText.toLowerCase()) ||
+        user.username.toLowerCase().includes(filterText.toLowerCase()) ||
         user.games.some(game => game.toLowerCase().includes(filterText.toLowerCase()));
-      
-      // Price filter
-      const price = parseFloat(user.cost.replace(/[^\d.]/g, ""));
-      const minOk = minPrice === undefined || price >= minPrice;
-      const maxOk = maxPrice === undefined || price <= maxPrice;
-      
-      // Active filter
-      const activeOk = !showActive || user.active;
-      
-      return textMatch && minOk && maxOk && activeOk;
+
+
+
+
+      return textMatch;
     });
-    
-    // Sort by price
-    if (orderBy === "highest") {
-      filtered.sort((a, b) => parseFloat(b.cost.replace(/[^\d.]/g, "")) - parseFloat(a.cost.replace(/[^\d.]/g, "")));
-    }
-    if (orderBy === "lowest") {
-      filtered.sort((a, b) => parseFloat(a.cost.replace(/[^\d.]/g, "")) - parseFloat(b.cost.replace(/[^\d.]/g, "")));
-    }
-    if (orderBy === "newest") {
-      filtered = filtered.slice().reverse();
-    }
-    
+
+
+
     return filtered;
   }, [users, filterText, minPrice, maxPrice, orderBy, showActive]);
   
