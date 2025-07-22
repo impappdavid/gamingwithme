@@ -8,6 +8,7 @@ export type TopCreators = {
     isActive: boolean
     languages: string[]
     games: string[]
+    tags: string[]
     hasStripeAccount: boolean
     bookings: {
         id: string,

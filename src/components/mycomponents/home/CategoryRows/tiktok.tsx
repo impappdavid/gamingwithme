@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { Skeleton } from "@/components/ui/skeleton"
-import { fetchGame } from "@/api/rawg";
+import { MessagesSquare } from "lucide-react"
 
 
 function Tiktok() {
@@ -11,11 +11,10 @@ function Tiktok() {
     const [topcreators, setTopCreators] = useState<TopCreators[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
-    const [gameImages, setGameImages] = useState<{ [username: string]: string[] }>({});
     useEffect(() => {
         const getTopCreators = async () => {
             try {
-                const data = await GetRandomsByTagAndTop("Tiktok", 4);
+                const data = await GetRandomsByTagAndTop("Tiktoker", 4);
                 if (Array.isArray(data)) {
                     setTopCreators(data as TopCreators[]);
                 } else {
@@ -30,25 +29,7 @@ function Tiktok() {
         }
         getTopCreators()
     }, [])
-    // Fetch RAWG images for up to 2 games per user
-    useEffect(() => {
-        const fetchImages = async () => {
-            const images: { [username: string]: string[] } = {};
-            await Promise.all(topcreators.map(async (creator) => {
-                const games = creator.games ? creator.games.slice(0, 2) : [];
-                const imgArr: string[] = [];
-                for (const gameName of games) {
-                    const game = await fetchGame(gameName);
-                    imgArr.push(game && game.background_image ? game.background_image : "/profile/6.jpg");
-                }
-                images[creator.username] = imgArr;
-            }));
-            setGameImages(images);
-        };
-        if (topcreators.length > 0) {
-            fetchImages();
-        }
-    }, [topcreators]);
+    
 
     if (loading) {
         return (
@@ -93,27 +74,35 @@ function Tiktok() {
                                             </div>
                                             <div className="text-xs text-zinc-400">I will make you a beat.</div>
                                             <div className="flex items-center">
-                                                <div className="grid grid-cols-4 gap-1">
-                                                    {gameImages[element.username] && gameImages[element.username].length > 0 && (
+                                                <div className="grid grid-cols-4 gap-1 pt-1">
+                                                {element.tags.map((tag, index) => (
                                                         <>
-                                                            <img
-                                                                src={gameImages[element.username][0]}
-                                                                alt={element.games[0] || "game"}
-                                                                className="w-6 h-6 rounded-md object-cover "
-                                                            />
-                                                            {element.games.length > 2 ? (
-                                                                <div className="w-6 h-6 rounded bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-semibold text-white">
-                                                                    +{element.games.length - 1}
+                                                            {tag === "Just chatting" ? (
+                                                                <div key={index} className="p-1 bg-white rounded-md">
+                                                                    <MessagesSquare className="w-4 h-4 text-black" />
                                                                 </div>
-                                                            ) : element.games.length === 2 && gameImages[element.username][1] ? (
-                                                                <img
-                                                                    src={gameImages[element.username][1]}
-                                                                    alt={element.games[1] || "game"}
-                                                                    className="w-6 h-6 rounded-md object-cover"
-                                                                />
-                                                            ) : null}
+                                                            ) : tag === "Musician" ? (
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+                                                                    <path fill="#ff04ec" fill-rule="evenodd" d="m10.995 0l.573.001q.241 0 .483.007c.35.01.705.03 1.051.093c.352.063.68.166.999.329a3.36 3.36 0 0 1 1.47 1.468c.162.32.265.648.328 1c.063.347.084.7.093 1.051q.007.241.007.483l.001.573v5.99l-.001.573q0 .241-.008.483c-.01.35-.03.704-.092 1.05a3.5 3.5 0 0 1-.33 1a3.36 3.36 0 0 1-1.468 1.468a3.5 3.5 0 0 1-1 .33a7 7 0 0 1-1.05.092q-.241.007-.483.008l-.573.001h-5.99l-.573-.001q-.241 0-.483-.008a7 7 0 0 1-1.052-.092a3.6 3.6 0 0 1-.998-.33a3.36 3.36 0 0 1-1.47-1.468a3.6 3.6 0 0 1-.328-1a7 7 0 0 1-.093-1.05Q.002 11.81 0 11.568V5.005l.001-.573q0-.241.007-.483c.01-.35.03-.704.093-1.05a3.6 3.6 0 0 1 .329-1A3.36 3.36 0 0 1 1.9.431A3.5 3.5 0 0 1 2.896.1A7 7 0 0 1 3.95.008Q4.19.002 4.432 0h.573zm-.107 2.518l-4.756.959H6.13a.66.66 0 0 0-.296.133a.5.5 0 0 0-.16.31c-.004.027-.01.08-.01.16v5.952c0 .14-.012.275-.106.39c-.095.115-.21.15-.347.177l-.31.063c-.393.08-.65.133-.881.223a1.4 1.4 0 0 0-.519.333a1.25 1.25 0 0 0-.332.995c.031.297.166.582.395.792c.156.142.35.25.578.296c.236.047.49.031.858-.043c.196-.04.38-.102.555-.205a1.4 1.4 0 0 0 .438-.405a1.5 1.5 0 0 0 .233-.55c.042-.202.052-.386.052-.588V6.347c0-.276.08-.35.302-.404c.024-.005 3.954-.797 4.138-.833c.257-.049.378.025.378.294v3.524c0 .14-.001.28-.096.396c-.094.115-.211.15-.348.178l-.31.062c-.393.08-.649.133-.88.223a1.4 1.4 0 0 0-.52.334a1.26 1.26 0 0 0-.34.994c.03.297.174.582.404.792a1.2 1.2 0 0 0 .577.294c.237.048.49.03.858-.044c.197-.04.381-.098.556-.202a1.4 1.4 0 0 0 .438-.405q.173-.252.233-.549a2.7 2.7 0 0 0 .044-.589V2.865c0-.273-.143-.443-.4-.42c-.04.003-.383.064-.424.073" />
+                                                                </svg>
+                                                            ) : tag === "Tiktoker" ? (
+                                                                <div key={index} className="p-1 bg-black rounded-md">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                                                        <path fill="currentColor" d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48" />
+                                                                    </svg>
+                                                                </div>
+                                                            ) : tag === "Youtuber" ? (
+                                                                <div key={index} className="p-1 bg-red-600 rounded-md">
+
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                                                        <path fill="currentColor" d="m10 15l5.19-3L10 9zm11.56-7.83c.13.47.22 1.1.28 1.9c.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83c-.25.9-.83 1.48-1.73 1.73c-.47.13-1.33.22-2.65.28c-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44c-.9-.25-1.48-.83-1.73-1.73c-.13-.47-.22-1.1-.28-1.9c-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83c.25-.9.83-1.48 1.73-1.73c.47-.13 1.33-.22 2.65-.28c1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44c.9.25 1.48.83 1.73 1.73" />
+                                                                    </svg>
+                                                                </div>
+                                                            ) : (
+                                                                <div className=""></div >
+                                                            )}
                                                         </>
-                                                    )}
+                                                    ))}
                                                 </div>
                                             </div>
                                             <div className="py-2 w-full">
