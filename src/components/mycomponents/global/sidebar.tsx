@@ -23,7 +23,6 @@ function Sidebar() {
             try {
                 setLoading(true);
                 const common = await getUserCommonInfos();
-                console.log(common)
                 if (common && common.username) {
                     const full = await getUserProfile(common.username);
                     setIsCreator(full.hasStripeAccount);
@@ -68,7 +67,6 @@ function Sidebar() {
         }
     };
 
-    console.log(tags)
 
     return (
         <div className="xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">

@@ -151,17 +151,32 @@ function Carousel() {
                 return { ...prev, [slot]: price };
             }
         });
+
         const [startTime, endTime] = slot.split("-");
-        handleSubmit(startTime, endTime)
+        const formattedStartTime = `${startTime}:00`;
+        handleSubmit(formattedStartTime, endTime)
     };
 
     const handleSubmit = async (start: string, end: string) => {
-        console.log(selectedDate, start, end, price, selectedDuration)
+
         const dateObj: Date = new Date(selectedDate);
-        console.log(dateObj.toISOString(), start, end, selectedDuration.toLocaleString(), Number(price))
+
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(dateObj.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        console.log(formattedDate, start, selectedDuration.toLocaleString(), Number(price))
+        const minutes = Number(selectedDuration); // e.g., 30
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+
+        const formattedDuration = `${String(hours).padStart(2, '0')}:${String(remainingMinutes).padStart(2, '0')}:00`;
+
+
         try {
-            await AddNewBooking(dateObj.toISOString(), start, end, selectedDuration.toLocaleString(), Number(price))
-            
+            await AddNewBooking(formattedDate, start, formattedDuration, Number(price))
+
         } catch (err: any) {
             console.error(err.message || "Failed to add game.")
         }
