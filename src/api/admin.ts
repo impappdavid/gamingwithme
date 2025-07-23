@@ -8,6 +8,14 @@ export interface GameInfos {
     thumbnailUrl: string
 }
 
+export interface NotiInfos {
+    id: string,
+    title: string,
+    content: string,
+    createdAt: string,
+    isPublished: boolean
+}
+
 export const GetAllGames = async (
     useCookies?: boolean
 ): Promise<GameInfos[] | null> => {
@@ -35,7 +43,7 @@ export const AddNewGame = async (
 ): Promise<GameInfos[] | null> => {
     try {
         const API_URL = 'https://localhost:7091';
-        const response = await axios.post(`${API_URL}/api/game`,{
+        const response = await axios.post(`${API_URL}/api/game`, {
             name,
             description,
             slug,
@@ -157,4 +165,86 @@ export const deleteGameEasterEgg = async (gameId: string, easterEggId: string) =
         withCredentials: true,
     });
     return response.data;
+};
+
+export const GetAllNotification = async (
+    useCookies?: boolean
+): Promise<NotiInfos[] | null> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(`${API_URL}/api/notifications/all`, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as NotiInfos[];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return null;
+    }
+};
+
+export const AddNewNotification = async (
+    title: string,
+    content: string,
+    useCookies?: boolean
+): Promise<NotiInfos[] | null> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(`${API_URL}/api/notifications`, {
+            title,
+            content,
+        }, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as NotiInfos[];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return null;
+    }
+};
+
+export const DeleteNotification = async (
+    notificationId: string,
+    useCookies?: boolean
+): Promise<NotiInfos[] | null> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.delete(`${API_URL}/api/notifications/${notificationId}`, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as NotiInfos[];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return null;
+    }
+};
+
+export const PublishNotification = async (
+    notificationId: string,
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.put(
+            `${API_URL}/api/notifications/${notificationId}/publish`,
+            {}, // Empty body (or your actual payload if needed)
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true, // ✅ Needed if auth is cookie/session based
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error publishing notification:', error);
+        return null;
+    }
 };

@@ -22,6 +22,8 @@ import AdminPage from "./pages/Admin/Admin";
 import AdminGames from "./pages/Admin/Games";
 import AddGamePage from "./pages/Admin/AddGame";
 import EditGamePage from "./pages/Admin/EditGame";
+import AdminNotificationsPage from "./pages/Admin/Notifications";
+import AddNewNotificationsPage from "./pages/Admin/AddNotification";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -56,8 +58,8 @@ function App() {
               <Route path="/admin/games" element={<AdminGames />} />
               <Route path="/admin/games/create" element={<AddGamePage />} />
               <Route path="/admin/games/edit/:slug" element={<EditGamePage />} />
-              <Route path="/admin/notifications" element={<div>Admin Notifications</div>} />
-              <Route path="/admin/notifications/create" element={<div>Admin Create Notification</div>} />
+              <Route path="/admin/notifications" element={<AdminNotificationsPage />} />
+              <Route path="/admin/notifications/create" element={<AddNewNotificationsPage />} />
             </Route>
             <Route path="/games/:slug" element={<Game />} />
             <Route path="/profile/:slug" element={<Profile />} />
