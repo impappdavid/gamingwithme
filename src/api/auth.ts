@@ -50,16 +50,7 @@ export const googleLogin = async (): Promise<OAuthResponse> => {
     }
 };
 
-// Facebook OAuth for login
-export const facebookLogin = async (): Promise<OAuthResponse> => {
-    try {
-        const response = await apiClient.get('/api/account/login/facebook');
-        return response.data as OAuthResponse;
-    } catch (error) {
-        handleApiError(error, 'Facebook login');
-        throw error; // Re-throw after handling
-    }
-};
+
 
 // Google OAuth for registration
 export const googleRegister = async (): Promise<OAuthResponse> => {
@@ -71,14 +62,3 @@ export const googleRegister = async (): Promise<OAuthResponse> => {
         throw error; // Re-throw after handling
     }
 };
-
-// Facebook OAuth for registration
-export const facebookRegister = async (): Promise<OAuthResponse> => {
-    try {
-        const response = await apiClient.get('/api/account/register/facebook');
-        return response.data as OAuthResponse;
-    } catch (error) {
-        handleApiError(error, 'Facebook registration');
-        throw error; // Re-throw after handling
-    }
-}; 
