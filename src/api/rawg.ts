@@ -4,7 +4,6 @@ import axios from 'axios';
 const API_BASE_URL = 'https://corsproxy.io/?https://api.rawg.io/api';
 const API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 
-console.log('RAWG API KEY:', API_KEY);
 
 export interface Game {
   name: string;
@@ -29,7 +28,6 @@ export const fetchGame = async (title: string): Promise<Game | null> => {
 export const fetchPopularGames = async (pageSize = 40): Promise<Game[]> => {
   try {
     const url = `${API_BASE_URL}/games?key=${API_KEY}&page_size=${pageSize}`;
-    console.log("This is the url",url)
     const response = await axios.get(url) as { data: { results: Game[] } };
     return response.data.results || [];
   } catch (error) {
