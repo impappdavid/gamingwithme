@@ -40,7 +40,6 @@ function AdminGamesC() {
         fetchGames()
     }, [])
 
-    console.log(games)
 
     return (
         <>
