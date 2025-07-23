@@ -5,10 +5,6 @@ export interface GoogleAuthResponse {
     message?: string;
 }
 
-export interface FacebookAuthResponse {
-    authorizationUrl?: string;
-    message?: string;
-}
 
 export const login = async (
     email: string,

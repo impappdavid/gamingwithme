@@ -5,10 +5,7 @@ export interface GoogleAuthResponse {
     message?: string;
 }
 
-export interface FacebookAuthResponse {
-    authorizationUrl?: string;
-    message?: string;
-}
+
 
 export const registration = async (
     email: string,
@@ -52,19 +49,4 @@ export const GoogleRegistration = async (
     }
 }
 
-export const FacebookRegistration = async (
-): Promise<FacebookAuthResponse> => {
-    try {
-        // TODO: Replace with your actual API URL or use an environment variable
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.get(
-            `${API_URL}/api/account/register/facebook`
-        );
-        
-        // Return the authorization URL from the backend
-        return response.data as FacebookAuthResponse;
-    } catch (error) {
-        console.error('Error logging in user:', error);
-        throw error;
-    }
-}
+

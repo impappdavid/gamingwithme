@@ -7,9 +7,7 @@ export {
     register,
     logout,
     googleLogin,
-    facebookLogin,
     googleRegister,
-    facebookRegister
 } from './auth';
 
 // Export user functions
