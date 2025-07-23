@@ -10,6 +10,7 @@ import { becomeACreator } from "@/api/creator"
 function Sidebar() {
     const { t } = useTranslation();
     const [isCreator, setIsCreator] = useState(false);
+    const [tags, setTags] = useState([""]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -26,6 +27,7 @@ function Sidebar() {
                 if (common && common.username) {
                     const full = await getUserProfile(common.username);
                     setIsCreator(full.hasStripeAccount);
+                    setTags(full.tags)
                     if (common.isAdmin) {
                         setIsAdmin(true)
                     } else {
@@ -65,6 +67,8 @@ function Sidebar() {
             navigate("/login");
         }
     };
+
+    console.log(tags)
 
     return (
         <div className="xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">
@@ -169,13 +173,26 @@ function Sidebar() {
                         </div>
                     )
                         : isCreator ? (
-                            <NavLink
-                                to="/create-listing"
-                                className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
-                            >
-                                <Plus className="w-5 h-5" />
-                                <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
-                            </NavLink>
+                            <>
+                                {tags.includes("Gamer") ? (
+                                    <NavLink
+                                        to="/create-listing"
+                                        className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                                    >
+                                        <Plus className="w-5 h-5" />
+                                        <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
+                                    </NavLink>
+                                ) : (
+                                    <NavLink
+                                        to="/create-service"
+                                        className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                                    >
+                                        <Plus className="w-5 h-5" />
+                                        <div className="text-md font-medium hidden xl:flex">{t("Create service")}</div>
+                                    </NavLink>
+                                )}
+
+                            </>
                         ) : (
                             <button
                                 onClick={handleBecomeClick}
@@ -192,7 +209,7 @@ function Sidebar() {
                 </div>
 
                 <div className="flex flex-col gap-1 p-2">
-                   
+
                     {isAdmin === true ? (
                         <NavLink
                             to="../admin"

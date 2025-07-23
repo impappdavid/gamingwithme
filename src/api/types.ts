@@ -12,6 +12,7 @@ export interface UserProfile {
     bio: string;
     isActive: boolean;
     languages: string[];
+    tags: string[];
     games: string[];
     hasStripeAccount: boolean;
     bookings: Booking[];
