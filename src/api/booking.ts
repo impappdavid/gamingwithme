@@ -13,7 +13,6 @@ export interface BookInfos {
 export const AddNewBooking = async (
     date: string,
     startTime: string,
-    endTime: string,
     sessionDuration: string,
     price: number,
     useCookies?: boolean
@@ -23,7 +22,6 @@ export const AddNewBooking = async (
         const response = await axios.post(`${API_URL}/api/User/daily-availability`, {
             date,
             startTime,
-            endTime,
             sessionDuration,
             price
         }, {
