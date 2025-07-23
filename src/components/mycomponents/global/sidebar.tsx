@@ -175,13 +175,22 @@ function Sidebar() {
                         : isCreator ? (
                             <>
                                 {tags.includes("Gamer") ? (
-                                    <NavLink
-                                        to="/create-listing"
-                                        className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
-                                    >
-                                        <Plus className="w-5 h-5" />
-                                        <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
-                                    </NavLink>
+                                    <>
+                                        <NavLink
+                                            to="/create-listing"
+                                            className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                                        >
+                                            <Plus className="w-5 h-5" />
+                                            <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
+                                        </NavLink>
+                                        <NavLink
+                                            to="/create-service"
+                                            className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                                        >
+                                            <Plus className="w-5 h-5" />
+                                            <div className="text-md font-medium hidden xl:flex">{t("Create service")}</div>
+                                        </NavLink>
+                                    </>
                                 ) : (
                                     <NavLink
                                         to="/create-service"

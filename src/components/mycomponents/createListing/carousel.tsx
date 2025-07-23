@@ -18,6 +18,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { ChevronDown } from "lucide-react";
+import { AddNewBooking } from "@/api/booking";
 
 const durationOptions = [30, 45, 60];
 const pad = (n: number) => n.toString().padStart(2, "0");
@@ -150,7 +151,22 @@ function Carousel() {
                 return { ...prev, [slot]: price };
             }
         });
+        const [startTime, endTime] = slot.split("-");
+        handleSubmit(startTime, endTime)
     };
+
+    const handleSubmit = async (start: string, end: string) => {
+        console.log(selectedDate, start, end, price, selectedDuration)
+        const dateObj: Date = new Date(selectedDate);
+        console.log(dateObj.toISOString(), start, end, selectedDuration.toLocaleString(), Number(price))
+        try {
+            await AddNewBooking(dateObj.toISOString(), start, end, selectedDuration.toLocaleString(), Number(price))
+            
+        } catch (err: any) {
+            console.error(err.message || "Failed to add game.")
+        }
+
+    }
 
     // Selected day display
     const selectedDayLabel = `${getWeekday(selectedDate)}, ${pad(selectedDate.getDate())}`;
@@ -250,23 +266,44 @@ function Carousel() {
                     // Disable slot selection if selectedDate is in the past
                     const isPastDay = isDateInPast(selectedDate);
                     return (
-                        <Button
-                            key={slotKey}
-                            variant="outline"
-                            className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300 ${isSelected ? "bg-green-500 border-green-500 text-black" : "bg-zinc-900 border-zinc-900 text-white"}`}
-                            onClick={() => !isPastDay && handleTimeSelect(slotKey)}
-                            disabled={isPastDay}
-                        >
-                            {isSelected ? (
-                                <span>{slot.start} - {slot.end} | ${selectedSlots[slotKey]}</span>
-                            ) : (
-                                <span>{slot.start} - {slot.end}</span>
-                            )}
-                        </Button>
+                        <>
+                            {
+                                isSelected ? (
+                                    <Button
+                                        key={slotKey}
+                                        variant="outline"
+                                        className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300 ${isSelected ? "bg-green-500 border-green-500 text-black" : "bg-zinc-900 border-zinc-900 text-white"}`}
+                                        onClick={() => !isPastDay && handleTimeSelect(slotKey)}
+                                        disabled={isPastDay}
+                                    >
+                                        {isSelected ? (
+                                            <span>{slot.start} - {slot.end} | ${selectedSlots[slotKey]}</span>
+                                        ) : (
+                                            <span>{slot.start} - {slot.end}</span>
+                                        )}
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        key={slotKey}
+                                        variant="outline"
+                                        className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300 ${isSelected ? "bg-green-500 border-green-500 text-black" : "bg-zinc-900 border-zinc-900 text-white"}`}
+                                        onClick={() => !isPastDay && handleTimeSelect(slotKey)}
+                                        disabled={isPastDay}
+                                    >
+                                        {isSelected ? (
+                                            <span>{slot.start} - {slot.end} | ${selectedSlots[slotKey]}</span>
+                                        ) : (
+                                            <span>{slot.start} - {slot.end}</span>
+                                        )}
+                                    </Button>
+                                )}
+                        </>
                     );
+
                 })}
-            </div>
-        </div>
+            </div >
+        </div >
+
     );
 }
 
