@@ -12,6 +12,24 @@ export interface Service {
     createdAt: string
 }
 
+export const GetServicesById = async (
+    userId: string,
+    useCookies?: boolean
+): Promise<Service[] | null> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(`${API_URL}/api/fixedservices`, {
+            params: { userId },
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as Service[];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return null;
+    }
+};
 
 export const GetMyServices = async (
     useCookies?: boolean

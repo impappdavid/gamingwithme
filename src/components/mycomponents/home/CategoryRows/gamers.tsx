@@ -1,5 +1,4 @@
 import { type TopCreators, GetRandomsByTagAndTop } from "@/api/home"
-import { MessagesSquare, Music } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
