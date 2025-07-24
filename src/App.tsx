@@ -24,6 +24,7 @@ import AddGamePage from "./pages/Admin/AddGame";
 import EditGamePage from "./pages/Admin/EditGame";
 import AdminNotificationsPage from "./pages/Admin/Notifications";
 import AddNewNotificationsPage from "./pages/Admin/AddNotification";
+import CreateServicePage from "./pages/CreateService";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -46,6 +47,7 @@ function App() {
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/create-listing" element={<CreateListing />} />
+              <Route path="/create-service" element={<CreateServicePage />} />
               <Route path="/settings/general" element={<Settings />} />
               <Route path="/settings/history" element={<History />} />
               <Route path="/settings/active-history" element={<Activehistory />} />
