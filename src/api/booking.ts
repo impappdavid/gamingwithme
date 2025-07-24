@@ -39,11 +39,32 @@ export const AddNewBooking = async (
 
 
 export const GetBooking = async (
+    date: string,
     useCookies?: boolean
 ): Promise<BookInfos[] | null> => {
     try {
         const API_URL = 'https://localhost:7091';
-        const response = await axios.get(`${API_URL}/api/game`, {
+        const response = await axios.get(`${API_URL}/api/user/daily-availability/${date}`, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as BookInfos[];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return null;
+    }
+};
+
+export const DeleteBooking = async (
+    date: string,
+    startTime: string,
+    useCookies?: boolean
+): Promise<BookInfos[] | null> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.delete(`${API_URL}/api/User/daily-availability/${date}/${startTime}`, {
             params: useCookies !== undefined ? { useCookies } : {},
             withCredentials: true,
         });
