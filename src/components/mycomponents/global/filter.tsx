@@ -1,13 +1,5 @@
 import { Input } from "@/components/ui/input"
 import { DollarSign, Search, ChevronUp, ChevronDown, Funnel, X } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -27,10 +19,6 @@ interface FilterProps {
     setMinPrice: (v: number | undefined) => void;
     maxPrice: number | undefined;
     setMaxPrice: (v: number | undefined) => void;
-    orderBy: string;
-    setOrderBy: (v: string) => void;
-    showActive: boolean;
-    setShowActive: (v: boolean) => void;
 }
 
 function Filter({
@@ -40,10 +28,6 @@ function Filter({
     setMinPrice,
     maxPrice,
     setMaxPrice,
-    orderBy,
-    setOrderBy,
-    showActive,
-    setShowActive,
 }: FilterProps) {
     const handleMinPriceChange = (increment: boolean) => {
         const currentValue = minPrice || 0;
@@ -75,18 +59,7 @@ function Filter({
                 />
             </div>
             
-            <div className="hidden sm:flex items-center">
-                <Button
-                    type="button"
-                    className={`h-10 px-4 rounded-xl text-zinc-400 border cursor-pointer border-zinc-800 bg-zinc-800/40 hover:bg-zinc-800/80 transition-all flex items-center gap-2 ${showActive ? 'ring-2 ring-green-500' : ''}`}
-                    onClick={() => setShowActive(!showActive)}
-                >
-                    <span className="relative flex h-2 w-2">
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    <span>Online</span>
-                </Button>
-            </div>
+            
             <div className="relative max-w-46 hidden md:flex">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <DollarSign className="h-4.5 w-4.5 text-zinc-500" />
@@ -151,19 +124,7 @@ function Filter({
                     </div>
                 </div>
             </div>
-            <div className="hidden md:flex">
-                <Select value={orderBy} onValueChange={setOrderBy}>
-                    <SelectTrigger className="w-fit h-10">
-                        <SelectValue placeholder="Order by" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem value="highest">{t("highest")}</SelectItem>
-                            <SelectItem value="lowest">{t("lowest")}</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
+            
             <Dialog>
                 <DialogTrigger asChild>
                     <div className="relative md:hidden rounded-lg h-10 min-w-10 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center justify-center px-2 cursor-pointer transition-all duration-200">
@@ -183,31 +144,9 @@ function Filter({
                         <div className="h-[2px] bg-zinc-800 w-full"></div>
                         <DialogDescription>
                             <div className="flex flex-col gap-4">
-                                <Select value={orderBy} onValueChange={setOrderBy}>
-                                    <SelectTrigger className="w-full h-10">
-                                        <SelectValue placeholder="Order by" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem value="highest">{t("highest")}</SelectItem>
-                                            <SelectItem value="lowest">{t("lowest")}</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
+                               
 
-                                <div className="flex items-center">
-                                    <Button
-                                        type="button"
-                                        className={`h-10 px-4 w-full justify-start rounded-xl text-zinc-400 border cursor-pointer border-zinc-800 bg-zinc-800/40 hover:bg-zinc-800/80 transition-all flex items-center gap-2 ${showActive ? 'ring-2 ring-green-500' : ''}`}
-                                        onClick={() => setShowActive(!showActive)}
-                                    >
-                                        <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                        </span>
-                                        <span>Online</span>
-                                    </Button>
-                                </div>
+                                
                                 <div className="relative w-full ">
                                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                         <DollarSign className="h-4.5 w-4.5 text-zinc-500" />

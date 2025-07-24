@@ -119,10 +119,6 @@ function Content() {
             setMinPrice={setMinPrice}
             maxPrice={maxPrice}
             setMaxPrice={setMaxPrice}
-            orderBy={orderBy}
-            setOrderBy={setOrderBy}
-            showActive={showActive}
-            setShowActive={setShowActive}
           />
           <div className="p-2">
             {loading ? (
