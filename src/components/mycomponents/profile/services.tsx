@@ -1,9 +1,33 @@
 import { GetServicesById, type Service } from "@/api/service"
-import { Calendar } from "lucide-react"
+import { Calendar, CaseLower } from "lucide-react"
 import { useEffect, useState } from "react"
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { PaymentWithStripe, type Payment } from "@/api/stripe";
+import { Textarea } from "@/components/ui/textarea";
+import { useNavigate } from "react-router-dom";
 
 function Services(userId: any) {
     const [services, setServices] = useState<Service[]>([])
+    const [total, setTotal] = useState(100); // Base total amount (customize as needed)
+    const [coupon, setCoupon] = useState('');
+    const [applied, setApplied] = useState(false);
+    const [error, setError] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+    const [serviceId, setServiceId] = useState("");
+    const [customerNotes, setNotes] = useState('');
+    const paymentType = "Service";
+    const navigate = useNavigate();
+
 
 
     const fetchServices = async () => {
@@ -22,13 +46,48 @@ function Services(userId: any) {
         fetchServices()
     }, [])
 
+
+
+    const handleApplyCoupon = () => {
+        if (coupon.trim() === '') {
+            setError('Please enter a coupon code.');
+            return;
+        }
+
+        // Simple discount logic: Apply 10% off if coupon is "DISCOUNT"
+        if (coupon.toUpperCase() === 'DISCOUNT') {
+            setTotal((prevTotal) => prevTotal * 0.9);
+            setApplied(true);
+            setError('');
+        } else {
+            setError('Invalid coupon code.');
+            setApplied(false);
+        }
+    };
+
+    const handlePayment = async (serviceId: string) => {
+        try {
+            const data = await PaymentWithStripe(
+                userId?.userId,
+                paymentType,
+                serviceId,
+                customerNotes,
+            )
+            if (data) {
+                window.open(data.checkoutUrl, '_blank')
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <>
             <div className="flex flex-col gap-4">
                 <div className="text-2xl">Services</div>
                 <div className="grid grid-cols-5">
                     {services.map((service, index) => (
-                        <div key={index} className={`p-4 bg-zinc-950 border flex flex-col gap-2 rounded-lg  transition-all duration-300 ${service.status === 0 ? "cursor-pointer hover:border-green-500/40" : "cursor-not-allowed hover:border-red-500/40"}`}>
+                        <div onClick={() => { setOpenModal(true); setServiceId(service.id) }} key={index} className={`p-4 bg-zinc-950 border flex flex-col gap-2 rounded-lg  transition-all duration-300 ${service.status === 0 ? "cursor-pointer hover:border-green-500/40" : "cursor-not-allowed hover:border-red-500/40"}`}>
                             <div className="flex flex-col">
                                 <div className="text-lg">{service.title}</div>
                                 <div className="text-xs text-zinc-400">{service.description}</div>
@@ -41,12 +100,74 @@ function Services(userId: any) {
                                     <Calendar className="w-4 h-4" />
                                     {service.deliveryDeadline} day
                                 </div>
+
                             </div>
                         </div>
                     ))}
                 </div>
 
             </div>
+            <Dialog open={openModal}>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                        <DialogTitle>Payment Summary</DialogTitle>
+                        <DialogDescription>
+                            Review your total and apply a coupon if you have one.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="total" className="text-right">
+                                Total to Pay
+
+                            </Label>
+                            <div id="total" className="col-span-3 font-bold text-lg">
+                                ${total.toFixed(2)}
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="coupon" className="text-right">
+                                Coupon
+                            </Label>
+                            <div className="col-span-3 flex gap-2">
+                                <Input
+                                    id="coupon"
+                                    value={coupon}
+                                    onChange={(e) => setCoupon(e.target.value)}
+                                    className="border-zinc-800 hover:border-zinc-700 transition-all duration-300"
+                                    placeholder="Enter coupon code"
+                                />
+                                <Button type="button" className="bg-blue-500 text-black border hover:bg-blue-600 cursor-pointer transition-all duration-300" onClick={handleApplyCoupon}>
+                                    Apply
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-4 items-start gap-4 w-full">
+                            <Label htmlFor="coupon" className="text-right">
+                                Message
+                            </Label>
+                            <div className="relative flex-1 w-full col-span-3">
+                                <CaseLower className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
+                                <Textarea
+                                    placeholder="Send a message for the seller..."
+                                    className="pl-10 h-20  rounded-xl  border-zinc-800 hover:border-zinc-700 transition-all duration-300 resize-none"
+                                    value={customerNotes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                        {applied && <p className="text-green-500 text-sm">Coupon applied successfully!</p>}
+                    </div>
+                    <DialogFooter>
+
+                        <Button onClick={() => handlePayment(serviceId)} className="bg-green-500 w-full hover:bg-green-600 cursor-pointer transition-all duration-300" variant="default">
+                            Proceed to Pay
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

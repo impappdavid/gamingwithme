@@ -15,6 +15,7 @@ function Content() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [gameImages, setGameImages] = useState<string[]>([]); // holds fetched images
+    const [userId, setUserId] = useState("")
 
     useEffect(() => {
         if (!slug) return;
@@ -24,6 +25,7 @@ function Content() {
             try {
                 const apiUser = await getUserProfile(slug);
                 setUser(apiUser);
+                setUserId(String(apiUser.id))
             } catch (err) {
                 setError("Failed to fetch user");
                 setUser(null);
@@ -170,7 +172,9 @@ function Content() {
                             </div>
                         ) : (
                             <>
-                                <Services userId={user.id} />
+                                <Services userId={userId} />
+
+                            
                             </>
                         )}
                     </div>
