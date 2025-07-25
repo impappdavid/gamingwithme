@@ -123,7 +123,7 @@ function SettingsSidebar() {
                     <div className="sm:flex hidden">Billing History</div>
                 </NavLink>
                 <NavLink
-                    to="/settings/history"
+                    to="/settings/coupon"
                     className={({ isActive }) =>
                         `flex gap-2 items-center py-2 px-2 rounded-xl transition-all duration-300 hover:bg-zinc-800/60 ${isActive ? "text-white" : "text-zinc-400 hover:text-white"
                         }`

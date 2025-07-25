@@ -25,6 +25,7 @@ import EditGamePage from "./pages/Admin/EditGame";
 import AdminNotificationsPage from "./pages/Admin/Notifications";
 import AddNewNotificationsPage from "./pages/Admin/AddNotification";
 import CreateServicePage from "./pages/CreateService";
+import CouponPage from "./pages/Coupon";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -53,6 +54,7 @@ function App() {
               <Route path="/settings/active-history" element={<Activehistory />} />
               <Route path="/settings/security" element={<SecurityPage />} />
               <Route path="/settings/danger" element={<Danger />} />
+              <Route path="/settings/coupon" element={<CouponPage />} />
             </Route>
             {/* Admin protected routes */}
             <Route element={<AdminProtectedRoute />}>

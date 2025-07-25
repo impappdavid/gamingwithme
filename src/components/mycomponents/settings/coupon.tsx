@@ -1,0 +1,157 @@
+import Navbar from "../navbar/navbar"
+import { useTranslation } from "react-i18next"
+import SettingsSidebar from "./settingsSidebar"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { AddNewCoupon } from "@/api/settings"
+import { Calendar, Users } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { useState } from "react"
+
+function Coupon() {
+    const [name, setName] = useState("");
+    const [percentOff, setPercentOff] = useState(0);
+    const [durationInDays, setDurationInDays] = useState(0);
+    const [maxRedemptions, setMaxRedemptions] = useState(0);
+    const { t } = useTranslation()
+    
+    const [openModal, setOpenModal] = useState(false)
+
+    const handleAddCoupon = async () => {
+        try {
+            setOpenModal(false)
+            await AddNewCoupon(name, percentOff, durationInDays, maxRedemptions)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return (
+        <>
+            <div className="w-full h-screen sm:p-2">
+                <div className="w-full h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 relative flex flex-col">
+                    <div className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl sm:rounded-t-2xl">
+                        <Navbar page={t("settings")} />
+                    </div>
+                    <div className="flex w-full flex-1">
+                        <SettingsSidebar />
+                        <div className="w-full p-4 flex justify-center">
+                            <div className="flex flex-col items-start w-full max-w-2xl gap-4">
+                                <div className="flex justify-between w-full">
+                                    <div className="flex flex-col">
+                                        <div className="text-2xl">Create coupon</div>
+                                        <div className="text-xs text-zinc-400">Suggestion: Dont apply more then 80%</div>
+                                    </div>
+                                    <div onClick={() => setOpenModal(true)} className="w-fit border max-w-2xl py-1.5 px-4 text-zinc-400 hover:text-green-500 cursor-pointer transition-all flex items-center duration-300 hover:bg-zinc-950/60">
+                                        <div className="tex-xs">Create New Coupon</div>
+                                    </div>
+                                </div>
+                                <div className="border-x border-t w-full">
+                                    <div className="w-full border-b p-4">
+                                        <div className="flex justify-between w-full">
+                                            <div className="flex flex-col gap-2">
+                                                <div className="flex flex-col">
+                                                    <div className="text-lg">David20</div>
+                                                </div>
+                                                <div className="flex gap-2 items-center">
+                                                    <div className="py-0.5 px-2 bg-green-500/20 border border-green-500/40 rounded-full text-green-500 text-xs">
+                                                        -20%
+                                                    </div>
+                                                    <div className="py-0.5 px-2 bg-orange-500/20 border border-orange-500/40 rounded-full text-orange-500 text-xs flex gap-1 items-center">
+                                                        <Calendar className="w-4 h-4" />
+                                                        14 day
+                                                    </div>
+                                                    <div className="py-0.5 px-2 bg-blue-500/20 border border-blue-500/40 rounded-full text-blue-500 text-xs flex gap-1 items-center">
+                                                        <Users className="w-4 h-4" />
+                                                        99
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <Dialog open={openModal}>
+
+                <DialogContent className="sm:max-w-[500px] realtive">
+                    <DialogHeader>
+                        <DialogTitle>Add Service</DialogTitle>
+                        <DialogDescription>Please fill all the inputs.</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4">
+                        <Input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder={t("Enter coupon name") || "Enter coupon name"}
+                            className="h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800"
+                            required
+                            autoComplete="off"
+                        />
+                        
+                        <div className="flex flex-col gap-0">
+                            <label htmlFor="">Percent</label>
+                            <Input
+                                type="number"
+                                value={percentOff}
+                                onChange={(e) => setPercentOff(Number(e.target.value))}
+                                placeholder="Set the percent"
+                                className="h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800"
+                                required
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-0">
+                            <label htmlFor="">Duration(day)</label>
+                            <Input
+                                type="number"
+                                value={durationInDays}
+                                onChange={(e) => setDurationInDays(Number(e.target.value))}
+                                placeholder="Set the coupon duration"
+                                className="h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800"
+                                required
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-0">
+                            <label htmlFor="">Max redeem</label>
+                            <Input
+                                type="number"
+                                value={maxRedemptions}
+                                onChange={(e) => setMaxRedemptions(Number(e.target.value))}
+                                placeholder="Total redeem"
+                                className="h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800"
+                                required
+                                autoComplete="off"
+                            />
+                        </div>
+                        
+                    </div>
+                    <DialogFooter className="grid grid-cols-2">
+                            <Button onClick={()=> setOpenModal(false)} className="border bg-black text-zinc-400 cursor-pointer hover:bg-zinc-950/40 rounded-lg">
+                                Cancel
+                            </Button>
+                        <Button
+                            className="bg-green-500 hover:bg-green-600 cursor-pointer"
+                            onClick={handleAddCoupon}
+                        >
+                            Save changes
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
+    )
+}
+export default Coupon
