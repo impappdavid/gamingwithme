@@ -26,6 +26,7 @@ function Services(userId: any) {
     const [openModal, setOpenModal] = useState(false);
     const [serviceId, setServiceId] = useState("");
     const [servicePrice, setServicePrice] = useState(0);
+    const [percent, setPercent] = useState(0);
     const [customerNotes, setNotes] = useState('');
     const [isValid, setIsValid] = useState(false);
     const paymentType = "Service";
@@ -73,6 +74,7 @@ function Services(userId: any) {
              if(data.valid){
                 setIsValid(true)
                 setCoupon(data.couponId)
+                setPercent(data.percentOff)
              }else{
                 setIsValid(false)
                 setCoupon("")
@@ -123,8 +125,13 @@ function Services(userId: any) {
                                 Total to Pay
 
                             </Label>
-                            <div id="total" className="col-span-3 font-bold text-lg">
+                            <div id="total" className="col-span-3 font-bold text-lg flex justify-between items-center">
                                 ${servicePrice.toFixed(2)}
+                                {isValid ? (
+                                    <div className="text-green-500 text-sm">-{percent}%</div>
+                                ) : (
+                                    <div className=""></div>
+                                )}
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
