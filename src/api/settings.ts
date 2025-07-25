@@ -1,3 +1,4 @@
+import axios from "axios";
 import { apiClient, createRequestConfig, handleApiError } from './client';
 import type { UserCommonInfos, UserProfile, Bill } from './types';
 
@@ -174,5 +175,32 @@ export const deleteUserLanguage = async (languageName: string, useCookies?: bool
     } catch (error) {
         handleApiError(error, 'deleting user language');
         throw error;
+    }
+};
+
+export const AddNewCoupon = async (
+    name: string,
+    percentOff: number,
+    durationInDays: number,
+    maxRedemptions: number,
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(`${API_URL}/api/Stripe/create-coupon`, {
+            name,
+            percentOff,
+            durationInDays,
+            maxRedemptions
+        }, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error; // Re-throw after handling
     }
 };
