@@ -6,6 +6,14 @@ export interface UserCommonInfos {
     isAdmin: boolean;
 }
 
+export interface Notification {
+    id: string;
+    title: string;
+    content: string;
+    createdAt: string;
+    isPublished: boolean;
+}
+
 export const getUserCommonInfos = async (
     useCookies?: boolean
 ): Promise<UserCommonInfos | null> => {
@@ -41,3 +49,22 @@ export const Logout = async () => {
         throw error;
     }
 }
+
+
+export const getNotifications = async (
+    isPublished: true
+): Promise<Notification> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(`${API_URL}/api/notifications`, {
+            params: { isPublished },
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as Notification;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        throw new Error;
+    }
+};
