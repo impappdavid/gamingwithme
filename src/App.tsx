@@ -68,9 +68,7 @@ function App() {
             <Route path="/games/:slug" element={<Game />} />
             <Route path="/profile/:slug" element={<Profile />} />
             {/*
-              become
               support --------------------------
-              coupon
               aboutus -------------------------
               faq -------------------------
               download -------------------------
