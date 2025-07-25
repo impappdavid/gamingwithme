@@ -90,11 +90,21 @@ function Coupon() {
                                                         </div>
                                                         <div className="py-0.5 px-2 bg-orange-500/20 border border-orange-500/40 rounded-full text-orange-500 text-xs flex gap-1 items-center">
                                                             <Calendar className="w-4 h-4" />
-                                                            {new Date(coupon.expiresAt).toLocaleDateString("en-US", {
-                                                                year: "numeric",
-                                                                month: "short",
-                                                                day: "numeric"
-                                                            })}
+                                                            {coupon.valid ? (
+                                                                <>
+                                                                    {
+
+                                                                        new Date(coupon.expiresAt).toLocaleDateString("en-US", {
+                                                                            year: "numeric",
+                                                                            month: "short",
+                                                                            day: "numeric"
+                                                                        })
+                                                                    }
+                                                                </>
+                                                            ) : (
+                                                                <div className="">Ended</div>
+                                                            )}
+
                                                         </div>
 
                                                     </div>
