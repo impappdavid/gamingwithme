@@ -15,7 +15,7 @@ function Gamers() {
     useEffect(() => {
         const getTopCreators = async () => {
             try {
-                const data = await GetRandomsByTagAndTop("Gamer", 4);
+                const data = await GetRandomsByTagAndTop("Gamer", 8);
                 if (Array.isArray(data)) {
                     setTopCreators(data as TopCreators[]);
                 } else {
