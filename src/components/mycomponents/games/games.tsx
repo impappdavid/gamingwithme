@@ -76,7 +76,7 @@ function Games({ filterText }: { filterText: string }) {
                                         <Link to={`/games/${game.slug}`} key={game.slug}>
                                             {(!game.thumbnailUrl || game.thumbnailUrl === "") ? (
                                                 rawgImages[game.name] ? (
-                                                    <img src={rawgImages[game.name]} className="bg-cover  rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                                    <img src={rawgImages[game.name]} className="bg-cover h-24 w-fit  rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
                                                 ) : (
                                                     rawgLoading[game.name] ? (
                                                         <Skeleton className="w-full h-18 rounded-2xl" />
@@ -85,7 +85,7 @@ function Games({ filterText }: { filterText: string }) {
                                                     )
                                                 )
                                             ) : (
-                                                <img src={game.thumbnailUrl} className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
+                                                <img src={game.thumbnailUrl} className="bg-cover max-h-42 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
                                             )}
                                         </Link>
                                     ))
