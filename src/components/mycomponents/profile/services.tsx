@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { PaymentWithStripe, type Payment } from "@/api/stripe";
+import { PaymentWithStripe, ValidateCoupon, type Payment } from "@/api/stripe";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 
@@ -27,6 +27,7 @@ function Services(userId: any) {
     const [serviceId, setServiceId] = useState("");
     const [servicePrice, setServicePrice] = useState(0);
     const [customerNotes, setNotes] = useState('');
+    const [isValid, setIsValid] = useState(false);
     const paymentType = "Service";
     const navigate = useNavigate();
 
@@ -49,24 +50,6 @@ function Services(userId: any) {
     }, [])
 
 
-
-    const handleApplyCoupon = () => {
-        if (coupon.trim() === '') {
-            setError('Please enter a coupon code.');
-            return;
-        }
-
-        // Simple discount logic: Apply 10% off if coupon is "DISCOUNT"
-        if (coupon.toUpperCase() === 'DISCOUNT') {
-            setTotal((prevTotal) => prevTotal * 0.9);
-            setApplied(true);
-            setError('');
-        } else {
-            setError('Invalid coupon code.');
-            setApplied(false);
-        }
-    };
-
     const handlePayment = async (serviceId: string) => {
         try {
             const data = await PaymentWithStripe(
@@ -74,6 +57,7 @@ function Services(userId: any) {
                 paymentType,
                 serviceId,
                 customerNotes,
+                coupon
             )
             if (data) {
                 window.open(data.checkoutUrl, '_blank')
@@ -82,6 +66,22 @@ function Services(userId: any) {
             console.log(error)
         }
     }
+
+    const handleCouponValidate = async () => {
+        try {
+             const data = await ValidateCoupon(coupon)
+             if(data.valid){
+                setIsValid(true)
+                setCoupon(data.couponId)
+             }else{
+                setIsValid(false)
+                setCoupon("")
+             }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     return (
         <>
@@ -135,11 +135,12 @@ function Services(userId: any) {
                                 <Input
                                     id="coupon"
                                     value={coupon}
+                                    disabled={isValid}
                                     onChange={(e) => setCoupon(e.target.value)}
                                     className="border-zinc-800 hover:border-zinc-700 transition-all duration-300"
                                     placeholder="Enter coupon code"
                                 />
-                                <Button type="button" className="bg-blue-500 text-black border hover:bg-blue-600 cursor-pointer transition-all duration-300" onClick={handleApplyCoupon}>
+                                <Button type="button" className="bg-blue-500 text-black border hover:bg-blue-600 cursor-pointer transition-all duration-300" onClick={handleCouponValidate} disabled={isValid}>
                                     Apply
                                 </Button>
                             </div>
