@@ -2,6 +2,26 @@ import axios from "axios";
 import { apiClient, createRequestConfig, handleApiError } from './client';
 import type { UserCommonInfos, UserProfile, Bill } from './types';
 
+export interface Coupon {
+        id: string,
+        stripeId: string,
+        name: string,
+        percentOff: number,
+        duration: number,
+        maxRedemptions: number,
+        valid: boolean,
+        expiresAt: string,
+        timesRedeemed: number,
+        createdAt: string,
+    
+
+}
+
+interface CouponResponse {
+    coupons: Coupon[];
+    totalCount: number;
+}
+
 // Get current user's basic info
 export const getUserCommonInfos = async (useCookies?: boolean): Promise<UserCommonInfos | null> => {
     try {
@@ -199,6 +219,24 @@ export const AddNewCoupon = async (
 
         // ✅ RETURN the result!
         return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error; // Re-throw after handling
+    }
+};
+
+export const GetMyCoupons = async (
+    useCookies?: boolean
+): Promise<CouponResponse> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(`${API_URL}/api/Stripe/my-coupons`, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as CouponResponse;
     } catch (error) {
         console.error('Error fetching users:', error);
         throw error; // Re-throw after handling

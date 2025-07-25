@@ -48,6 +48,8 @@ export interface Bill {
     otherPartyAvatarUrl: string;
 }
 
+
+
 export interface Game {
     id: number;
     name: string;

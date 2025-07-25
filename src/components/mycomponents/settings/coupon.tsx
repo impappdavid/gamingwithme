@@ -10,19 +10,43 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { AddNewCoupon } from "@/api/settings"
+import { AddNewCoupon, GetMyCoupons, type Coupon } from "@/api/settings"
 import { Calendar, Users } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+
 
 function Coupon() {
     const [name, setName] = useState("");
     const [percentOff, setPercentOff] = useState(0);
     const [durationInDays, setDurationInDays] = useState(0);
     const [maxRedemptions, setMaxRedemptions] = useState(0);
+    const [coupons, setCoupons] = useState<Coupon[]>([])
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const { t } = useTranslation()
-    
+
     const [openModal, setOpenModal] = useState(false)
+    const fetchServices = async () => {
+        const response = await GetMyCoupons();
+
+        if (Array.isArray(response.coupons)) {
+            setCoupons(
+                response.coupons.map((coupon: any) => ({
+                    ...coupon,
+                    id: String(coupon.id),
+                }))
+            );
+        } else {
+            console.error("Coupons data not found or invalid:", response);
+            setCoupons([]);
+        }
+    };
+
+    useEffect(() => {
+        fetchServices()
+    }, [])
 
     const handleAddCoupon = async () => {
         try {
@@ -53,35 +77,46 @@ function Coupon() {
                                     </div>
                                 </div>
                                 <div className="border-x border-t w-full">
-                                    <div className="w-full border-b p-4">
-                                        <div className="flex justify-between w-full">
-                                            <div className="flex flex-col gap-2">
-                                                <div className="flex flex-col">
-                                                    <div className="text-lg">David20</div>
+                                    {coupons.map((coupon, index) => (
+                                        <div key={index} className="w-full border-b p-4">
+                                            <div className="flex justify-between w-full">
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex flex-col">
+                                                        <div className="text-lg">{coupon.name}</div>
+                                                    </div>
+                                                    <div className="flex gap-2 items-center">
+                                                        <div className="py-0.5 px-2 bg-green-500/20 border border-green-500/40 rounded-full text-green-500 text-xs">
+                                                            -{coupon.percentOff}%
+                                                        </div>
+                                                        <div className="py-0.5 px-2 bg-orange-500/20 border border-orange-500/40 rounded-full text-orange-500 text-xs flex gap-1 items-center">
+                                                            <Calendar className="w-4 h-4" />
+                                                            {new Date(coupon.expiresAt).toLocaleDateString("en-US", {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric"
+                                                            })}
+                                                        </div>
+
+                                                    </div>
                                                 </div>
-                                                <div className="flex gap-2 items-center">
-                                                    <div className="py-0.5 px-2 bg-green-500/20 border border-green-500/40 rounded-full text-green-500 text-xs">
-                                                        -20%
-                                                    </div>
-                                                    <div className="py-0.5 px-2 bg-orange-500/20 border border-orange-500/40 rounded-full text-orange-500 text-xs flex gap-1 items-center">
-                                                        <Calendar className="w-4 h-4" />
-                                                        14 day
-                                                    </div>
-                                                    <div className="py-0.5 px-2 bg-blue-500/20 border border-blue-500/40 rounded-full text-blue-500 text-xs flex gap-1 items-center">
-                                                        <Users className="w-4 h-4" />
-                                                        99
-                                                    </div>
+                                                <div className="py-0.5 px-2 h-fit bg-blue-500/20 border border-blue-500/40 rounded-full text-blue-500 text-xs flex gap-1 items-center">
+                                                    <Users className="w-4 h-4" />
+                                                    {coupon.timesRedeemed}
+                                                    /
+                                                    {coupon.maxRedemptions}
                                                 </div>
                                             </div>
+
                                         </div>
-                                    </div>
+                                    ))}
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <Dialog open={openModal}>
 
                 <DialogContent className="sm:max-w-[500px] realtive">
@@ -99,7 +134,7 @@ function Coupon() {
                             required
                             autoComplete="off"
                         />
-                        
+
                         <div className="flex flex-col gap-0">
                             <label htmlFor="">Percent</label>
                             <Input
@@ -136,12 +171,12 @@ function Coupon() {
                                 autoComplete="off"
                             />
                         </div>
-                        
+
                     </div>
                     <DialogFooter className="grid grid-cols-2">
-                            <Button onClick={()=> setOpenModal(false)} className="border bg-black text-zinc-400 cursor-pointer hover:bg-zinc-950/40 rounded-lg">
-                                Cancel
-                            </Button>
+                        <Button onClick={() => setOpenModal(false)} className="border bg-black text-zinc-400 cursor-pointer hover:bg-zinc-950/40 rounded-lg">
+                            Cancel
+                        </Button>
                         <Button
                             className="bg-green-500 hover:bg-green-600 cursor-pointer"
                             onClick={handleAddCoupon}
