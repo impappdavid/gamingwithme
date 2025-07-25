@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export interface BookInfos {
+    id:string,
     date: string,
     startTime: string,
     endTime: string,

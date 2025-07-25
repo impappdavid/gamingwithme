@@ -8,6 +8,7 @@ import { getUserProfile } from "@/api/user";
 import { useParams } from "react-router-dom";
 import { fetchGame } from "@/api/rawg";
 import Services from "./services";
+import GamerServices from "./gamerService";
 
 function Content() {
     const { slug } = useParams<{ slug: string }>();
@@ -165,10 +166,10 @@ function Content() {
                     </div>
                     <div className="px-4 py-2 flex flex-col gap-2">
                         {user.tags.includes("Gamer") ? (
-                            <div className="grid grid-cols-2">
-                                <Carousel />
+                            <div className="grid grid-cols-2 gap-4">
+                                <Carousel userId={String(user.id)}/>
                                 {/* Services expects a string, so pass user.id as a string */}
-                                <Services userId={user.id} />
+                                <GamerServices userId={user.id} />
                             </div>
                         ) : (
                             <>
