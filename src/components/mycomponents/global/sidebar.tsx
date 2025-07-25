@@ -1,22 +1,43 @@
-import { BadgeCheck, Crown, Gamepad2, Info, MessagesSquare, Music, Plus, Swords, Youtube } from "lucide-react"
+import { BadgeCheck, Crown, Gamepad2, MessagesSquare, Music, Plus, Swords, Youtube } from "lucide-react"
 import { Link, NavLink } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 
-import { getUserCommonInfos, getUserProfile } from "@/api/user"
-import { becomeACreator } from "@/api/creator"
+
+import { getUserCommonInfos, getUserIsOnboarding, getUserProfile, continueStripe } from "@/api/user"
+import { becomeACreator  } from "@/api/creator" // Assuming continueStripe is exported from here
+
+
+// Define interfaces for better type safety
+interface OnboardingInfo {
+    onboardingComplete: boolean;
+}
+
+interface BecomeCreatorResponse {
+    onboardingUrl: string;
+    connectedAccountId: string;
+}
+
+interface ContinueStripeResponse {
+    url: string;
+    type: "account_onboarding";
+}
+
 
 function Sidebar() {
     const { t } = useTranslation();
     const [isCreator, setIsCreator] = useState(false);
+    const [onboardingComplete, setOnboardingComplete] = useState(false);
     const [tags, setTags] = useState([""]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const baseClass = "flex gap-2 items-center p-2 rounded-lg transition-all duration-200";
 
+
     const navigate = (window as any).navigate || ((url: string) => { window.location.href = url });
+
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -25,19 +46,25 @@ function Sidebar() {
                 const common = await getUserCommonInfos();
                 if (common && common.username) {
                     const full = await getUserProfile(common.username);
+                    const isOnBoard = await getUserIsOnboarding() as OnboardingInfo;
+
                     setIsCreator(full.hasStripeAccount);
-                    setTags(full.tags)
+                    setOnboardingComplete(isOnBoard?.onboardingComplete || false);
+                    setTags(full.tags);
+
                     if (common.isAdmin) {
-                        setIsAdmin(true)
+                        setIsAdmin(true);
                     } else {
-                        setIsAdmin(true)
+                        setIsAdmin(false);
                     }
                 } else {
                     setIsCreator(false);
+                    setOnboardingComplete(false);
                 }
             } catch (err: any) {
                 setError(err?.message || "Failed to fetch user info");
                 setIsCreator(false);
+                setOnboardingComplete(false);
             } finally {
                 setLoading(false);
             }
@@ -45,8 +72,9 @@ function Sidebar() {
         fetchUser();
     }, []);
 
-    // Handle Become button click
-    const handleBecomeClick = async () => {
+
+    // Handle Become/Continue button click
+    const handleSetupClick = async () => {
         try {
             const common = await getUserCommonInfos();
             if (!common) {
@@ -54,18 +82,28 @@ function Sidebar() {
                 return;
             }
 
-            const response = await becomeACreator();
-            if (response && response.data) {
-                const data = response.data as { onboardingUrl: string; connectedAccountId: string };
-                if (data && data.onboardingUrl) {
-                    window.open(data.onboardingUrl, '_blank');
+            if (isCreator && !onboardingComplete) {
+                // Continue onboarding
+                const response = await continueStripe("onboarding") as ContinueStripeResponse;
+                if (response && response.url) {
+                    window.open(response.url, '_blank');
+                }
+            } else {
+                // Become a creator (start onboarding)
+                const response = await becomeACreator();
+                if (response && response.data) {
+                    const data = response.data as BecomeCreatorResponse;
+                    if (data && data.onboardingUrl) {
+                        window.open(data.onboardingUrl, '_blank');
+                    }
                 }
             }
         } catch (err) {
-            console.error("Failed to become creator:", err);
+            console.error("Failed to handle creator setup:", err);
             navigate("/login");
         }
     };
+
 
 
     return (
@@ -75,6 +113,7 @@ function Sidebar() {
                     <img src="/logo.png" alt="Logo" className="w-8 h-8" />
                     <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
                 </Link>
+
 
                 <div className="flex flex-col gap-1 p-2">
                     <NavLink
@@ -89,6 +128,7 @@ function Sidebar() {
                         <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
                     </NavLink>
 
+
                     <NavLink
                         to="../gamers"
                         className={({ isActive }) =>
@@ -101,6 +141,7 @@ function Sidebar() {
                         <div className="text-md font-medium hidden xl:flex">{t("Gamers")}</div>
                     </NavLink>
 
+
                     <NavLink
                         to="../music"
                         className={({ isActive }) =>
@@ -112,6 +153,7 @@ function Sidebar() {
                         <Music className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">{t("Music")}</div>
                     </NavLink>
+
 
                     <NavLink
                         to="../tiktok"
@@ -127,6 +169,7 @@ function Sidebar() {
                         <div className="text-md font-medium hidden xl:flex">Tiktok</div>
                     </NavLink>
 
+
                     <NavLink
                         to="../youtube"
                         className={({ isActive }) =>
@@ -138,6 +181,7 @@ function Sidebar() {
                         <Youtube className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">Youtube</div>
                     </NavLink>
+
 
                     <NavLink
                         to="../games"
@@ -152,11 +196,14 @@ function Sidebar() {
                     </NavLink>
                 </div>
 
+
                 <div className="px-2">
                     <div className="h-[1.5px] w-full bg-zinc-900"></div>
                 </div>
 
+
                 <div className="flex flex-col gap-1 p-2">
+
 
                     {loading ? (
                         <div className={`${baseClass} opacity-50`}>
@@ -169,18 +216,28 @@ function Sidebar() {
                             <h3 className="text-xl font-semibold text-red-400 mb-2">Error</h3>
                             <p className="text-zinc-400 max-w-md">{error}</p>
                         </div>
-                    )
-                        : isCreator ? (
-                            <>
-                                {tags.includes("Gamer") ? (
-                                    <>
-                                        <NavLink
-                                            to="/create-listing"
-                                            className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
-                                        >
-                                            <Plus className="w-5 h-5" />
-                                            <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
-                                        </NavLink>
+                    ) : isCreator ? (
+                        <>
+                            {onboardingComplete ? (
+                                <>
+                                    {tags.includes("Gamer") ? (
+                                        <>
+                                            <NavLink
+                                                to="/create-listing"
+                                                className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                                            >
+                                                <Plus className="w-5 h-5" />
+                                                <div className="text-md font-medium hidden xl:flex">{t("Create listing")}</div>
+                                            </NavLink>
+                                            <NavLink
+                                                to="/create-service"
+                                                className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                                            >
+                                                <Plus className="w-5 h-5" />
+                                                <div className="text-md font-medium hidden xl:flex">{t("Create service")}</div>
+                                            </NavLink>
+                                        </>
+                                    ) : (
                                         <NavLink
                                             to="/create-service"
                                             className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
@@ -188,34 +245,37 @@ function Sidebar() {
                                             <Plus className="w-5 h-5" />
                                             <div className="text-md font-medium hidden xl:flex">{t("Create service")}</div>
                                         </NavLink>
-                                    </>
-                                ) : (
-                                    <NavLink
-                                        to="/create-service"
-                                        className={`${baseClass} bg-[#1aff00c0] cursor-pointer border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
-                                    >
-                                        <Plus className="w-5 h-5" />
-                                        <div className="text-md font-medium hidden xl:flex">{t("Create service")}</div>
-                                    </NavLink>
-                                )}
-
-                            </>
-                        ) : (
-                            <button
-                                onClick={handleBecomeClick}
-                                className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
-                            >
-                                <BadgeCheck className="w-5 h-5" />
-                                <div className="text-md font-medium hidden xl:flex">{t("Become")}</div>
-                            </button>
-                        )}
+                                    )}
+                                </>
+                            ) : (
+                                <button
+                                    onClick={handleSetupClick}
+                                    className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                                >
+                                    <BadgeCheck className="w-5 h-5" />
+                                    <div className="text-md font-medium hidden xl:flex">{t("Continue setup")}</div>
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <button
+                            onClick={handleSetupClick}
+                            className={`${baseClass} bg-[#1aff00c0] border border-dashed border-green-500/50 text-black hover:bg-[#19FF00]`}
+                        >
+                            <BadgeCheck className="w-5 h-5" />
+                            <div className="text-md font-medium hidden xl:flex">{t("Become")}</div>
+                        </button>
+                    )}
                 </div>
+
 
                 <div className="px-2">
                     <div className="h-[1.5px] w-full bg-zinc-900"></div>
                 </div>
 
+
                 <div className="flex flex-col gap-1 p-2">
+
 
                     {isAdmin === true ? (
                         <NavLink
@@ -229,10 +289,12 @@ function Sidebar() {
                         <div className=""></div>
                     )}
 
+
                 </div>
             </div>
         </div>
     )
 }
+
 
 export default Sidebar

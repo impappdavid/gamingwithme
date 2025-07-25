@@ -11,7 +11,8 @@ export const registration = async (
     email: string,
     password: string,
     username: string,
-    googleId: string
+    googleId?: string,
+    facebookId?: string,
 ) => {
     try {
         // TODO: Replace with your actual API URL or use an environment variable
@@ -22,7 +23,8 @@ export const registration = async (
                 email,
                 password,
                 username,
-                googleId
+                googleId,
+                facebookId
             }
         );
         return response.data;

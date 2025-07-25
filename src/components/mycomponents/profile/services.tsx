@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -24,6 +25,7 @@ function Services(userId: any) {
     const [error, setError] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [serviceId, setServiceId] = useState("");
+    const [servicePrice, setServicePrice] = useState(0);
     const [customerNotes, setNotes] = useState('');
     const paymentType = "Service";
     const navigate = useNavigate();
@@ -87,7 +89,7 @@ function Services(userId: any) {
                 <div className="text-2xl">Services</div>
                 <div className="grid grid-cols-5">
                     {services.map((service, index) => (
-                        <div onClick={() => { setOpenModal(true); setServiceId(service.id) }} key={index} className={`p-4 bg-zinc-950 border flex flex-col gap-2 rounded-lg  transition-all duration-300 ${service.status === 0 ? "cursor-pointer hover:border-green-500/40" : "cursor-not-allowed hover:border-red-500/40"}`}>
+                        <div onClick={() => { setOpenModal(true); setServiceId(service.id); setServicePrice(service.price) }} key={index} className={`p-4 bg-zinc-950 border flex flex-col gap-2 rounded-lg  transition-all duration-300 ${service.status === 0 ? "cursor-pointer hover:border-green-500/40" : "cursor-not-allowed hover:border-red-500/40"}`}>
                             <div className="flex flex-col">
                                 <div className="text-lg">{service.title}</div>
                                 <div className="text-xs text-zinc-400">{service.description}</div>
@@ -122,7 +124,7 @@ function Services(userId: any) {
 
                             </Label>
                             <div id="total" className="col-span-3 font-bold text-lg">
-                                ${total.toFixed(2)}
+                                ${servicePrice.toFixed(2)}
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -161,10 +163,14 @@ function Services(userId: any) {
                         {applied && <p className="text-green-500 text-sm">Coupon applied successfully!</p>}
                     </div>
                     <DialogFooter>
-
-                        <Button onClick={() => handlePayment(serviceId)} className="bg-green-500 w-full hover:bg-green-600 cursor-pointer transition-all duration-300" variant="default">
-                            Proceed to Pay
-                        </Button>
+                        <div className="grid grid-cols-2 gap-2 w-full">
+                                <Button onClick={()=> setOpenModal(false)} className="bg-black w-full border text-zinc-400 hover:bg-zinc-900/60 cursor-pointer transition-all duration-300" variant="default">
+                                    Cancel
+                                </Button>
+                            <Button onClick={() => handlePayment(serviceId)} className="bg-green-500 hover:bg-green-600 cursor-pointer transition-all duration-300" variant="default">
+                                Proceed to Pay
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
