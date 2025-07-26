@@ -59,11 +59,13 @@ function UserCard({
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentUsers = users.slice(startIndex, endIndex);
 
+  // Bounds-checked page control, scroll to top of list
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Logic for page #s and ellipses in pagination bar
   const getPageNumbers = () => {
     const pages = [];
     const maxVisible = 4;
@@ -106,24 +108,26 @@ function UserCard({
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7  gap-3 2xl:gap-6">
             {currentUsers.map((user, index) => (
-              <div key={index} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950 cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full">
+              // Use user.id as key if available for better React performance, fall back to index
+              <div key={user.id ?? index} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950 cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full">
                 <div className="flex flex-col relative w-full overflow-hidden rounded-2xl">
                   {user.avatarurl.length > 0 ? (
                     <img src={user.avatarurl} alt={user.username} className="w-full rounded-xl object-cover ease-in-out group-hover:scale-105 transition-all duration-300" />
                   ) : (
                     <img src="/profile/6.jpg" alt={user.username} className="w-full rounded-xl object-cover ease-in-out group-hover:scale-105 transition-all duration-300" />
                   )}
-
                   <div className="flex flex-col gap-0.5 px-1 pt-1 rounded-b-2xl w-full" >
                     <div className="flex gap-1 items-center">
                       <div className="text-lg">{user.username}</div>
                     </div>
+                    {/* Service Description (shows loading, empty, or first service description) */}
                     <div className="text-xs text-zinc-400 min-h-6">
                       {servicesLoading
                         ? "Loading..."
                         : user.service?.description ??
                           (user.service === null ? "No description" : "Loading...")}
                     </div>
+                    {/* Tag icons */}
                     <div className="flex items-center">
                       <div className="grid grid-cols-4 gap-1 pt-1">
                         {user.tags.map((tag, idx) => (
@@ -155,6 +159,7 @@ function UserCard({
                         ))}
                       </div>
                     </div>
+                    {/* Profile button: shows price from service, or -- if loading/missing */}
                     <div className="py-2 w-full">
                       <Link
                         to={`/profile/${user.username}`}
@@ -176,6 +181,7 @@ function UserCard({
         )}
       </div>
 
+      {/* Pagination controls, only show if multiple pages */}
       {totalPages > 1 && users.length > 0 && (
         <div className="mt-auto pt-6 pb-3 sm:pb-0 absolute -bottom-22 w-full">
           <div className="flex items-center justify-center sm:justify-between px-4">
@@ -186,13 +192,14 @@ function UserCard({
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
+                    {/* Fix: this now goes to previous page not same page */}
                     <PaginationPrevious
-                      onClick={() => goToPage(currentPage)}
+                      onClick={() => goToPage(currentPage - 1)}
                       className={`rounded-xl ${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                     />
                   </PaginationItem>
                   {getPageNumbers().map((page, index) => (
-                    <PaginationItem key={index}>
+                    <PaginationItem key={page === 'ellipsis' ? `ellipsis-${index}` : page}>
                       {page === 'ellipsis' ? (
                         <PaginationEllipsis />
                       ) : (
@@ -224,4 +231,5 @@ function UserCard({
     </div>
   )
 }
+
 export default UserCard
