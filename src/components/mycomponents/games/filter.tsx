@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react";
-
 import { useTranslation } from "react-i18next";
 
 interface FilterProps {
@@ -11,9 +10,7 @@ interface FilterProps {
 function Filter({
     filterText,
     setFilterText,
-
 }: FilterProps) {
-
 
     const { t } = useTranslation()
 
@@ -27,19 +24,14 @@ function Filter({
                     id="filter"
                     type="text"
                     placeholder={t("searchforgames")}
-                    className="pl-9 h-10 rounded-xl text-[14px] lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300  "
+                    className="pl-9 h-10 rounded-xl text-[14px] lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                     value={filterText}
+                    // This keeps the input value and filterText prop in sync
                     onChange={(e) => setFilterText(e.target.value)}
                 />
             </div>
-
-
-
-
-
-
-
         </div >
     )
 }
-export default Filter 
+
+export default Filter
