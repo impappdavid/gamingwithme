@@ -1,3 +1,5 @@
+// src/pages/Coupon.tsx
+
 import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
@@ -10,12 +12,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { AddNewCoupon, GetMyCoupons, type Coupon } from "@/api/settings"
+import { AddNewCoupon, GetMyCoupons } from "@/api/settings"
+import type { Coupon } from "@/api/settings"
 import { Calendar, Users } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useEffect, useState } from "react"
-
-
 
 function Coupon() {
     const [name, setName] = useState("");
@@ -26,9 +27,9 @@ function Coupon() {
     const { t } = useTranslation()
 
     const [openModal, setOpenModal] = useState(false)
+
     const fetchServices = async () => {
         const response = await GetMyCoupons();
-
         if (Array.isArray(response.coupons)) {
             setCoupons(
                 response.coupons.map((coupon: any) => ({
@@ -44,12 +45,14 @@ function Coupon() {
 
     useEffect(() => {
         fetchServices()
+        // You might want to re-fetch after adding a coupon
     }, [])
 
     const handleAddCoupon = async () => {
         try {
             setOpenModal(false)
             await AddNewCoupon(name, percentOff, durationInDays, maxRedemptions)
+            fetchServices(); // So newly added shows up
         } catch (error) {
             console.log(error)
         }
@@ -68,7 +71,7 @@ function Coupon() {
                                 <div className="flex justify-between w-full">
                                     <div className="flex flex-col">
                                         <div className="text-2xl">Create coupon</div>
-                                        <div className="text-xs text-zinc-400">Suggestion: Dont apply more then 80%</div>
+                                        <div className="text-xs text-zinc-400">Suggestion: Don't apply more than 80%</div>
                                     </div>
                                     <div onClick={() => setOpenModal(true)} className="w-fit border max-w-2xl py-1.5 px-4 text-zinc-400 hover:text-green-500 cursor-pointer transition-all flex items-center duration-300 hover:bg-zinc-950/60">
                                         <div className="tex-xs">Create New Coupon</div>
@@ -76,7 +79,7 @@ function Coupon() {
                                 </div>
                                 <div className="border-x border-t w-full">
                                     {coupons.map((coupon, index) => (
-                                        <div key={index} className="w-full border-b p-4">
+                                        <div key={coupon.id ?? index} className="w-full border-b p-4">
                                             <div className="flex justify-between w-full">
                                                 <div className="flex flex-col gap-2">
                                                     <div className="flex flex-col">
@@ -91,7 +94,6 @@ function Coupon() {
                                                             {coupon.valid ? (
                                                                 <>
                                                                     {
-
                                                                         new Date(coupon.expiresAt).toLocaleDateString("en-US", {
                                                                             year: "numeric",
                                                                             month: "short",
@@ -102,9 +104,7 @@ function Coupon() {
                                                             ) : (
                                                                 <div className="">Ended</div>
                                                             )}
-
                                                         </div>
-
                                                     </div>
                                                 </div>
                                                 <div className="py-0.5 px-2 h-fit bg-blue-500/20 border border-blue-500/40 rounded-full text-blue-500 text-xs flex gap-1 items-center">
@@ -114,10 +114,8 @@ function Coupon() {
                                                     {coupon.maxRedemptions}
                                                 </div>
                                             </div>
-
                                         </div>
                                     ))}
-
                                 </div>
                             </div>
                         </div>
@@ -126,7 +124,6 @@ function Coupon() {
             </div>
 
             <Dialog open={openModal}>
-
                 <DialogContent className="sm:max-w-[500px] realtive">
                     <DialogHeader>
                         <DialogTitle>Add Service</DialogTitle>
@@ -179,7 +176,6 @@ function Coupon() {
                                 autoComplete="off"
                             />
                         </div>
-
                     </div>
                     <DialogFooter className="grid grid-cols-2">
                         <Button onClick={() => setOpenModal(false)} className="border bg-black text-zinc-400 cursor-pointer hover:bg-zinc-950/40 rounded-lg">
@@ -197,4 +193,5 @@ function Coupon() {
         </>
     )
 }
+
 export default Coupon
