@@ -23,8 +23,6 @@ function Coupon() {
     const [durationInDays, setDurationInDays] = useState(0);
     const [maxRedemptions, setMaxRedemptions] = useState(0);
     const [coupons, setCoupons] = useState<Coupon[]>([])
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const { t } = useTranslation()
 
     const [openModal, setOpenModal] = useState(false)
