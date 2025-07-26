@@ -256,21 +256,42 @@ function Carousel({ userId }: { userId: string }) {
                 {/* Bookings grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto mt-4">
                     {(bookedDates[selectedDate.toISOString().split('T')[0]] || []).map((booking, index) => (
-                        <Card
-                            key={index}
-                            className={`cursor-pointer rounded-xl p-4 border transition-colors duration-200 border-green-500 bg-zinc-950 hover:bg-zinc-900`}
-                            onClick={() => handlePayClick(booking)}
-                        >
-                            <CardContent className="flex flex-col px-0">
-                                <CardTitle className="text-md font-bold">
-                                    {booking.startTime} - {booking.endTime}
-                                </CardTitle>
-                                <CardDescription className="text-xs text-zinc-400">
-                                    {formatBookingDatePlusOne(booking.date)}
-                                </CardDescription>
-                                {booking.price && <span className="text-green-400 font-semibold">Price: ${booking.price}</span>}
-                            </CardContent>
-                        </Card>
+                        <>
+                            {booking.isAvailable ? (
+                                <Card
+                                    key={index}
+                                    className={`cursor-pointer rounded-xl p-4 border transition-colors duration-200  bg-zinc-950 hover:bg-zinc-900 border-green-500`}
+                                    onClick={() => handlePayClick(booking)}
+                                >
+                                    <CardContent className="flex flex-col px-0">
+                                        <CardTitle className="text-md font-bold">
+                                            {booking.startTime} - {booking.endTime}
+                                        </CardTitle>
+                                        <CardDescription className="text-xs text-zinc-400">
+                                            {formatBookingDatePlusOne(booking.date)}
+                                        </CardDescription>
+                                        {booking.price && <span className="text-green-400 font-semibold">Price: ${booking.price}</span>}
+                                    </CardContent>
+                                </Card>
+                            ) : (
+                                <Card
+                                    key={index}
+                                    className={`cursor-pointer rounded-xl p-4 border transition-colors duration-200  bg-zinc-950 hover:bg-zinc-900 border-red-500`}
+                                    
+                                >
+                                    <CardContent className="flex flex-col px-0">
+                                        <CardTitle className="text-md font-bold">
+                                            {booking.startTime} - {booking.endTime}
+                                        </CardTitle>
+                                        <CardDescription className="text-xs text-zinc-400">
+                                            {formatBookingDatePlusOne(booking.date)}
+                                        </CardDescription>
+                                        {booking.price && <span className="text-green-400 font-semibold">Price: ${booking.price}</span>}
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                        </>
                     ))}
                 </div>
             </div>
