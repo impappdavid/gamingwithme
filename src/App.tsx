@@ -29,6 +29,7 @@ import CouponPage from "./pages/Coupon";
 import ForgotPasswordPage from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 import FaqPage from "./pages/Faq";
+import TermsPage from "./pages/TermsAndConditions";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -51,6 +52,7 @@ function App() {
             <Route path="/youtube" element={<Youtube />} />
             <Route path="/games" element={<Games />} /> 
             <Route path="/faq" element={<FaqPage />} /> 
+            <Route path="/terms-and-conditions" element={<TermsPage />} /> 
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/create-listing" element={<CreateListing />} />

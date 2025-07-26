@@ -43,7 +43,7 @@ function Footer() {
                                 <HelpCircle className="h-4 w-4 mr-2" />
                                 FAQ
                             </Link>
-                            <Link to="/faq" className="justify-start text-white flex hover:text-[#19FF00] p-0 h-auto text-xs">
+                            <Link to="/terms-and-conditions" className="justify-start text-white flex hover:text-[#19FF00] p-0 h-auto text-xs">
                                 <FileText className="h-4 w-4 mr-2" />
                                 Terms and Conditions
                             </Link>
