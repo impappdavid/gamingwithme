@@ -1,4 +1,5 @@
-import { MessagesSquare, Music } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Pagination,
@@ -12,31 +13,29 @@ import {
 
 const ITEMS_PER_PAGE = 16;
 
-// Accept users as a prop!
+// Accepts a users array (required prop)
 function SearchUserCard({ users }: { users: any[] }) {
-    // Pagination
+    // Handle current pagination page
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
 
-    // Handle page change
+    // Go to a given page, with bounds check, and scroll to top
     const goToPage = (page: number) => {
         setCurrentPage(Math.max(1, Math.min(page, totalPages)));
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // For filtered pagination
+    // When "users" changes, reset to first page (e.g., new search/filter)
     useEffect(() => {
         setCurrentPage(1);
     }, [users]);
 
-    
-
-    // Pagination slice
+    // Calculate visible users for current page
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const currentUsers = users.slice(startIndex, endIndex);
 
-    // Pagination numbers
+    // Render page numbers, with ellipsis if more than maxVisible pages
     const getPageNumbers = () => {
         const pages: (number | string)[] = [];
         const maxVisible = 4;
@@ -56,7 +55,7 @@ function SearchUserCard({ users }: { users: any[] }) {
         return pages;
     };
 
-    // Loading state skeleton
+    // Loading state, if users is still falsy/null
     if (!users) {
         return (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-1 2xl:gap-2">
@@ -71,6 +70,7 @@ function SearchUserCard({ users }: { users: any[] }) {
         <div className="flex flex-col h-full relative">
             <div className="flex-1">
                 {users.length === 0 ? (
+                    // Empty state: show message if no users found
                     <div className="flex flex-col items-center justify-center h-64 text-center">
                         <div className="text-6xl mb-4">🔍</div>
                         <h3 className="text-xl font-semibold text-zinc-200 mb-2">No users found</h3>
@@ -79,10 +79,12 @@ function SearchUserCard({ users }: { users: any[] }) {
                         </p>
                     </div>
                 ) : (
+                    // Show grid of current page's users
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 2xl:gap-4">
                         {currentUsers.map((element, index) => (
-                            <div key={index} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950 cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full">
+                            <div key={element.username || index} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950 cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full">
                                 <div className="flex flex-col relative w-full overflow-hidden rounded-2xl">
+                                    {/* Avatar, fallback to placeholder if missing */}
                                     {element.avatarurl && element.avatarurl.length > 0 ? (
                                         <img
                                             src={element.avatarurl}
@@ -101,8 +103,6 @@ function SearchUserCard({ users }: { users: any[] }) {
                                         <div className="flex gap-1 items-center">
                                             <div className="text-lg text-white">{element.username}</div>
                                         </div>
-                                        
-                                        
                                         <div className="py-2 w-full">
                                             <Link
                                                 to={`/profile/${element.username}`}
@@ -118,7 +118,7 @@ function SearchUserCard({ users }: { users: any[] }) {
                     </div>
                 )}
             </div>
-            {/* Pagination Controls */}
+            {/* Pagination Controls: only show if more than one page */}
             {totalPages > 1 && users.length > 0 && (
                 <div className="mt-auto pt-6 pb-3 sm:pb-0 absolute -bottom-14 w-full">
                     <div className="flex items-center justify-center px-4">
@@ -132,7 +132,7 @@ function SearchUserCard({ users }: { users: any[] }) {
                                         />
                                     </PaginationItem>
                                     {getPageNumbers().map((page, index) => (
-                                        <PaginationItem key={index}>
+                                        <PaginationItem key={page === "ellipsis" ? `ellipsis-${index}` : page}>
                                             {page === "ellipsis" ? (
                                                 <PaginationEllipsis />
                                             ) : (
@@ -164,8 +164,5 @@ function SearchUserCard({ users }: { users: any[] }) {
         </div>
     );
 }
-
-import { useEffect, useState } from "react"; // add this if missing, for useState/useEffect!
-import { Link } from "react-router-dom";
 
 export default SearchUserCard;
