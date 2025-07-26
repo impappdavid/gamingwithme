@@ -19,7 +19,6 @@ type Notification = {
     isPublished: boolean;
 };
 
-
 const mapApiNotificationToUI = (apiNotification: any): Notification => ({
     id: apiNotification.id,
     title: apiNotification.title,
@@ -27,7 +26,6 @@ const mapApiNotificationToUI = (apiNotification: any): Notification => ({
     createdAt: apiNotification.createdAt,
     isPublished: apiNotification.isPublished,
 });
-
 
 function Notifications() {
     const { t } = useTranslation();
@@ -52,16 +50,15 @@ function Notifications() {
                 setLoading(false);
             }
         };
-
         fetchNotifications();
     }, []);
-
 
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <div className="relative rounded-lg h-9 w-9 bg-zinc-800/50 hover:bg-zinc-800 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
                     <Bell className="w-5 h-5" />
+                    {/* Always show animated notification badge. If you want to tie to notification count/unread, update here! */}
                     <div className="absolute -top-1 -right-1">
                         <span className="relative flex h-3 w-3">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -79,7 +76,7 @@ function Notifications() {
                         </DialogClose>
                     </DialogTitle>
                 </DialogHeader>
-                {/* Main content: Notifications list with scrolling and filling */}
+                {/* Main notification listing area */}
                 <div className="flex-1 overflow-y-auto border-t">
                     {loading ? (
                         <p className="p-4 text-center text-zinc-400">{t("Loading notifications...")}</p>
@@ -90,13 +87,14 @@ function Notifications() {
                     ) : (
                         notifications.map((noti, index) => (
                             <div
-                                key={noti.id ?? index} // Use noti.id if available for better keys
+                                key={noti.id ?? index}
                                 className="hover:bg-zinc-900/40 cursor-pointer flex flex-col gap-2 p-2 py-3 border-b last:border-b-0"
                             >
                                 <div className="flex justify-between">
                                     <div className="flex gap-2 items-center">
+                                        {/* Hardcoded profile logo. To make dynamic, use noti.image or similar when available. */}
                                         <img
-                                            src="/logo.png" // Hardcoded; make dynamic if possible (e.g., noti.image)
+                                            src="/logo.png"
                                             alt={noti.title ?? "Notification profile"}
                                             className="w-12 h-12 rounded-md object-cover"
                                         />
@@ -112,12 +110,7 @@ function Notifications() {
                         ))
                     )}
                 </div>
-                {/* Optional Footer: e.g., for a "Clear All" button */}
-                {/* <div className="border-t p-4 flex justify-end">
-          <Button variant="outline" onClick={() => setNotifications([])}>
-            {t("Clear All")}
-          </Button>
-        </div> */}
+                {/* Optional: <Button onClick={() => setNotifications([])}>Clear All</Button> */}
             </DialogContent>
         </Dialog>
     );
