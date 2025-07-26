@@ -49,17 +49,3 @@ export const GetRandomsByTagAndTop = async (
         throw error;
     }
 }
-
-export const GetSuggestedUsersWithConnectedPayment = async () => {
-    try {
-        // TODO: Replace with your actual API URL or use an environment variable
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.get(
-            `${API_URL}/api/user/random-with-stripe`
-        );
-        return response.data;
-    } catch (error) {
-        console.error('Error logging in user:', error);
-        throw error;
-    }
-}
