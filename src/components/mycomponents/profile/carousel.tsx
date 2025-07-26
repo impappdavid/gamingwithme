@@ -20,14 +20,13 @@ import { GetBookingsByNameAndDate, type BookInfos } from "@/api/booking";
 import { useParams } from "react-router-dom";
 
 // --- DATE UTILS ---
-// always get YYYY-MM-DD in LOCAL TIME
+
 function toLocalIsoDateString(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
-
 const pad = (n: number) => n.toString().padStart(2, "0");
 const getWeekday = (date: Date) => date.toLocaleDateString("en-US", { weekday: "short" });
 const monthNames = [
@@ -35,13 +34,13 @@ const monthNames = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-// 🟢 FIXED: Increment date to prevent infinite loop
+// Proper days-of-month calculation, no infinite loop
 function getMonthDays(year: number, month: number) {
   const days = [];
   const date = new Date(year, month, 1);
   while (date.getMonth() === month) {
     days.push(new Date(date));
-    date.setDate(date.getDate() + 1); // <--- Correctly increment by 1
+    date.setDate(date.getDate() + 1);
   }
   return days;
 }
@@ -50,8 +49,8 @@ function Carousel({ userId }: { userId: string }) {
   const { slug } = useParams<{ slug: string }>();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
   const [selectedDate, setSelectedDate] = useState<Date>(today);
   const carouselRef = useRef<any>(null);
   const hasScrolledToSelected = useRef(false);
@@ -69,8 +68,10 @@ function Carousel({ userId }: { userId: string }) {
   const paymentType = "Appointment";
 
   const daysInMonth = getMonthDays(currentYear, currentMonth);
+  // Only allow booking on today or later
   const visibleDays = daysInMonth.filter(d => d.getTime() >= today.getTime());
 
+  // On initial mount/select, auto-scroll carousel to today (or 1st visible)
   useEffect(() => {
     let targetIdx = visibleDays.findIndex(d => d.getTime() === today.getTime());
     if (targetIdx === -1) targetIdx = 0;
@@ -79,7 +80,6 @@ function Carousel({ userId }: { userId: string }) {
       hasScrolledToSelected.current = true;
     }
   }, [visibleDays, selectedDate]);
-
   useEffect(() => { hasScrolledToSelected.current = false; }, [currentYear, currentMonth]);
 
   const isDateInPast = (date: Date) => {
@@ -89,6 +89,7 @@ function Carousel({ userId }: { userId: string }) {
     return date < today;
   };
 
+  // Fetch all bookings for visible month days
   useEffect(() => {
     const fetchAllCarouselDates = async () => {
       const fetches = await Promise.all(
@@ -114,8 +115,6 @@ function Carousel({ userId }: { userId: string }) {
   // ---------------------------
   // Payment logic below
   // ---------------------------
-
-  // On booking card click, open dialog
   const handlePayClick = (booking: BookInfos) => {
     setSelectedBooking(booking);
     setNotes('');
@@ -126,7 +125,6 @@ function Carousel({ userId }: { userId: string }) {
     setPayModal(true);
   };
 
-  // Coupon validation
   const handleCouponValidate = async () => {
     setError('');
     try {
@@ -146,7 +144,7 @@ function Carousel({ userId }: { userId: string }) {
     }
   };
 
-  // Main Stripe payment
+  // Main Stripe payment flow
   const handlePayment = async () => {
     if (!selectedBooking) return;
     setLoading(true);
@@ -171,7 +169,8 @@ function Carousel({ userId }: { userId: string }) {
 
   function formatBookingDatePlusOne(dateString: string) {
     const d = new Date(dateString);
-    // d.setDate(d.getDate() + 1); // Uncomment if you do want to add 1 for display
+    // If you want to show "next day", uncomment below
+    // d.setDate(d.getDate() + 1); 
     return d.toLocaleDateString('en-US', {
       weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
     });
@@ -180,13 +179,13 @@ function Carousel({ userId }: { userId: string }) {
   return (
     <>
       <div className="space-y-6 w-full">
-        {/* Calendar picker */}
+        {/* Calendar picker - simple month/year display */}
         <div className="flex justify-center mb-2">
           <Button variant="ghost" className="text-2xl font-bold text-white flex items-center gap-2 px-4 py-2 hover:bg-transparent">
             {currentYear}, {monthNames[currentMonth]}
           </Button>
         </div>
-        {/* Carousel */}
+        {/* Day selector carousel */}
         <div className="relative max-w-xl mx-auto">
           <ShadCarousel className="w-full" opts={{ align: "center" }} setApi={api => (carouselRef.current = api)}>
             <CarouselPrevious />
@@ -220,47 +219,30 @@ function Carousel({ userId }: { userId: string }) {
             <CarouselNext />
           </ShadCarousel>
         </div>
-        {/* Bookings grid */}
+        {/* Bookings for selected day */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto mt-4">
-          {(bookedDates[toLocalIsoDateString(selectedDate)] || []).map((booking, index) => (
-            <>
-              {booking.isAvailable ? (
-                <Card
-                  key={index}
-                  className={`cursor-pointer rounded-xl p-4 border transition-colors duration-200  bg-zinc-950 hover:bg-zinc-900 border-green-500`}
-                  onClick={() => handlePayClick(booking)}
-                >
-                  <CardContent className="flex flex-col px-0">
-                    <CardTitle className="text-md font-bold">
-                      {booking.startTime} - {booking.endTime}
-                    </CardTitle>
-                    <CardDescription className="text-xs text-zinc-400">
-                      {formatBookingDatePlusOne(booking.date)}
-                    </CardDescription>
-                    {booking.price && <span className="text-green-400 font-semibold">Price: ${booking.price}</span>}
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card
-                  key={index}
-                  className={`cursor-pointer rounded-xl p-4 border transition-colors duration-200  bg-zinc-950 hover:bg-zinc-900 border-red-500`}
-                >
-                  <CardContent className="flex flex-col px-0">
-                    <CardTitle className="text-md font-bold">
-                      {booking.startTime} - {booking.endTime}
-                    </CardTitle>
-                    <CardDescription className="text-xs text-zinc-400">
-                      {formatBookingDatePlusOne(booking.date)}
-                    </CardDescription>
-                    {booking.price && <span className="text-green-400 font-semibold">Price: ${booking.price}</span>}
-                  </CardContent>
-                </Card>
-              )}
-            </>
+          {(bookedDates[toLocalIsoDateString(selectedDate)] || []).map((booking) => (
+            // Prefer booking.id as key for best React practices:
+            <Card
+              key={booking.id}
+              className={`cursor-pointer rounded-xl p-4 border transition-colors duration-200  bg-zinc-950 hover:bg-zinc-900 ${booking.isAvailable ? "border-green-500" : "border-red-500"}`}
+              onClick={booking.isAvailable ? () => handlePayClick(booking) : undefined}
+            >
+              <CardContent className="flex flex-col px-0">
+                <CardTitle className="text-md font-bold">
+                  {booking.startTime} - {booking.endTime}
+                </CardTitle>
+                <CardDescription className="text-xs text-zinc-400">
+                  {formatBookingDatePlusOne(booking.date)}
+                </CardDescription>
+                {booking.price && <span className="text-green-400 font-semibold">Price: ${booking.price}</span>}
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
-      {/* PAYMENT DIALOG */}
+
+      {/* Payment dialog for a booking */}
       <Dialog open={payModal} onOpenChange={setPayModal}>
         <DialogContent className="sm:max-w-[480px]">
           <DialogHeader>
