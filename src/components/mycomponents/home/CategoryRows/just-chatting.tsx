@@ -1,5 +1,5 @@
 import { type TopCreators, GetRandomsByTagAndTop } from "@/api/home";
-import { GetServicesById } from "@/api/service"; // <-- import your service API
+import { GetServicesById } from "@/api/service";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,7 @@ function JustChatting() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // State to track creator services by ID
+  // [user.id]: service (first service object or null if none/fetch failed)
   const [creatorServices, setCreatorServices] = useState<Record<string, any>>({});
   const [servicesLoading, setServicesLoading] = useState<boolean>(true);
 
@@ -36,22 +36,21 @@ function JustChatting() {
     getTopCreators();
   }, []);
 
+  // Fetch each creator's first service (for service description/price)
   useEffect(() => {
     if (topcreators.length === 0) {
       setCreatorServices({});
       setServicesLoading(false);
       return;
     }
-
     setServicesLoading(true);
-
     const fetchAllServices = async () => {
       const servicesData: Record<string, any> = {};
       await Promise.all(
         topcreators.map(async (user) => {
           try {
-            const service = await GetServicesById(String(user.id)); // Adjust to actual ID field if different
-            // If API returns an array, pick the first one; else take as is
+            const service = await GetServicesById(String(user.id));
+            // If array: take first, else as is (handles both API shapes)
             servicesData[user.id] = Array.isArray(service) && service.length > 0 ? service[0] : service;
           } catch (err) {
             servicesData[user.id] = null;
@@ -89,8 +88,8 @@ function JustChatting() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-1 2xl:gap-2">
           {topcreators.length > 0 ? (
-            topcreators.map((element: TopCreators, index: number) => (
-              <div key={index} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950 cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full">
+            topcreators.map((element: TopCreators) => (
+              <div key={element.username} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950 cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full">
                 <div className="flex flex-col relative w-full overflow-hidden rounded-2xl">
                   {element.avatarurl.length > 0 ? (
                     <img
@@ -105,18 +104,18 @@ function JustChatting() {
                       className="w-full rounded-xl object-cover ease-in-out group-hover:scale-105 transition-all duration-300"
                     />
                   )}
-
                   <div className="flex flex-col gap-0.5 px-1 pt-1 rounded-b-2xl w-full">
                     <div className="flex gap-1 items-center">
                       <div className="text-lg">{element.username}</div>
                     </div>
+                    {/* Service description: loading, value, or fallback */}
                     <div className="text-xs text-zinc-400 min-h-6">
                       {servicesLoading
                         ? "Loading..."
                         : creatorServices[element.id]?.description ??
-                        (creatorServices[element.id] === null
-                          ? "No description"
-                          : "Loading...")}
+                          (creatorServices[element.id] === null
+                            ? "No description"
+                            : "Loading...")}
                     </div>
                     <div className="flex items-center">
                       <div className="grid grid-cols-4 gap-1 pt-1">
@@ -174,6 +173,7 @@ function JustChatting() {
                         ))}
                       </div>
                     </div>
+                    {/* Profile button: shows price from service, or -- if loading/missing */}
                     <div className="py-2 w-full">
                       <Link
                         to={`/profile/${element.username}`}
@@ -183,9 +183,9 @@ function JustChatting() {
                         {servicesLoading
                           ? "--"
                           : creatorServices[element.id]?.price ??
-                          (creatorServices[element.id] === null
-                            ? "--"
-                            : "--")}
+                            (creatorServices[element.id] === null
+                              ? "--"
+                              : "--")}
                       </Link>
                     </div>
                   </div>
