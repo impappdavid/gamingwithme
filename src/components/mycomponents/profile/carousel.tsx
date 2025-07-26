@@ -19,6 +19,15 @@ import {
 import { GetBookingsByNameAndDate, type BookInfos } from "@/api/booking";
 import { useParams } from "react-router-dom";
 
+// --- DATE UTILS ---
+// always get YYYY-MM-DD in LOCAL TIME
+function toLocalIsoDateString(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 const pad = (n: number) => n.toString().padStart(2, "0");
 const getWeekday = (date: Date) => date.toLocaleDateString("en-US", { weekday: "short" });
 const monthNames = [
@@ -84,7 +93,7 @@ function Carousel({ userId }: { userId: string }) {
     const fetchAllCarouselDates = async () => {
       const fetches = await Promise.all(
         visibleDays.map(async (date) => {
-          const formatted = date.toISOString().split("T")[0];
+          const formatted = toLocalIsoDateString(date);
           if (typeof slug === "string") {
             const res = await GetBookingsByNameAndDate(slug, formatted);
             return { date: formatted, data: res || [] };
@@ -100,7 +109,7 @@ function Carousel({ userId }: { userId: string }) {
       setBookedDates(map);
     };
     fetchAllCarouselDates();
-  }, [currentMonth, currentYear, visibleDays]);
+  }, [currentMonth, currentYear, visibleDays, slug]);
 
   // ---------------------------
   // Payment logic below
@@ -162,7 +171,7 @@ function Carousel({ userId }: { userId: string }) {
 
   function formatBookingDatePlusOne(dateString: string) {
     const d = new Date(dateString);
-    // d.setDate(d.getDate() + 1); // <--- uncomment if you truly want next day
+    // d.setDate(d.getDate() + 1); // Uncomment if you do want to add 1 for display
     return d.toLocaleDateString('en-US', {
       weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
     });
@@ -184,7 +193,7 @@ function Carousel({ userId }: { userId: string }) {
             <CarouselContent>
               {visibleDays.map((d) => {
                 const isPast = isDateInPast(d);
-                const formatted = d.toISOString().split("T")[0];
+                const formatted = toLocalIsoDateString(d);
                 const activeCount = bookedDates[formatted]?.length || 0;
                 return (
                   <CarouselItem key={d.toISOString()} className="basis-1/4 sm:basis-1/7">
@@ -213,7 +222,7 @@ function Carousel({ userId }: { userId: string }) {
         </div>
         {/* Bookings grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto mt-4">
-          {(bookedDates[selectedDate.toISOString().split('T')[0]] || []).map((booking, index) => (
+          {(bookedDates[toLocalIsoDateString(selectedDate)] || []).map((booking, index) => (
             <>
               {booking.isAvailable ? (
                 <Card
