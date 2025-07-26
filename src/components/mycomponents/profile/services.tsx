@@ -89,7 +89,7 @@ function Services(userId: any) {
         <>
             <div className="flex flex-col gap-4">
                 <div className="text-2xl">Services</div>
-                <div className="grid grid-cols-5">
+                <div className="grid xl:grid-cols-2 2xl:grid-cols-4">
                     {services.map((service, index) => (
                         <div onClick={() => { setOpenModal(true); setServiceId(service.id); setServicePrice(service.price) }} key={index} className={`p-4 bg-zinc-950 border flex flex-col gap-2 rounded-lg  transition-all duration-300 ${service.status === 0 ? "cursor-pointer hover:border-green-500/40" : "cursor-not-allowed hover:border-red-500/40"}`}>
                             <div className="flex flex-col">
