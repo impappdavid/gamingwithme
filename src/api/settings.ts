@@ -328,3 +328,25 @@ export const GetSocialMedia = async (
         throw error; // Re-throw after handling
     }
 };
+
+export const BookingRefund = async (
+    bookingId: string,
+    useCookies?: boolean
+) => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(`${API_URL}/api/Stripe/refund/booking/${bookingId}`,
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            });
+
+        // ✅ RETURN the result!
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error; // Re-throw after handling
+    }
+};
+
+
