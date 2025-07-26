@@ -2,7 +2,7 @@ import Navbar from "../navbar/navbar"
 import { useTranslation } from "react-i18next"
 import SettingsSidebar from "./settingsSidebar"
 import { Input } from "@/components/ui/input"
-import { CaseLower, Tag, User, X } from "lucide-react"
+import { CaseLower, Facebook, Instagram, Tag, User, X } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -16,7 +16,9 @@ import {
     addNewTag,
     deleteTag,
     addUserLanguage,
-    deleteUserLanguage
+    deleteUserLanguage,
+    EditSocialMedia,
+    GetSocialMedia
 } from "@/api/settings"
 import { fetchPopularGamesFromRAWG, fetchGameFromRAWG } from "@/api/games"
 import type { RAWGGame } from "@/api/types"
@@ -37,6 +39,9 @@ function General() {
     const [inputValue, setInputValue] = useState("")
     const [filteredData, setFilteredData] = useState<RAWGGame[]>([]);
     const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+    const [twitter, setTwitter] = useState("");
+    const [instagram, setInstagram] = useState("");
+    const [facebook, setFacebook] = useState("");
 
 
 
@@ -81,12 +86,12 @@ function General() {
                     }
                     setSelectedLanguages(full.languages || []); // set languages from profile
                 } else {
-                    
+
                 }
             } catch (err) {
                 console.error(gameTags)
                 setError("Failed to fetch user");
-                
+
             } finally {
                 setLoading(false);
             }
@@ -98,7 +103,7 @@ function General() {
                 const games = await fetchPopularGamesFromRAWG();
                 setGameTags(games);
             } catch (err) {
-                
+
                 console.error("Failed to fetch games:", err);
             }
         };
@@ -144,6 +149,30 @@ function General() {
         };
     }, [inputValue]);
 
+    useEffect(() => {
+        const fetchUserSocials = async () => {
+            setLoading(true);
+            try {
+                const common = await GetSocialMedia();
+                if (common) {
+                    setTwitter(common.twitterUrl);
+                    setInstagram(common.instagramUrl);
+                    setFacebook(common.facebookUrl)
+                } else {
+
+                }
+            } catch (err) {
+                console.error(gameTags)
+                setError("Failed to fetch user");
+
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUserSocials();
+
+    }, []);
+
     // Add game tag (from search dropdown)
     const addTag = async (game: RAWGGame) => {
         if (!userGames.includes(game.name)) {
@@ -182,6 +211,14 @@ function General() {
     const handleBioChange = async () => {
         try {
             await updateUserBio(bio);
+        } catch (err) {
+            console.error("Failed to update bio", err);
+        }
+    }
+
+    const handleSocialChange = async () => {
+        try {
+            await EditSocialMedia(twitter, instagram, facebook);
         } catch (err) {
             console.error("Failed to update bio", err);
         }
@@ -386,11 +423,45 @@ function General() {
                                             onChange={(e) => setUsername(e.target.value)}
                                         />
                                     </div>
-                                    <Button onClick={handleUsernameChange} className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300">
+                                    <Button onClick={handleUsernameChange} className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300 cursor-pointer">
                                         Update
                                     </Button>
                                 </div>
                             </div>
+
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="relative flex-1">
+                                    <X className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Twitter profile link"
+                                        className="pl-10 h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300"
+                                        value={twitter}
+                                        onChange={(e) => setTwitter(e.target.value)}
+                                    />
+                                </div>
+                                <div className="relative flex-1">
+                                    <Instagram className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Instagram profile link"
+                                        className="pl-10 h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300"
+                                        value={instagram}
+                                        onChange={(e) => setInstagram(e.target.value)}
+                                    />
+                                </div>
+                                <div className="relative flex-1">
+                                    <Facebook className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Facebook profile link"
+                                        className="pl-10 h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300"
+                                        value={facebook}
+                                        onChange={(e) => setFacebook(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <Button onClick={handleSocialChange} className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300 cursor-pointer">Update Socials</Button>
 
                             {/* Bio Section */}
                             <div className="flex flex-col gap-2">
@@ -461,6 +532,7 @@ function General() {
                                     ))}
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

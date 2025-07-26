@@ -3,23 +3,29 @@ import { apiClient, createRequestConfig, handleApiError } from './client';
 import type { UserCommonInfos, UserProfile, Bill } from './types';
 
 export interface Coupon {
-        id: string,
-        stripeId: string,
-        name: string,
-        percentOff: number,
-        duration: number,
-        maxRedemptions: number,
-        valid: boolean,
-        expiresAt: string,
-        timesRedeemed: number,
-        createdAt: string,
-    
+    id: string,
+    stripeId: string,
+    name: string,
+    percentOff: number,
+    duration: number,
+    maxRedemptions: number,
+    valid: boolean,
+    expiresAt: string,
+    timesRedeemed: number,
+    createdAt: string,
+
 
 }
 
 interface CouponResponse {
     coupons: Coupon[];
     totalCount: number;
+}
+
+interface Socials {
+    twitterUrl: string,
+    instagramUrl: string,
+    facebookUrl: string,
 }
 
 // Get current user's basic info
@@ -237,6 +243,48 @@ export const GetMyCoupons = async (
 
         // ✅ RETURN the result!
         return response.data as CouponResponse;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error; // Re-throw after handling
+    }
+};
+
+export const EditSocialMedia = async (
+    twitterUrl?: string,
+    instagramUrl?: string,
+    facebookUrl?: string,
+    useCookies?: boolean
+): Promise<Socials> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.put(`${API_URL}/api/User/social-media`,
+            { twitterUrl, instagramUrl, facebookUrl },
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            });
+
+        // ✅ RETURN the result!
+        return response.data as Socials;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error; // Re-throw after handling
+    }
+};
+
+export const GetSocialMedia = async (
+    useCookies?: boolean
+): Promise<Socials> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(`${API_URL}/api/User/social-media`,
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            });
+
+        // ✅ RETURN the result!
+        return response.data as Socials;
     } catch (error) {
         console.error('Error fetching users:', error);
         throw error; // Re-throw after handling
