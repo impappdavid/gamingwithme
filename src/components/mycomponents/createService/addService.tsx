@@ -1,13 +1,10 @@
-// addService.tsx
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,6 +23,7 @@ function AddService({ onServiceAdded }: { onServiceAdded: () => void }) {
     const [error, setError] = useState("")
     const [openModal, setOpenModal] = useState(false)
 
+    // Submits form if all fields are filled and valid
     const handleSubmit = async () => {
         if (title && description && price > 0 && deadline > 0) {
             try {
@@ -46,11 +44,12 @@ function AddService({ onServiceAdded }: { onServiceAdded: () => void }) {
 
     return (
         <>
-            <div onClick={()=> setOpenModal(true)} className="w-fit border max-w-2xl py-1.5 px-4 text-zinc-400 hover:text-green-500 cursor-pointer transition-all duration-300 hover:bg-zinc-950/60">
+            {/* Trigger for the modal */}
+            <div onClick={() => setOpenModal(true)} className="w-fit border max-w-2xl py-1.5 px-4 text-zinc-400 hover:text-green-500 cursor-pointer transition-all duration-300 hover:bg-zinc-950/60">
                 <div className="tex-xs">Create New Service</div>
             </div>
-            <Dialog open={openModal}>
-
+            {/* Dialog/modal for adding a service */}
+            <Dialog open={openModal} onOpenChange={setOpenModal}>
                 <DialogContent className="sm:max-w-[500px] realtive">
                     <DialogHeader>
                         <DialogTitle>Add Service</DialogTitle>
@@ -74,7 +73,7 @@ function AddService({ onServiceAdded }: { onServiceAdded: () => void }) {
                             required
                         />
                         <div className="flex flex-col gap-0">
-                            <label htmlFor="">Price</label>
+                            <label>Price</label>
                             <Input
                                 type="number"
                                 value={price}
@@ -86,7 +85,7 @@ function AddService({ onServiceAdded }: { onServiceAdded: () => void }) {
                             />
                         </div>
                         <div className="flex flex-col gap-0">
-                            <label htmlFor="">Deadline(day)</label>
+                            <label>Deadline(day)</label>
                             <Input
                                 type="number"
                                 value={deadline}
@@ -103,16 +102,18 @@ function AddService({ onServiceAdded }: { onServiceAdded: () => void }) {
                                     <CircleAlert className="w-4 h-4" />
                                     {error}
                                 </div>
+                                {/* Clear the error */}
                                 <div className="cursor-pointer" onClick={() => setError("")}>
                                     <X className="w-4 h-4" />
                                 </div>
                             </div>
                         )}
                     </div>
+                    {/* Action buttons */}
                     <DialogFooter className="grid grid-cols-2">
-                            <Button onClick={()=> setOpenModal(false)} className="border bg-black text-zinc-400 cursor-pointer hover:bg-zinc-950/40 rounded-lg">
-                                Cancel
-                            </Button>
+                        <Button onClick={() => setOpenModal(false)} className="border bg-black text-zinc-400 cursor-pointer hover:bg-zinc-950/40 rounded-lg">
+                            Cancel
+                        </Button>
                         <Button
                             className="bg-green-500 hover:bg-green-600 cursor-pointer"
                             onClick={handleSubmit}
