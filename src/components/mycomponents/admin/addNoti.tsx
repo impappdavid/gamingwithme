@@ -7,42 +7,36 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useNavigate } from "react-router-dom"
 
-
-
-
+// Add notification page
 function AddNewNoti() {
     const { t } = useTranslation()
     const navigate = useNavigate()
-    const [title, setName] = useState("")
-    const [content, setDescription] = useState("")
+    // Use clear naming for state and setter
+    const [title, setTitle] = useState("")
+    const [content, setContent] = useState("")
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState("")
     const [error, setError] = useState("")
 
-
-
+    // Form submission handler
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setSuccess("")
         setError("")
-        // Use RAWG image if selected, else random
         try {
+            // Send new notification to server
             await AddNewNotification(title, content)
-            setSuccess("Game added successfully!")
+            setSuccess("Notification added successfully!")
             navigate("/admin/notifications")
-            setName("")
-            setDescription("")
+            setTitle("")
+            setContent("")
         } catch (err: any) {
-            setError(err.message || "Failed to add game.")
+            setError(err.message || "Failed to add notification.")
         } finally {
             setLoading(false)
         }
     }
-
-   
-
-    
 
     return (
         <>
@@ -57,7 +51,7 @@ function AddNewNoti() {
                             <Input
                                 type="text"
                                 value={title}
-                                onChange={e => setName(e.target.value)}
+                                onChange={e => setTitle(e.target.value)} // Direct setter for clarity
                                 placeholder={t("Enter notification title") || "Enter notification title"}
                                 className="h-11 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300"
                                 required
@@ -67,7 +61,7 @@ function AddNewNoti() {
                             <Textarea
                                 className="h-20 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/60 border-zinc-800 transition-all duration-300 resize-none"
                                 value={content}
-                                onChange={e => setDescription(e.target.value)}
+                                onChange={e => setContent(e.target.value)}
                                 placeholder={t("Enter notification content") || "Enter notification content"}
                                 required
                             />
