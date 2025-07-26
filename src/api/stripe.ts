@@ -4,12 +4,12 @@ export interface Payment {
     checkoutUrl: string,
     priceAmount: number,
     applicationFee: number,
-    sessionId:string,
+    sessionId: string,
     connectedAccount: string,
     paymentType: string
 }
 
-export interface Coupon{
+export interface Coupon {
     valid: boolean,
     couponId: string,
     name: string,
@@ -25,12 +25,41 @@ export const PaymentWithStripe = async (
     couponId?: string,
     useCookies?: boolean
 ): Promise<Payment> => {
-    console.log()
+    console.log(customerNotes)
     try {
         const API_URL = 'https://localhost:7091';
         const response = await axios.post(`${API_URL}/api/Stripe/pay/${providerId}`, {
             paymentType,
             serviceId,
+            customerNotes,
+            couponId
+        }, {
+            params: useCookies !== undefined ? { useCookies } : {},
+            withCredentials: true,
+        });
+
+        // ✅ RETURN the result!
+        return response.data as Payment;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error; // Re-throw after handling
+    }
+};
+
+export const PaymentWithStripeBooking = async (
+    providerId: string,
+    paymentType: string,
+    appointmentId: string,
+    customerNotes?: string,
+    couponId?: string,
+    useCookies?: boolean
+): Promise<Payment> => {
+    console.log(customerNotes)
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(`${API_URL}/api/Stripe/pay/${providerId}`, {
+            paymentType,
+            appointmentId,
             customerNotes,
             couponId
         }, {

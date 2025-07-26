@@ -56,7 +56,6 @@ function Notifications() {
         fetchNotifications();
     }, []);
 
-    console.log(notifications); // For debugging; remove in production
 
     return (
         <Dialog>

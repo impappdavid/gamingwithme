@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { ChevronDown } from "lucide-react";
-import { PaymentWithStripe, ValidateCoupon } from "@/api/stripe";
+import { PaymentWithStripe, PaymentWithStripeBooking, ValidateCoupon } from "@/api/stripe";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { GetBooking, type BookInfos } from "@/api/booking";
@@ -52,10 +52,12 @@ function Carousel({ userId }: { userId: string }) {
     const [selectedBooking, setSelectedBooking] = useState<BookInfos | null>(null);
     const [coupon, setCoupon] = useState('');
     const [percent, setPercent] = useState(0);
+    const [bookId, setBookId] = useState("");
     const [isValid, setIsValid] = useState(false);
     const [notes, setNotes] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const paymentType = "Appointment";
 
     const daysInMonth = getMonthDays(currentYear, currentMonth);
     const visibleDays = daysInMonth.filter(d => d.getTime() >= today.getTime());
@@ -151,16 +153,18 @@ function Carousel({ userId }: { userId: string }) {
         if (!selectedBooking) return;
         setLoading(true);
         setError('');
-        console.log(userId,
-            "Appointment",
-            selectedBooking.id, // Assume this is booking id
-            notes,
-            coupon)
+        console.log(`
+            userId: ${userId} \n
+            paymentType: ${paymentType} \n
+            bookingId: ${selectedBooking.id} \n
+            notes: ${notes} \n
+            coupon: ${coupon}
+            `)
         try {
             // You might want to use a more specific "booking id" string
-            const data = await PaymentWithStripe(
+            const data = await PaymentWithStripeBooking(
                 userId,
-                "Appointment",
+                paymentType,
                 selectedBooking.id, // Assume this is booking id
                 notes,
                 coupon
@@ -274,7 +278,7 @@ function Carousel({ userId }: { userId: string }) {
                             <>
                                 <div className="flex justify-between">
                                     <span className="font-semibold">Date:</span>
-                                    <span>{selectedBooking.date}</span>
+                                    <span>{formatBookingDatePlusOne(selectedBooking.date)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-semibold">Time:</span>
