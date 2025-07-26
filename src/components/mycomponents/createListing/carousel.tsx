@@ -28,6 +28,7 @@ const monthNames = [
     "July", "August", "September", "October", "November", "December"
 ];
 
+// Helper: Returns array of Date objects for specified month (JS months are 0-based)
 function getMonthDays(year: number, month: number) {
     const days = [];
     const date = new Date(year, month, 1);
@@ -38,6 +39,7 @@ function getMonthDays(year: number, month: number) {
     return days;
 }
 
+// Given a duration (minutes), create time slots for a day
 function generateTimeSlots(duration: number) {
     const slots = [];
     for (let hour = 0; hour < 24; hour++) {
@@ -61,23 +63,33 @@ function generateTimeSlots(duration: number) {
 }
 
 function Carousel() {
+    // Local date state/logic
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [selectedDate, setSelectedDate] = useState<Date>(today);
     const [selectedDuration, setSelectedDuration] = useState(durationOptions[0]);
-    const [price, setPrice] = useState("5");
+    const [price, setPrice] = useState("5"); // always string for Input
     const [calendarOpen, setCalendarOpen] = useState(false);
+
+    // Used to control/scroll the custom carousel
     const carouselRef = useRef<any>(null);
-    const hasScrolledToSelected = useRef(false);
+    const hasScrolledToSelected = useRef(false); // to scroll-to-selected only once per render
+
+    // Track (per slot) booked state, hovering, and cached bookings
     const [bookedSlots, setBookedSlots] = useState<{ [slot: string]: boolean }>({});
     const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
+
+    // Cache bookings for all dates (for dots/calendar)
     const [bookedDates, setBookedDates] = useState<{ [date: string]: BookInfos[] }>({});
 
+    // Days available to show this month (exclude past)
     const daysInMonth = getMonthDays(currentYear, currentMonth);
     const visibleDays = daysInMonth.filter(d => d.getTime() >= today.getTime());
 
+    // On visibleDays/selectedDate, scroll carousel to selected date (first render)
     useEffect(() => {
         let targetIdx = visibleDays.findIndex(d => d.getTime() === today.getTime());
         if (targetIdx === -1) targetIdx = 0;
@@ -87,8 +99,10 @@ function Carousel() {
         }
     }, [visibleDays, selectedDate]);
 
+    // When month or year changes, allow scroll to reset again
     useEffect(() => { hasScrolledToSelected.current = false; }, [currentYear, currentMonth]);
 
+    // True if this date is in the past (midnight logic)
     const isDateInPast = (date: Date) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -96,6 +110,7 @@ function Carousel() {
         return date < today;
     };
 
+    // When a date is selected from calendar, update and scroll to it
     const handleCalendarSelect = (date: Date | undefined) => {
         if (!date || isDateInPast(date)) return;
         date.setHours(0, 0, 0, 0);
@@ -104,38 +119,33 @@ function Carousel() {
         setSelectedDate(date);
         setCalendarOpen(false);
         setTimeout(() => {
-            const idx = getMonthDays(date.getFullYear(), date.getMonth()).findIndex(d => d.toDateString() === date.toDateString());
+            const idx = getMonthDays(date.getFullYear(), date.getMonth()).findIndex(
+                d => d.toDateString() === date.toDateString()
+            );
             if (carouselRef.current?.scrollTo && idx >= 0) carouselRef.current.scrollTo(idx, true);
         }, 100);
     };
 
+    // Fetch bookings for the currently selected date
     useEffect(() => {
         const fetchBookings = async () => {
-          const formattedDate = selectedDate.toISOString().split("T")[0];
-          const result = await GetBooking(formattedDate);
-      
-          const booked: { [slot: string]: boolean } = {};
-      
-          result?.forEach(b => {
-            const start = b.startTime.slice(0, 5); // e.g. "14:00"
-            // b.endTime might be "15:00" or so
-            const key = `${start}-${b.endTime.slice(0, 5)}`; 
-            booked[key] = true;
-          });
-      
-          console.log('Booked slots before setting state:', booked);  // <-- log here
-      
-          setBookedSlots(booked);
-        };
-      
-        fetchBookings();
-      }, [selectedDate]);
-      
-      // Optional: To watch bookedSlots state and log whenever it changes:
-      useEffect(() => {
-        console.log('Booked slots updated state:', bookedSlots);
-      }, [bookedSlots]);
+            const formattedDate = selectedDate.toISOString().split("T")[0];
+            const result = await GetBooking(formattedDate);
 
+            // Map bookings to slot keys for marking booked
+            const booked: { [slot: string]: boolean } = {};
+            result?.forEach(b => {
+                const start = b.startTime.slice(0, 5);
+                const key = `${start}-${b.endTime.slice(0, 5)}`;
+                booked[key] = true;
+            });
+
+            setBookedSlots(booked);
+        };
+        fetchBookings();
+    }, [selectedDate]);
+
+    // Fetch all booked slots for the visible carousel days (for per-day "active count")
     useEffect(() => {
         const fetchAllCarouselDates = async () => {
             const fetches = await Promise.all(
@@ -154,17 +164,20 @@ function Carousel() {
         fetchAllCarouselDates();
     }, [currentMonth, currentYear]);
 
+    // Book or unbook a slot for the selected date
     const handleTimeSelect = async (slot: string) => {
         const [startTime] = slot.split("-");
         const formattedStartTime = `${startTime}:00`;
         const formattedDate = selectedDate.toISOString().split("T")[0];
 
         if (bookedSlots[slot]) {
+            // Unbook: call API then update state
             await DeleteBooking(formattedDate, formattedStartTime);
             const updated = { ...bookedSlots };
             delete updated[slot];
             setBookedSlots(updated);
         } else {
+            // Book: call API then mark slot as booked
             const minutes = Number(selectedDuration);
             const hours = Math.floor(minutes / 60);
             const remainingMinutes = minutes % 60;
@@ -174,10 +187,12 @@ function Carousel() {
         }
     };
 
+    // Display for current selected date
     const selectedDayLabel = `${getWeekday(selectedDate)}, ${pad(selectedDate.getDate())}`;
 
     return (
         <div className="space-y-6 w-full">
+            {/* Month selection with calendar */}
             <div className="flex justify-center mb-2">
                 <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                     <PopoverTrigger asChild>
@@ -198,6 +213,7 @@ function Carousel() {
                 </Popover>
             </div>
 
+            {/* Date carousel */}
             <div className="relative max-w-xl mx-auto">
                 <ShadCarousel className="w-full" opts={{ align: "center" }} setApi={api => (carouselRef.current = api)}>
                     <CarouselPrevious />
@@ -232,6 +248,7 @@ function Carousel() {
                 </ShadCarousel>
             </div>
 
+            {/* Time slot controls */}
             <div className="flex flex-col relative max-w-2xl mx-auto sm:flex-row items-center gap-4 justify-between bg-zinc-900 rounded-xl px-4 py-2">
                 <div className="flex items-center gap-2">
                     <span className="text-zinc-400 font-semibold text-xs">{selectedDayLabel} | {currentYear} {monthNames[currentMonth]}</span>
@@ -262,6 +279,7 @@ function Carousel() {
                 </div>
             </div>
 
+            {/* Bookable time slots */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto">
                 {generateTimeSlots(selectedDuration).map((slot) => {
                     const slotKey = `${slot.start}-${slot.end}`;
@@ -269,26 +287,23 @@ function Carousel() {
                     const isBooked = bookedSlots[slotKey];
                     const isHovered = hoveredSlot === slotKey;
                     return (
-                        <>
-                            <Button
-                                key={slotKey}
-                                variant="outline"
-                                className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300
-                                ${isBooked
-                                        ? isHovered
-                                            ? "bg-red-500 border-red-500 text-black"
-                                            : "bg-green-500 border-green-500 text-black"
-                                        : "bg-zinc-900 border-zinc-900 text-white"
-                                    }`}
-                                onClick={() => !isPastDay && handleTimeSelect(slotKey)}
-                                onMouseEnter={() => setHoveredSlot(slotKey)}
-                                onMouseLeave={() => setHoveredSlot(null)}
-                                disabled={isPastDay}
-                            >
-                                <span>{slot.start} - {slot.end}</span>
-                            </Button>
-                            
-                        </>
+                        <Button
+                            key={slotKey}
+                            variant="outline"
+                            className={`h-10 flex flex-col items-center justify-center rounded-xl border-2 text-xs font-mono cursor-pointer transition-all duration-300
+                            ${isBooked
+                                    ? isHovered
+                                        ? "bg-red-500 border-red-500 text-black"
+                                        : "bg-green-500 border-green-500 text-black"
+                                    : "bg-zinc-900 border-zinc-900 text-white"
+                                }`}
+                            onClick={() => !isPastDay && handleTimeSelect(slotKey)}
+                            onMouseEnter={() => setHoveredSlot(slotKey)}
+                            onMouseLeave={() => setHoveredSlot(null)}
+                            disabled={isPastDay}
+                        >
+                            <span>{slot.start} - {slot.end}</span>
+                        </Button>
                     );
                 })}
             </div >
