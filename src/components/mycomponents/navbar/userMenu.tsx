@@ -21,35 +21,27 @@ type UserMenuProps = {
 
 function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
     const navigate = useNavigate();
-    const [profilePic, setProfilePic] = useState("/profile/9.jpg")
+    const [profilePic, setProfilePic] = useState("");
+    setProfilePic("/profile/6.jpg")
     const [user, setUser] = useState<UserProfile | null>(null);
+    const { t } = useTranslation();
 
-    const [username, setUsername] = useState("")
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const { t } = useTranslation()
-
+    // On mount, fetch full user info/profile (could depend on userInfo for live-updating avatar)
     useEffect(() => {
         const fetchUser = async () => {
-            setLoading(true);
             try {
                 const common = await getUserCommonInfos();
                 if (common && common.username) {
                     const apiUser = await getUserProfile(common.username);
                     setUser(apiUser);
-                    setUsername(common.username);
                 } else {
-                    setUsername("");
                 }
             } catch (err) {
-                setError("Failed to fetch user");
-                setUsername("");
             } finally {
-                setLoading(false);
             }
         };
         fetchUser();
-    }, []);
+    }, []); // You could add [userInfo] if you want the avatar to update dynamically
 
     const handleLogout = async () => {
         try {
