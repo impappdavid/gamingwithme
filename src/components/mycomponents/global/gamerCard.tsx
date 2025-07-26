@@ -45,27 +45,27 @@ function GamerCard({ users }: { users: User[] }) {
     const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
     const [gameImages, setGameImages] = useState<{ [username: string]: string[] }>({});
 
-    // Reset to first page when users change (e.g., filter applied)
+    // Reset to first page when user list changes (filter, etc)
     useEffect(() => {
         setCurrentPage(1);
     }, [users]);
 
-    // Calculate current page items
+    // Calculate items on current page
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const currentUsers = users.slice(startIndex, endIndex);
 
     const goToPage = (page: number) => {
         setCurrentPage(Math.max(1, Math.min(page, totalPages)));
-        // Scroll to top when page changes
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Fetch RAWG images for up to 2 games per user
+    // Fetch RAWG images (limit two per user for performance)
     useEffect(() => {
         const fetchImages = async () => {
             const images: { [username: string]: string[] } = {};
             await Promise.all(currentUsers.map(async (creator) => {
+                // Only fetch up to two games per user for display
                 const games = creator.games ? creator.games.slice(0, 2) : [];
                 const imgArr: string[] = [];
                 for (const gameName of games) {
@@ -81,11 +81,10 @@ function GamerCard({ users }: { users: User[] }) {
         }
     }, [currentUsers]);
 
-    // Generate page numbers for pagination
+    // Render pagination controls, compressing for large numbers
     const getPageNumbers = () => {
         const pages = [];
         const maxVisible = 4;
-
         if (totalPages <= maxVisible) {
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
@@ -113,12 +112,10 @@ function GamerCard({ users }: { users: User[] }) {
                 pages.push(totalPages);
             }
         }
-
         return pages;
     };
 
-
-    const { t } = useTranslation()
+    const { t } = useTranslation();
 
     return (
         <div className="flex flex-col h-full relative">
@@ -134,20 +131,16 @@ function GamerCard({ users }: { users: User[] }) {
                     </div>
                 ) : (
                     // User grid
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7  gap-3 2xl:gap-6">
-
-                        {currentUsers.map((user, index) => (
-                            <div key={index} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full ">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 2xl:gap-6">
+                        {currentUsers.map((user) => (
+                            <div key={user.id} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950 cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full ">
                                 <div className="flex flex-col relative w-full overflow-hidden rounded-2xl">
                                     {user.avatarurl.length > 0 ? (
-                                        <img src={user.avatarurl} alt={user.username} className="w-full rounded-xl object-cover  ease-in-out group-hover:scale-105 transition-all duration-300" />
-
+                                        <img src={user.avatarurl} alt={user.username} className="w-full rounded-xl object-cover ease-in-out group-hover:scale-105 transition-all duration-300" />
                                     ) : (
-                                        <img src="/profile/6.jpg" alt={user.username} className="w-full rounded-xl object-cover  ease-in-out group-hover:scale-105 transition-all duration-300" />
-
+                                        <img src="/profile/6.jpg" alt={user.username} className="w-full rounded-xl object-cover ease-in-out group-hover:scale-105 transition-all duration-300" />
                                     )}
 
-                                    {/* <div className="absolute top-1 right-1 p-1 px-1.5 bg-[#19FF00] backdrop-blur-2xl rounded-full text-xs text-black font-semibold drop-shadow-2xl flex items-center">{element.cost}</div> */}
                                     <div className="flex flex-col gap-0.5 px-1 pt-1 rounded-b-2xl w-full" >
                                         <div className="flex gap-1 items-center">
                                             <div className="text-lg">{user.username}</div>
@@ -159,7 +152,7 @@ function GamerCard({ users }: { users: User[] }) {
                                                         <img
                                                             src={gameImages[user.username][0]}
                                                             alt={user.games[0] || "game"}
-                                                            className="w-6 h-6 rounded-md object-cover "
+                                                            className="w-6 h-6 rounded-md object-cover"
                                                         />
                                                         {user.games.length > 2 ? (
                                                             <div className="w-6 h-6 rounded bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-semibold text-white">
@@ -181,10 +174,8 @@ function GamerCard({ users }: { users: User[] }) {
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         ))}
-
                     </div>
                 )}
             </div>
@@ -201,20 +192,19 @@ function GamerCard({ users }: { users: User[] }) {
                                 <PaginationContent>
                                     <PaginationItem>
                                         <PaginationPrevious
-                                            onClick={() => goToPage(currentPage)}
+                                            onClick={() => goToPage(currentPage - 1)}
                                             className={`rounded-xl ${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                                         />
                                     </PaginationItem>
 
                                     {getPageNumbers().map((page, index) => (
-                                        <PaginationItem key={index}>
+                                        <PaginationItem key={page === 'ellipsis' ? `ellipsis-${index}` : page}>
                                             {page === 'ellipsis' ? (
                                                 <PaginationEllipsis />
                                             ) : (
                                                 <PaginationLink
                                                     onClick={() => {
                                                         goToPage(page as number);
-                                                        // Force scroll to top even if it's the same page
                                                         window.scrollTo({ top: 0, behavior: 'smooth' });
                                                     }}
                                                     isActive={currentPage === page}
