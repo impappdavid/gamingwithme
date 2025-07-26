@@ -5,11 +5,6 @@ import { useState } from "react"
 import { Link } from "react-router-dom";
 import { ForgotPasswordEndpoint } from "@/api/auth";
 
-
-// Add styles to document
-const styleSheet = document.createElement("style");
-document.head.appendChild(styleSheet);
-
 function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
@@ -17,9 +12,7 @@ function ForgotPassword() {
     const [success, setSuccess] = useState<string | null>(null);
     const [isErrorVisible, setIsErrorVisible] = useState(false);
 
-
-
-
+    // Show error msg with fading animation, then hide after delay
     const showError = (message: string) => {
         setError(message);
         setIsErrorVisible(true);
@@ -34,32 +27,25 @@ function ForgotPassword() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
         if (!email.includes('@')) {
             showError('Invalid email. Try again');
             setLoading(false);
             return;
         }
-
         if (email.length < 1) {
             showError('Please enter your credentials');
             setLoading(false);
             return;
         }
-
         try {
             await ForgotPasswordEndpoint(email);
             setSuccess(`We sent an email to ${email}`)
         } catch (error: any) {
-            showError(`Wrong email. We dind't find this email in our system.`);
+            showError(`Wrong email. We didn't find this email in our system.`);
         } finally {
             setLoading(false);
         }
     }
-
-
-
-
 
     return (
         <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 p-0 sm:py-0 transition-all">
@@ -74,6 +60,7 @@ function ForgotPassword() {
                     </Link>
                 </div>
 
+                {/* Error Alert */}
                 {error && (
                     <div className={`absolute z-50 top-4 p-2 bg-red-500/10 backdrop-blur-2xl border border-red-500/20 rounded-xl w-88 sm:w-84 flex justify-between items-center transition-all duration-300 ease-in-out transform ${isErrorVisible ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
                         <div className="flex gap-2 items-center">
@@ -88,6 +75,7 @@ function ForgotPassword() {
                     </div>
                 )}
 
+                {/* Success Alert */}
                 {success && (
                     <div className={`absolute z-50 top-4 p-2 bg-green-500/10 backdrop-blur-2xl border border-green-500/20 rounded-xl w-88 sm:w-84 flex justify-between items-center transition-all duration-300 ease-in-out transform ${success.length > 0 ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
                         <div className="flex gap-2 items-center">
@@ -104,8 +92,6 @@ function ForgotPassword() {
 
                 <div className="relative">
                     <div className="py-6 flex flex-col gap-2 w-full sm:w-84 transition-all duration-500 transform translate-x-0 opacity-100">
-
-
                         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
                             <div className="flex flex-col gap-0.5">
                                 <div className="relative">
@@ -123,9 +109,6 @@ function ForgotPassword() {
                                     />
                                 </div>
                             </div>
-
-
-
                             <Button
                                 type="submit"
                                 disabled={loading}
@@ -134,8 +117,6 @@ function ForgotPassword() {
                                 {loading ? "Sending email..." : "Send email"}
                             </Button>
                         </form>
-
-
                     </div>
                 </div>
             </div>
