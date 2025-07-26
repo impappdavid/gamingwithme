@@ -82,18 +82,7 @@ function Carousel({ userId }: { userId: string }) {
         return date < today;
     };
 
-    const handleCalendarSelect = (date: Date | undefined) => {
-        if (!date || isDateInPast(date)) return;
-        date.setHours(0, 0, 0, 0);
-        setCurrentYear(date.getFullYear());
-        setCurrentMonth(date.getMonth());
-        setSelectedDate(date);
-        setCalendarOpen(false);
-        setTimeout(() => {
-            const idx = getMonthDays(date.getFullYear(), date.getMonth()).findIndex(d => d.toDateString() === date.toDateString());
-            if (carouselRef.current?.scrollTo && idx >= 0) carouselRef.current.scrollTo(idx, true);
-        }, 100);
-    };
+    
 
     useEffect(() => {
         const fetchAllCarouselDates = async () => {
@@ -121,7 +110,6 @@ function Carousel({ userId }: { userId: string }) {
 
 
 
-    const selectedDayLabel = `${getWeekday(selectedDate)}, ${pad(selectedDate.getDate())}`;
 
     // ---------------------------
     // Payment logic below
@@ -145,9 +133,11 @@ function Carousel({ userId }: { userId: string }) {
             const data = await ValidateCoupon(coupon);
             if (data.valid) {
                 setIsValid(true);
+                setCoupon(data.couponId)
                 setPercent(data.percentOff);
             } else {
                 setIsValid(false);
+                setCoupon("")
                 setPercent(0);
                 setError("Invalid coupon.");
             }
