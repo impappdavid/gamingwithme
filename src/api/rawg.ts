@@ -24,14 +24,3 @@ export const fetchGame = async (title: string): Promise<Game | null> => {
     return null;
   }
 };
-
-export const fetchPopularGames = async (pageSize = 40): Promise<Game[]> => {
-  try {
-    const url = `${API_BASE_URL}/games?key=${API_KEY}&page_size=${pageSize}`;
-    const response = await axios.get(url) as { data: { results: Game[] } };
-    return response.data.results || [];
-  } catch (error) {
-    console.error('Error fetching games:', error);
-    return [];
-  }
-};
