@@ -2,12 +2,13 @@ import { Facebook, Instagram, Mail, HelpCircle, FileText, HeadphonesIcon } from 
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 
+// Simple, stateless Footer
 function Footer() {
     return (
         <footer className="bg-black text-white py-8 border-t border-[#19FF00]">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-                    {/* Logo Section */}
+                    {/* Logo & copyright */}
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-2">
                             <img src="/logo.png" alt="logo" className="w-14 h-14"/>
@@ -18,8 +19,7 @@ function Footer() {
                         </div>
                     </div>
 
-
-                    {/* Social Media Section */}
+                    {/* Social Media: just icon buttons (for demo you can add href if wanted) */}
                     <div className="flex flex-col gap-4">
                         <h3 className="text-lg font-semibold mb-2">Follow Us</h3>
                         <div className="flex gap-3">
@@ -35,7 +35,7 @@ function Footer() {
                         </div>
                     </div>
 
-                    {/* Navigation Links */}
+                    {/* Navigation/Friendly quick-links */}
                     <div className="flex flex-col gap-4">
                         <h3 className="text-lg font-semibold mb-2">Quick Links</h3>
                         <div className="flex flex-col gap-2">
@@ -54,8 +54,6 @@ function Footer() {
                         </div>
                     </div>
                 </div>
-
-                
             </div>
         </footer>
     )
