@@ -65,8 +65,6 @@ function Content() {
   const [filterText, setFilterText] = useState("");
   const [minPrice, setMinPrice] = useState<number | undefined>();
   const [maxPrice, setMaxPrice] = useState<number | undefined>();
-  const [orderBy, setOrderBy] = useState<string>("highest");
-  const [showActive, setShowActive] = useState<boolean>(false);
 
   // Service fetching state
   const [userServices, setUserServices] = useState<Record<number, any>>({});
@@ -132,7 +130,7 @@ function Content() {
       return textMatch;
     });
     return filtered;
-  }, [users, filterText, minPrice, maxPrice, orderBy, showActive]);
+  }, [users, filterText, minPrice, maxPrice]);
 
   // Merge service data into user objects
   const filteredUsersWithService = filteredUsers.map(u => ({
