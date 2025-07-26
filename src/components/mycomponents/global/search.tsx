@@ -18,9 +18,11 @@ import { Search } from "lucide-react";
 
 // User type for UI components
 type User = {
-    name: string;
-    profilePic: string;
+    id:string;
+    username: string;
+    avatarUrl: string;
     games: string[];
+    tags: string[];
     cost: string;
     active: boolean;
 };
@@ -28,9 +30,11 @@ type User = {
 // Map API user to UI user
 function mapApiUserToUI(user: UserProfileWithTags): User {
     return {
-        name: user.username,
-        profilePic: user.avatarurl,
+        id: String(user.id), // Convert id to string for UI User type
+        username: user.username,
+        avatarUrl: user.avatarurl,
         games: user.games,
+        tags: user.tags,
         cost: "$0.00", // Update when pricing is available
         active: user.isActive,
     };
@@ -106,9 +110,8 @@ function SearchBar() {
                                 ) : filterText.length > 0 ? (
                                     <SearchUserCard users={filteredUsers.map(mapApiUserToUI)} />
                                 ) : (
-                                    <div className="flex flex-col gap-2">
-                                        <div className="text-start">{t("TopCreators")}</div>
-                                        <TopCreators users={filteredUsers.map(mapApiUserToUI)} />
+                                    <div className="flex justify-center pt-8 gap-2">
+                                        Start typing to start the search
                                     </div>
                                 )}
                             </DialogDescription>
