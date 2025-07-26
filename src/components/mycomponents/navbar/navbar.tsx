@@ -18,6 +18,7 @@ function Navbar({ page }: NavbarProps) {
     const [userInfo, setUserInfo] = useState<UserCommonInfos | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // On mount, check if user is authenticated
     useEffect(() => {
         const checkAuth = async () => {
             try {
@@ -43,6 +44,7 @@ function Navbar({ page }: NavbarProps) {
             </div>
             
             <div className="flex gap-2">
+                {/* Authenticated navbar buttons */}
                 {!loading && userInfo ? (
                     <>
                         <Notifications />
@@ -56,6 +58,7 @@ function Navbar({ page }: NavbarProps) {
                         <UserMenu userInfo={userInfo} setUserInfo={setUserInfo} />
                     </>
                 ) : !loading ? (
+                    // Not authenticated: show login/register
                     <div className="flex gap-2 items-center">
                         <Button 
                             onClick={() => navigate('/login')} 
@@ -71,6 +74,7 @@ function Navbar({ page }: NavbarProps) {
                         </Button>
                     </div>
                 ) : (
+                    // Loading state: pulsing bar
                     <div className="h-9 w-20 bg-zinc-800/50 rounded-lg animate-pulse"></div>
                 )}
             </div>
