@@ -1,6 +1,6 @@
-import { getUserCommonInfos } from "@/api/user";
+import { getUserCommonInfos, getUserProfile } from "@/api/user";
 import { logout } from "@/api/auth";
-import type { UserCommonInfos } from "@/api/types";
+import type { UserCommonInfos, UserProfile } from "@/api/types";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,21 +12,50 @@ import {
 import { LogOut, Settings, User } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
 
 type UserMenuProps = {
-  userInfo: UserCommonInfos | null;
-  setUserInfo: React.Dispatch<React.SetStateAction<UserCommonInfos | null>>;
+    userInfo: UserCommonInfos | null;
+    setUserInfo: React.Dispatch<React.SetStateAction<UserCommonInfos | null>>;
 };
 
 function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
     const navigate = useNavigate();
+    const [profilePic, setProfilePic] = useState("/profile/9.jpg")
+    const [user, setUser] = useState<UserProfile | null>(null);
+
+    const [username, setUsername] = useState("")
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const { t } = useTranslation()
-    
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            try {
+                const common = await getUserCommonInfos();
+                if (common && common.username) {
+                    const apiUser = await getUserProfile(common.username);
+                    setUser(apiUser);
+                    setUsername(common.username);
+                } else {
+                    setUsername("");
+                }
+            } catch (err) {
+                setError("Failed to fetch user");
+                setUsername("");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, []);
+
     const handleLogout = async () => {
         try {
             await logout();
             const data = await getUserCommonInfos();
-            setUserInfo(data); 
+            setUserInfo(data);
             navigate('/')
         } catch (err) {
             console.error("Failed to logout:", err);
@@ -36,31 +65,41 @@ function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild className="flex items-center">
-                <img 
-                    src="/profile/9.jpg" 
-                    alt="Profile" 
-                    className="rounded-lg h-9.5 w-9.5 border flex gap-2 text-zinc-400 items-center cursor-pointer transition-all duration-200" 
-                />
+                {user?.avatarurl && user.avatarurl.length > 0 ? (
+                    <img
+                        src={user.avatarurl}
+                        alt="profile"
+                        className="w-9.5 h-9.5 z-1 rounded-lg border"
+                        style={{ cursor: 'pointer' }}
+                    />
+                ) : (
+                    <img
+                        src={profilePic}
+                        alt="profile"
+                        className="w-9.5 h-9.5 z-1 rounded-lg border"
+                        style={{ cursor: 'pointer' }}
+                    />
+                )}
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-36" align="end">
                 <DropdownMenuGroup>
-                    <DropdownMenuItem 
-                        className="hover:bg-zinc-500/20 flex gap-1 items-center" 
+                    <DropdownMenuItem
+                        className="hover:bg-zinc-500/20 flex gap-1 items-center"
                         onClick={() => userInfo?.username && navigate(`/profile/${userInfo.username}`)}
                     >
                         <User className="w-5 h-5" />
                         {t("profile")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
-                        className="hover:bg-zinc-500/20 flex gap-1" 
+                    <DropdownMenuItem
+                        className="hover:bg-zinc-500/20 flex gap-1"
                         onClick={() => navigate('/settings/general')}
                     >
                         <Settings />
                         {t("settings")}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                        onClick={handleLogout} 
+                    <DropdownMenuItem
+                        onClick={handleLogout}
                         className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2"
                     >
                         <LogOut className="text-red-500" />
