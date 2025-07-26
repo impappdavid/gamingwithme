@@ -19,7 +19,7 @@ function Categories() {
                         </div>
                         <div className="text-sm text-zinc-200 group-hover:text-blue-400 transition-colors duration-300">Just Chatting</div>
                     </Link>
-                    <Link to={`/players`} className="flex flex-col gap-1 group">
+                    <Link to={`/gamers`} className="flex flex-col gap-1 group">
                         <div className="overflow-hidden rounded-lg">
                             <img src="/categories/gamers.png" alt="gamers" className="max-w-36 rounded-lg transition-transform duration-300 group-hover:scale-105 transform-gpu" />
                         </div>
