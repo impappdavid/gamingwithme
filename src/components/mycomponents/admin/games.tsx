@@ -23,12 +23,13 @@ function AdminGamesC() {
         const fetchGames = async () => {
             setLoading(true)
             try {
+                // getAllGames returns the list of all games from backend
                 const response = await getAllGames()
                 if (response) {
-                    // Convert id to string to match the Game interface
+                    // Make sure id is string for each game (defensive for legacy data)
                     setGames(response.map((game: any) => ({
                         ...game,
-                        id: String(game.id)
+                        id: String(game.id),
                     })))
                 }
             } catch (err: any) {
@@ -40,11 +41,11 @@ function AdminGamesC() {
         fetchGames()
     }, [])
 
-
     return (
         <>
             <div className="w-full xl:h-screen sm:p-2">
                 <div className="w-full h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
+                    {/* Navbar at top */}
                     <div className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("Admin")} />
                     </div>
@@ -73,32 +74,30 @@ function AdminGamesC() {
                                 <TableBody>
                                     {games.length > 0 ? (
                                         <>
-                                            {
-                                                games.map((game) => (
-                                                    <TableRow key={game.id}>
-                                                        <TableCell>{game.name}</TableCell>
-                                                        <TableCell>{game.description}</TableCell>
-                                                        <TableCell>{game.slug}</TableCell>
-                                                        <TableCell>
-                                                            {game.thumbnailUrl ? (
-                                                                <img src={game.thumbnailUrl} alt={game.name} className="w-16 h-10 object-cover rounded" />
-                                                            ) : (
-                                                                <span className="text-zinc-400">No image</span>
-                                                            )}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Link to={`/admin/games/edit/${game.slug}`} className="text-blue-600 hover:underline">{t("Edit")}</Link>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
-                                            }
+                                            {games.map((game) => (
+                                                <TableRow key={game.id}>
+                                                    <TableCell>{game.name}</TableCell>
+                                                    <TableCell>{game.description}</TableCell>
+                                                    <TableCell>{game.slug}</TableCell>
+                                                    <TableCell>
+                                                        {game.thumbnailUrl ? (
+                                                            <img src={game.thumbnailUrl} alt={game.name} className="w-16 h-10 object-cover rounded" />
+                                                        ) : (
+                                                            <span className="text-zinc-400">No image</span>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Link to={`/admin/games/edit/${game.slug}`} className="text-blue-600 hover:underline">{t("Edit")}</Link>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
                                         </>
                                     ) : (
-                                        <TableRow >
-                                            <TableCell rowSpan={4}>No added games yet.</TableCell>
+                                        <TableRow>
+                                            {/* Show a message if no games exist */}
+                                            <TableCell colSpan={5}>No added games yet.</TableCell>
                                         </TableRow>
                                     )}
-
                                 </TableBody>
                             </Table>
                         )}
