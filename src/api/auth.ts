@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { apiClient, createRequestConfig, handleApiError } from './client';
 import type { OAuthResponse } from './types';
 
@@ -63,3 +64,45 @@ export const googleRegister = async (): Promise<OAuthResponse> => {
         throw error; // Re-throw after handling
     }
 };
+
+export const ForgotPasswordEndpoint = async (
+    email: string
+) => {
+    try {
+        // TODO: Replace with your actual API URL or use an environment variable
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(
+            `${API_URL}/api/Account/forgot-password`,
+            {
+                email
+            }
+        );
+        return response.data ;
+    } catch (error) {
+        console.error('Error registrating the user:', error);
+        throw error;
+    }
+}
+
+export const ResetPasswordEndpoin = async (
+    email: string,
+    token: string,
+    newPassword: string
+) => {
+    try {
+        // TODO: Replace with your actual API URL or use an environment variable
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.post(
+            `${API_URL}/api/Account/reset-password`,
+            {
+                email,
+                token,
+                newPassword
+            }
+        );
+        return response.data ;
+    } catch (error) {
+        console.error('Error registrating the user:', error);
+        throw error;
+    }
+}

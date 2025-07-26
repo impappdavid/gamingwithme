@@ -26,6 +26,8 @@ import AdminNotificationsPage from "./pages/Admin/Notifications";
 import AddNewNotificationsPage from "./pages/Admin/AddNotification";
 import CreateServicePage from "./pages/CreateService";
 import CouponPage from "./pages/Coupon";
+import ForgotPasswordPage from "./pages/ForgotPassword";
+import ResetPasswordPage from "./pages/ResetPassword";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -39,6 +41,8 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/gamers" element={<Gamers />} />
             <Route path="/just-chatting" element={<JustChatting />} />
             <Route path="/music" element={<Music />} />

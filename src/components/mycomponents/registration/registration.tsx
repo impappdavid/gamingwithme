@@ -271,7 +271,7 @@ function RegistrationForm() {
                         <div className="text-center text-sm text-zinc-400">
                             Already have an account?{" "}
                             <Link to="/login" className="text-green-500 hover:text-green-400 underline">
-                                Sign in
+                                Login
                             </Link>
                         </div>
                     </div>

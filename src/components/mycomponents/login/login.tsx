@@ -73,19 +73,19 @@ function LogInForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        
+
         if (!email.includes('@')) {
             showError('Invalid email. Try again');
             setLoading(false);
             return;
         }
-        
+
         if (email.length < 1 || password.length < 1) {
             showError('Please enter your credentials');
             setLoading(false);
             return;
         }
-        
+
         try {
             await login(email, password, true);
             setTimeout(() => {
@@ -108,7 +108,7 @@ function LogInForm() {
         }
     }
 
-   
+
 
     return (
         <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 p-0 sm:py-0 transition-all">
@@ -139,10 +139,10 @@ function LogInForm() {
 
                 <div className="relative">
                     <div className="py-3 flex flex-col gap-2 w-full sm:w-84 transition-all duration-500 transform translate-x-0 opacity-100">
-                        <Button 
-                            onClick={handleGoogleAuth} 
+                        <Button
+                            onClick={handleGoogleAuth}
                             disabled={loading}
-                            className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl border border-zinc-800 hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300"
+                            className="p-2 px-3 pr-4 group flex gap-2 justify-between items-center h-12 rounded-xl border border-zinc-800 hover:bg-zinc-800/80 bg-zinc-800/40 transition-all duration-300 cursor-pointer"
                         >
                             <div className="p-1 bg-zinc-950/40 border border-zinc-800 rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
@@ -154,18 +154,18 @@ function LogInForm() {
                             </div>
                             <div className="text-sm text-zinc-200 font-medium">Continue With Google</div>
                             <div className="opacity-0 w-8 flex justify-end group-hover:opacity-100 transition-all duration-300">
-                                <ChevronRight className="w-4 h-4" />
+                                <ChevronRight className="w-4 h-4 text-white" />
                             </div>
                         </Button>
-                        
-                       
-                        
+
+
+
                         <div className="flex items-center gap-2 w-full py-1">
                             <Separator className="flex-1" />
                             <span className="text-xs text-zinc-500 dark:text-zinc-600">OR</span>
                             <Separator className="flex-1" />
                         </div>
-                        
+
                         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
                             <div className="flex flex-col gap-0.5">
                                 <div className="relative">
@@ -183,7 +183,7 @@ function LogInForm() {
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="flex flex-col gap-0.5">
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -211,25 +211,29 @@ function LogInForm() {
                                     </button>
                                 </div>
                             </div>
-                            
-                            <div className="flex items-center space-x-2">
-                                <Checkbox id="remember" />
-                                <Label htmlFor="remember" className="text-sm text-zinc-400">Remember me</Label>
+                            <div className="flex justify-between">
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox id="remember" />
+                                    <Label htmlFor="remember" className="text-sm text-zinc-400">Remember me</Label>
+                                </div>
+                                <div className="">
+                                    <Link to={"/forgot-password"} className="text-xs text-zinc-400 hover:underline">forgot password?</Link>
+                                </div>
                             </div>
-                            
-                            <Button 
-                                type="submit" 
+
+                            <Button
+                                type="submit"
                                 disabled={loading}
                                 className="h-11 rounded-xl bg-green-500 text-black hover:bg-green-500/80 transition-all duration-300 cursor-pointer"
                             >
-                                {loading ? "Signing in..." : "Sign in"}
+                                {loading ? "Loggin in..." : "Login"}
                             </Button>
                         </form>
-                        
-                        <div className="text-center text-sm text-zinc-400">
+
+                        <div className="text-center text-sm text-zinc-400 mt-2">
                             Don't have an account?{" "}
                             <Link to="/registration" className="text-green-500 hover:text-green-400 underline">
-                                Sign up
+                                Registration
                             </Link>
                         </div>
                     </div>
