@@ -1,9 +1,21 @@
-import { apiClient, createRequestConfig } from './client';
+import axios from 'axios';
 
-// Become a creator by creating Stripe connected account
+// API base URL (consistent with your other files)
+const API_URL = 'https://localhost:7091';
+
+// Become a creator by creating a Stripe connected account
 export const becomeACreator = async (useCookies?: boolean) => {
     try {
-        const response = await apiClient.post('/api/stripe/create-connected-account', {}, createRequestConfig(useCookies));
+        // Make POST request to create connected account.
+        // Sends empty body. Includes cookies if needed (for auth/session).
+        const response = await axios.post(
+            `${API_URL}/api/stripe/create-connected-account`,
+            {},
+            {
+                params: useCookies !== undefined ? { useCookies } : {},
+                withCredentials: true,
+            }
+        );
         return response;
     } catch (error) {
         console.error('Error creating connected account:', error);
