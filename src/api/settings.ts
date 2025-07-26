@@ -295,18 +295,26 @@ export const EditSocialMedia = async (
 ): Promise<Socials> => {
     try {
         const API_URL = 'https://localhost:7091';
-        const response = await axios.put(`${API_URL}/api/User/social-media`,
-            { twitterUrl, instagramUrl, facebookUrl },
+
+        // Build the request body only including non-empty values
+        const requestBody: Record<string, string> = {};
+        if (twitterUrl && twitterUrl.trim() !== "") requestBody.twitterUrl = twitterUrl;
+        if (instagramUrl && instagramUrl.trim() !== "") requestBody.instagramUrl = instagramUrl;
+        if (facebookUrl && facebookUrl.trim() !== "") requestBody.facebookUrl = facebookUrl;
+
+        const response = await axios.put(
+            `${API_URL}/api/User/social-media`,
+            requestBody,
             {
                 params: useCookies !== undefined ? { useCookies } : {},
                 withCredentials: true,
-            });
+            }
+        );
 
-        // ✅ RETURN the result!
         return response.data as Socials;
     } catch (error) {
-        console.error('Error fetching users:', error);
-        throw error; // Re-throw after handling
+        console.error('Error editing social media:', error);
+        throw error;
     }
 };
 
