@@ -114,9 +114,9 @@ function JustChatting() {
                       {servicesLoading
                         ? "Loading..."
                         : creatorServices[element.id]?.description ??
-                          (creatorServices[element.id] === null
-                            ? "No description"
-                            : "Loading...")}
+                        (creatorServices[element.id] === null
+                          ? "No description"
+                          : "Loading...")}
                     </div>
                     <div className="flex items-center">
                       <div className="grid grid-cols-4 gap-1 pt-1">
@@ -183,9 +183,9 @@ function JustChatting() {
                         {servicesLoading
                           ? "--"
                           : creatorServices[element.id]?.price ??
-                            (creatorServices[element.id] === null
-                              ? "--"
-                              : "--")}
+                          (creatorServices[element.id] === null
+                            ? "--"
+                            : "--")}
                       </Link>
                     </div>
                   </div>

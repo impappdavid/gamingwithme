@@ -114,9 +114,9 @@ function Tiktok() {
                       {servicesLoading
                         ? "Loading..."
                         : creatorServices[element.id]?.description ??
-                          (creatorServices[element.id] === null
-                            ? "No description"
-                            : "Loading...")}
+                        (creatorServices[element.id] === null
+                          ? "No description"
+                          : "Loading...")}
                     </div>
                     <div className="flex items-center">
                       <div className="grid grid-cols-4 gap-1 pt-1">
@@ -183,9 +183,9 @@ function Tiktok() {
                         {servicesLoading
                           ? "--"
                           : creatorServices[element.id]?.price ??
-                            (creatorServices[element.id] === null
-                              ? "--"
-                              : "--")}
+                          (creatorServices[element.id] === null
+                            ? "--"
+                            : "--")}
                       </Link>
                     </div>
                   </div>
@@ -200,7 +200,7 @@ function Tiktok() {
             </div>
           ) : (
             <div className="h-24 rounded-2xl flex text-zinc-400 items-center justify-start ">
-              <div className="text-sm">No just chattings users yet.</div>
+              <div className="text-sm">No tiktoker's yet.</div>
             </div>
           )}
         </div>
