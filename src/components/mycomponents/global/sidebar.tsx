@@ -4,26 +4,21 @@ import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 
-
 import { getUserCommonInfos, getUserIsOnboarding, getUserProfile, continueStripe } from "@/api/user"
-import { becomeACreator  } from "@/api/creator" // Assuming continueStripe is exported from here
-
+import { becomeACreator  } from "@/api/creator"
 
 // Define interfaces for better type safety
 interface OnboardingInfo {
     onboardingComplete: boolean;
 }
-
 interface BecomeCreatorResponse {
     onboardingUrl: string;
     connectedAccountId: string;
 }
-
 interface ContinueStripeResponse {
     url: string;
     type: "account_onboarding";
 }
-
 
 function Sidebar() {
     const { t } = useTranslation();
@@ -35,9 +30,8 @@ function Sidebar() {
     const [error, setError] = useState<string | null>(null);
     const baseClass = "flex gap-2 items-center p-2 rounded-lg transition-all duration-200";
 
-
+    // Navigation function used for redirection; fallback if React Router's useNavigate isn't available
     const navigate = (window as any).navigate || ((url: string) => { window.location.href = url });
-
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -72,8 +66,7 @@ function Sidebar() {
         fetchUser();
     }, []);
 
-
-    // Handle Become/Continue button click
+    // Handles Stripe creator onboarding/continuation
     const handleSetupClick = async () => {
         try {
             const common = await getUserCommonInfos();
@@ -83,13 +76,13 @@ function Sidebar() {
             }
 
             if (isCreator && !onboardingComplete) {
-                // Continue onboarding
+                // Continue onboarding flow in Stripe
                 const response = await continueStripe("onboarding") as ContinueStripeResponse;
                 if (response && response.url) {
                     window.open(response.url, '_blank');
                 }
             } else {
-                // Become a creator (start onboarding)
+                // Begin becoming a creator
                 const response = await becomeACreator();
                 if (response && response.data) {
                     const data = response.data as BecomeCreatorResponse;
@@ -104,8 +97,6 @@ function Sidebar() {
         }
     };
 
-
-
     return (
         <div className="xl:min-w-60 h-screen hidden sm:flex flex-col justify-between py-4">
             <div className="flex flex-col gap-2">
@@ -113,7 +104,6 @@ function Sidebar() {
                     <img src="/logo.png" alt="Logo" className="w-8 h-8" />
                     <h1 className="text-lg font-semibold hidden xl:flex">GamingWithMe</h1>
                 </Link>
-
 
                 <div className="flex flex-col gap-1 p-2">
                     <NavLink
@@ -127,8 +117,6 @@ function Sidebar() {
                         <MessagesSquare className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
                     </NavLink>
-
-
                     <NavLink
                         to="../gamers"
                         className={({ isActive }) =>
@@ -140,8 +128,6 @@ function Sidebar() {
                         <Gamepad2 className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">{t("Gamers")}</div>
                     </NavLink>
-
-
                     <NavLink
                         to="../music"
                         className={({ isActive }) =>
@@ -153,8 +139,6 @@ function Sidebar() {
                         <Music className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">{t("Music")}</div>
                     </NavLink>
-
-
                     <NavLink
                         to="../tiktok"
                         className={({ isActive }) =>
@@ -168,8 +152,6 @@ function Sidebar() {
                         </svg>
                         <div className="text-md font-medium hidden xl:flex">Tiktok</div>
                     </NavLink>
-
-
                     <NavLink
                         to="../youtube"
                         className={({ isActive }) =>
@@ -181,8 +163,6 @@ function Sidebar() {
                         <Youtube className="w-5 h-5 text-[#2856F4]" />
                         <div className="text-md font-medium hidden xl:flex">Youtube</div>
                     </NavLink>
-
-
                     <NavLink
                         to="../games"
                         className={({ isActive }) =>
@@ -196,15 +176,11 @@ function Sidebar() {
                     </NavLink>
                 </div>
 
-
                 <div className="px-2">
                     <div className="h-[1.5px] w-full bg-zinc-900"></div>
                 </div>
 
-
                 <div className="flex flex-col gap-1 p-2">
-
-
                     {loading ? (
                         <div className={`${baseClass} opacity-50`}>
                             <div className="w-5 h-5 bg-zinc-700 rounded animate-pulse"></div>
@@ -268,15 +244,11 @@ function Sidebar() {
                     )}
                 </div>
 
-
                 <div className="px-2">
                     <div className="h-[1.5px] w-full bg-zinc-900"></div>
                 </div>
 
-
                 <div className="flex flex-col gap-1 p-2">
-
-
                     {isAdmin === true ? (
                         <NavLink
                             to="../admin"
@@ -288,13 +260,10 @@ function Sidebar() {
                     ) : (
                         <div className=""></div>
                     )}
-
-
                 </div>
             </div>
         </div>
     )
 }
-
 
 export default Sidebar
