@@ -10,9 +10,11 @@ function HomeGames() {
     const [allGames, setAllGames] = useState<TypeGames[]>([]);
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
+    // For RAWG fallback images if missing
     const [rawgImages, setRawgImages] = useState<{ [name: string]: string }>({});
     const [rawgLoading, setRawgLoading] = useState<{ [name: string]: boolean }>({});
 
+    // Load all home games on mount
     useEffect(() => {
         const getSuggestedUsersWithConnectedPayment = async () => {
             try {
@@ -32,6 +34,7 @@ function HomeGames() {
         getSuggestedUsersWithConnectedPayment()
     }, [])
 
+    // For each game with no thumbnailUrl, try to load from RAWG
     useEffect(() => {
         const fetchMissingImages = async () => {
             const missing = allGames.filter(g => !g.thumbnailUrl || g.thumbnailUrl === "");
@@ -52,7 +55,7 @@ function HomeGames() {
 
     return (
         <>
-            <div className="flex flex-col gap-4  ">
+            <div className="flex flex-col gap-4">
                 <div className="flex w-full justify-between items-center">
                     <div className="text-xl font-medium">{t("Games")}</div>
                     <Link to={`/games`} className="text-xs text-zinc-400 hover:underline ">View All</Link>
@@ -70,25 +73,32 @@ function HomeGames() {
                         </div>
                     ) : allGames.length > 0 ? (
                         <>
-                            {
-                                allGames.map((element, index) => (
-                                    <Link key={index} to={`/games/${element.slug}`}>
-                                        {(!element.thumbnailUrl || element.thumbnailUrl === "") ? (
-                                            rawgImages[element.name] ? (
-                                                <img src={rawgImages[element.name]} className="bg-cover  rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
-                                            ) : (
-                                                rawgLoading[element.name] ? (
-                                                    <Skeleton className="h-24 rounded-2xl w-full" />
-                                                ) : (
-                                                    <div className="h-24 rounded-2xl w-full flex items-center justify-center bg-zinc-800 text-zinc-400">No picture</div>
-                                                )
-                                            )
+                            {allGames.map((element) => (
+                                <Link key={element.slug || element.name} to={`/games/${element.slug}`}>
+                                    {/* Show fallback RAWG image if missing local */}
+                                    {(!element.thumbnailUrl || element.thumbnailUrl === "") ? (
+                                        rawgImages[element.name] ? (
+                                            <img
+                                                src={rawgImages[element.name]}
+                                                alt={element.name}
+                                                className="bg-cover rounded-2xl hover:scale-105 cursor-pointer transition-all duration-300"
+                                            />
                                         ) : (
-                                            <img src={element.thumbnailUrl} className="bg-cover max-h-58 rounded-2xl hover:scale-105  cursor-pointer transition-all duration-300" />
-                                        )}
-                                    </Link>
-                                ))
-                            }
+                                            rawgLoading[element.name] ? (
+                                                <Skeleton className="h-24 rounded-2xl w-full" />
+                                            ) : (
+                                                <div className="h-24 rounded-2xl w-full flex items-center justify-center bg-zinc-800 text-zinc-400">No picture</div>
+                                            )
+                                        )
+                                    ) : (
+                                        <img
+                                            src={element.thumbnailUrl}
+                                            alt={element.name}
+                                            className="bg-cover max-h-58 rounded-2xl hover:scale-105 cursor-pointer transition-all duration-300"
+                                        />
+                                    )}
+                                </Link>
+                            ))}
                         </>
                     ) : (
                         <div className="border h-58 rounded-2xl flex text-zinc-400 items-center justify-center hover:border-green-500 hover:text-green-500 transition-all duration-300 col-span-full">
