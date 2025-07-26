@@ -191,8 +191,6 @@ function Content() {
                         ) : (
                             <>
                                 <Services userId={userId} />
-
-
                             </>
                         )}
                     </div>
