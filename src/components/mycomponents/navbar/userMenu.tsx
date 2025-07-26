@@ -21,8 +21,7 @@ type UserMenuProps = {
 
 function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
     const navigate = useNavigate();
-    const [profilePic, setProfilePic] = useState("");
-    setProfilePic("/profile/6.jpg")
+    const [profilePic, setProfilePic] = useState("/profile/6.jpg");
     const [user, setUser] = useState<UserProfile | null>(null);
     const { t } = useTranslation();
 
@@ -48,6 +47,7 @@ function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
             await logout();
             const data = await getUserCommonInfos();
             setUserInfo(data);
+            setProfilePic("")
             navigate('/')
         } catch (err) {
             console.error("Failed to logout:", err);
