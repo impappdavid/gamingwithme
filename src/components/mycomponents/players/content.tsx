@@ -59,8 +59,6 @@ function Content() {
   const [filterText, setFilterText] = useState("");
   const [minPrice, setMinPrice] = useState<number | undefined>();
   const [maxPrice, setMaxPrice] = useState<number | undefined>();
-  const [orderBy, setOrderBy] = useState<string>("highest");
-  const [showActive, setShowActive] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -100,7 +98,7 @@ function Content() {
 
 
     return filtered;
-  }, [users, filterText, minPrice, maxPrice, orderBy, showActive]);
+  }, [users, filterText, minPrice, maxPrice]);
 
   const { t } = useTranslation()
 
@@ -118,10 +116,6 @@ function Content() {
             setMinPrice={setMinPrice}
             maxPrice={maxPrice}
             setMaxPrice={setMaxPrice}
-            orderBy={orderBy}
-            setOrderBy={setOrderBy}
-            showActive={showActive}
-            setShowActive={setShowActive}
           />
           <div className="p-2">
             {loading ? (
