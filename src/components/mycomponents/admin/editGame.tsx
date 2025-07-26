@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import {
     getGameBySlug,
     updateGame,
@@ -23,7 +23,7 @@ import {
 function EditGame() {
     const { t } = useTranslation()
     const { slug } = useParams<{ slug: string }>()
-    const navigate = useNavigate()
+    // Core game editing state
     const [game, setGame] = useState<any>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
@@ -45,6 +45,7 @@ function EditGame() {
     const [eggImage, setEggImage] = useState<File | null>(null)
     const [eggsLoading, setEggsLoading] = useState(false)
 
+    // Fetch base game data on slug change
     useEffect(() => {
         const fetchGame = async () => {
             setLoading(true)
@@ -61,7 +62,7 @@ function EditGame() {
         if (slug) fetchGame()
     }, [slug])
 
-    // Fetch News, Events, Easter Eggs when game is loaded
+    // When core game (by id) is loaded, fetch all content tabs
     useEffect(() => {
         if (!game?.id) return
         // News
@@ -84,6 +85,7 @@ function EditGame() {
             .finally(() => setEggsLoading(false))
     }, [game?.id])
 
+    // For editing basic fields (input fields use "name" matched to keys in game)
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setGame({ ...game, [e.target.name]: e.target.value })
     }
