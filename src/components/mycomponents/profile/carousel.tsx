@@ -17,7 +17,8 @@ import { ChevronDown } from "lucide-react";
 import { PaymentWithStripe, PaymentWithStripeBooking, ValidateCoupon } from "@/api/stripe";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { GetBooking, type BookInfos } from "@/api/booking";
+import { GetBooking, GetBookingsByNameAndDate, type BookInfos } from "@/api/booking";
+import { useParams } from "react-router-dom";
 
 const pad = (n: number) => n.toString().padStart(2, "0");
 const getWeekday = (date: Date) => date.toLocaleDateString("en-US", { weekday: "short" });
@@ -37,6 +38,7 @@ function getMonthDays(year: number, month: number) {
 }
 
 function Carousel({ userId }: { userId: string }) {
+    const { slug } = useParams<{ slug: string }>();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -98,8 +100,14 @@ function Carousel({ userId }: { userId: string }) {
             const fetches = await Promise.all(
                 visibleDays.map(async (date) => {
                     const formatted = date.toISOString().split("T")[0];
-                    const res = await GetBooking(formatted);
-                    return { date: formatted, data: res || [] };
+                    // Only call GetBookingsByNameAndDate if slug is defined
+                    if (typeof slug === "string") {
+                        const res = await GetBookingsByNameAndDate(slug, formatted);
+                        return { date: formatted, data: res || [] };
+                    } else {
+                        // If slug is not defined, return empty data for this date
+                        return { date: formatted, data: [] };
+                    }
                 })
             );
             const map: { [key: string]: BookInfos[] } = {};
