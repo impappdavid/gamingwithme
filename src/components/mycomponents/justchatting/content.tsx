@@ -1,5 +1,3 @@
-// Content.tsx
-
 import { useTranslation } from "react-i18next";
 import Navbar from "../navbar/navbar";
 import UserCard from "../global/usercard";
@@ -7,10 +5,10 @@ import Filter from "../global/filter";
 import { useState, useMemo, useEffect } from "react";
 import Footer from "../global/footer";
 import { getUsersByTag } from "@/api/user";
-import { GetServicesById } from "@/api/service"; // <-- Make sure this is correct
+import { GetServicesById } from "@/api/service";
 import type { UserProfileWithTags } from "@/api/types";
 
-// User type for UI
+// User UI type
 type User = {
   id: number;
   username: string;
@@ -35,7 +33,7 @@ type User = {
     isAvailable: boolean
   }[];
   joined: string;
-  service?: any; // New: first service for this user, may be undefined/null
+  service?: any;
 };
 
 // Map API user to UI user
@@ -65,24 +63,19 @@ function Content() {
   const [filterText, setFilterText] = useState("");
   const [minPrice, setMinPrice] = useState<number | undefined>();
   const [maxPrice, setMaxPrice] = useState<number | undefined>();
-  const [orderBy, setOrderBy] = useState<string>("highest");
-  const [showActive, setShowActive] = useState<boolean>(false);
 
-  // Service fetching state
+  // Per-user service state
   const [userServices, setUserServices] = useState<Record<number, any>>({});
   const [servicesLoading, setServicesLoading] = useState<boolean>(false);
 
+  // Fetch users for this tag on mount
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
       setError(null);
       try {
         const apiUsers = await getUsersByTag("Just chatting");
-        if (apiUsers) {
-          setUsers(apiUsers.map(mapApiUserToUI));
-        } else {
-          setUsers([]);
-        }
+        setUsers(apiUsers ? apiUsers.map(mapApiUserToUI) : []);
       } catch (err) {
         setError("Failed to fetch users");
         setUsers([]);
@@ -93,7 +86,7 @@ function Content() {
     fetchUsers();
   }, []);
 
-  // Fetch services for each user and save the first to userServices map
+  // Fetch 1st service for each user and store by user.id
   useEffect(() => {
     if (users.length === 0) {
       setUserServices({});
@@ -120,7 +113,7 @@ function Content() {
     fetchAllServices();
   }, [users]);
 
-  // Filter and sort users (add price/orderBy filtering if you want)
+  // Filter/sort logic (extend as needed for price, etc)
   const filteredUsers = useMemo(() => {
     let filtered = users.filter(user => {
       const textMatch =
@@ -132,9 +125,9 @@ function Content() {
       return textMatch;
     });
     return filtered;
-  }, [users, filterText, minPrice, maxPrice, orderBy, showActive]);
+  }, [users, filterText, minPrice, maxPrice]);
 
-  // Merge service data into user objects
+  // Merge service data into user objects on-the-fly
   const filteredUsersWithService = filteredUsers.map(u => ({
     ...u,
     service: userServices[u.id]
@@ -165,6 +158,7 @@ function Content() {
                 <div className="text-red-400">{error}</div>
               </div>
             ) : (
+              // Make sure UserCard uses user.id as key in its .map for best practice!
               <UserCard
                 users={filteredUsersWithService}
                 servicesLoading={servicesLoading}
