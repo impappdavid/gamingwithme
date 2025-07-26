@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -13,15 +12,12 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { PaymentWithStripe, ValidateCoupon, type Payment } from "@/api/stripe";
+import { PaymentWithStripe, ValidateCoupon} from "@/api/stripe";
 import { Textarea } from "@/components/ui/textarea";
-import { useNavigate } from "react-router-dom";
 
 function Services(userId: any) {
     const [services, setServices] = useState<Service[]>([])
-    const [total, setTotal] = useState(100); // Base total amount (customize as needed)
     const [coupon, setCoupon] = useState('');
-    const [applied, setApplied] = useState(false);
     const [error, setError] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [serviceId, setServiceId] = useState("");
@@ -30,7 +26,6 @@ function Services(userId: any) {
     const [customerNotes, setNotes] = useState('');
     const [isValid, setIsValid] = useState(false);
     const paymentType = "Service";
-    const navigate = useNavigate();
 
 
 
@@ -43,6 +38,8 @@ function Services(userId: any) {
                     id: String(service.id),
                 }))
             )
+        }else{
+            setError("Failed to get services")
         }
     }
 
@@ -168,7 +165,6 @@ function Services(userId: any) {
                         </div>
 
                         {error && <p className="text-red-500 text-sm">{error}</p>}
-                        {applied && <p className="text-green-500 text-sm">Coupon applied successfully!</p>}
                     </div>
                     <DialogFooter>
                         <div className="grid grid-cols-2 gap-2 w-full">
