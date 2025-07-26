@@ -27,6 +27,7 @@ function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
             await logout();
             const data = await getUserCommonInfos();
             setUserInfo(data); 
+            navigate('/')
         } catch (err) {
             console.error("Failed to logout:", err);
         }
