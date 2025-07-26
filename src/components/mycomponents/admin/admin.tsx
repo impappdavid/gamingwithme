@@ -21,12 +21,12 @@ function Admin() {
                             className="p-4 bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-2xl border border-zinc-800 flex gap-2 justify-between items-center hover:scale-101 transition-all duration-300"
                         >
                             <div className="flex gap-2 items-center">
-                                <Gamepad2 className="w-10 h-10 text-zinc-400" />
-                                <div className="text-3xl">Games</div>
+                                <Gamepad2 className="w-5 h-5 sm:w-10 sm:h-10 text-zinc-400" />
+                                <div className="text-lg sm:text-3xl">Games</div>
                             </div>
                             {/* Settings icon for consistent UI, even if not interactive here */}
                             <div>
-                                <Settings className="w-10 h-10 text-zinc-300" />
+                                <Settings className="w-5 h-5 sm:w-10 sm:h-10 text-zinc-300" />
                             </div>
                         </Link>
                         <Link
@@ -34,11 +34,11 @@ function Admin() {
                             className="p-4 bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-2xl border border-zinc-800 flex gap-2 justify-between items-center hover:scale-101 transition-all duration-300"
                         >
                             <div className="flex gap-2 items-center">
-                                <Bell className="w-10 h-10 text-zinc-400" />
-                                <div className="text-3xl">Notifications</div>
+                                <Bell className="w-5 h-5 sm:w-10 sm:h-10 text-zinc-400" />
+                                <div className="text-lg sm:text-3xl">Notifications</div>
                             </div>
                             <div>
-                                <Settings className="w-10 h-10 text-zinc-300" />
+                                <Settings className="w-5 h-5 sm:w-10 sm:h-10 text-zinc-300" />
                             </div>
                         </Link>
                     </div>
