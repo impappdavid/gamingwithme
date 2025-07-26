@@ -18,6 +18,9 @@ export interface UserProfile {
     bookings: Booking[];
     availability: Availability[];
     joined: string;
+    twitterUrl:string;
+    instagramUrl:string;
+    facebookUrl:string
 }
 
 export interface UserProfileWithTags extends UserProfile {

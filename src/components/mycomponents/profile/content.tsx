@@ -5,7 +5,7 @@ import Navbar from "../navbar/navbar"
 import type { UserProfile } from "@/api/types";
 import { useEffect, useState } from "react";
 import { getUserProfile } from "@/api/user";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchGame } from "@/api/rawg";
 import Services from "./services";
 import GamerServices from "./gamerService";
@@ -162,12 +162,30 @@ function Content() {
                                     </div>
                                 ))}
                             </div>
+                            <div className="flex gap-2">
+                                {user?.twitterUrl?.length > 0 ? (
+                                    <Link to={user.twitterUrl} className="text-sm underline">Twitter</Link>
+                                ) : (
+                                    <div className=""></div>
+                                )}
+                                {user?.instagramUrl?.length > 0 ? (
+                                    <Link to={user.instagramUrl} className="text-sm underline">Instagram</Link>
+                                ) : (
+                                    <div className=""></div>
+                                )}
+                                {user?.facebookUrl?.length > 0 ? (
+                                    <Link to={user.facebookUrl} className="text-sm underline text-blue-500">Facebook</Link>
+                                ) : (
+                                    <div className=""></div>
+                                )}
+                            </div>
                         </div>
+
                     </div>
                     <div className="px-4 py-2 flex flex-col gap-2">
                         {user.tags.includes("Gamer") ? (
                             <div className="grid grid-cols-2 gap-4">
-                                <Carousel userId={String(user.id)}/>
+                                <Carousel userId={String(user.id)} />
                                 {/* Services expects a string, so pass user.id as a string */}
                                 <GamerServices userId={user.id} />
                             </div>
@@ -175,7 +193,7 @@ function Content() {
                             <>
                                 <Services userId={userId} />
 
-                            
+
                             </>
                         )}
                     </div>
