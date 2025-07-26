@@ -28,6 +28,7 @@ import CreateServicePage from "./pages/CreateService";
 import CouponPage from "./pages/Coupon";
 import ForgotPasswordPage from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
+import FaqPage from "./pages/Faq";
 
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -49,6 +50,7 @@ function App() {
             <Route path="/tiktok" element={<Tiktok />} />
             <Route path="/youtube" element={<Youtube />} />
             <Route path="/games" element={<Games />} /> 
+            <Route path="/faq" element={<FaqPage />} /> 
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/create-listing" element={<CreateListing />} />
@@ -74,7 +76,6 @@ function App() {
             {/*
               support --------------------------
               aboutus -------------------------
-              faq -------------------------
               download -------------------------
               terms-and-conditions ---------------------------
             */}
