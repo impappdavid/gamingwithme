@@ -5,6 +5,13 @@ export interface GoogleAuthResponse {
     message?: string;
 }
 
+export interface RegistrationInfos{
+    email: string,
+    password: string,
+    username: string,
+    googleId?: string,
+    facebookId?: string
+}
 
 
 export const registration = async (
@@ -12,7 +19,8 @@ export const registration = async (
     password: string,
     username: string,
     googleId?: string,
-) => {
+    facebookId?: string
+): Promise<RegistrationInfos> => {
     try {
         // TODO: Replace with your actual API URL or use an environment variable
         const API_URL = 'https://localhost:7091';
@@ -22,10 +30,11 @@ export const registration = async (
                 email,
                 password,
                 username,
-                googleId
+                googleId,
+                facebookId
             }
         );
-        return response.data;
+        return response.data as RegistrationInfos;
     } catch (error) {
         console.error('Error registrating the user:', error);
         throw error;

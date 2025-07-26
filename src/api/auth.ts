@@ -13,13 +13,14 @@ export const login = async (email: string, password: string, useCookies?: boolea
 };
 
 // Register new user
-export const register = async (email: string, password: string, username: string, googleId: string) => {
+export const register = async (email: string, password: string, username: string, googleId?: string, facebookId?: string) => {
     try {
         const response = await apiClient.post('/api/account/register', {
             email,
             password,
             username,
-            googleId
+            googleId,
+            facebookId
         });
         return response.data;
     } catch (error) {

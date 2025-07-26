@@ -62,6 +62,7 @@ function RegistrationForm() {
     const [success, setShowSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [googleId, setGoogleId] = useState("");
+    const [facebookId, setFacebookId] = useState("")
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -85,9 +86,10 @@ function RegistrationForm() {
         }
 
         try {
-            await register(email, password, username, googleId);
+            await register(email, password, username, googleId, facebookId);
             setShowSuccess(true);
             // Clear form
+            setFacebookId("")
             setEmail("");
             setPassword("");
             setUsername("");
