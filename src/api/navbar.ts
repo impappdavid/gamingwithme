@@ -32,25 +32,6 @@ export const getUserCommonInfos = async (
     }
 };
 
-export const Logout = async () => {
-    try {
-        // TODO: Replace with your actual API URL or use an environment variable
-        const API_URL = 'https://localhost:7091';
-        const response = await axios.post(
-            `${API_URL}/api/account/logout`,
-            {}, // empty body
-            {
-                withCredentials: true // ✅ VERY IMPORTANT!
-            }
-        );
-        return response.data;
-    } catch (error) {
-        console.error('Error logging in user:', error);
-        throw error;
-    }
-}
-
-
 export const getNotifications = async (
     isPublished: true
 ): Promise<Notification> => {
