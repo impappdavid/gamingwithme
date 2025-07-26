@@ -13,8 +13,7 @@ export interface Service {
 }
 
 export const GetServicesById = async (
-    userId: string,
-    useCookies?: boolean
+    userId: string
 ): Promise<Service[] | null> => {
     try {
         const API_URL = 'https://localhost:7091';
