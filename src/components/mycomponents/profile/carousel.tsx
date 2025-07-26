@@ -201,23 +201,9 @@ function Carousel({ userId }: { userId: string }) {
             <div className="space-y-6 w-full">
                 {/* Calendar picker */}
                 <div className="flex justify-center mb-2">
-                    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                        <PopoverTrigger asChild>
-                            <Button variant="ghost" className="text-2xl font-bold text-white flex items-center gap-2 px-4 py-2 hover:bg-zinc-900">
-                                {currentYear}, {monthNames[currentMonth]}
-                                <ChevronDown className="w-5 h-5" />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent align="center" className="p-2 bg-zinc-950 rounded-xl shadow-xl border-zinc-800">
-                            <Calendar
-                                mode="single"
-                                selected={selectedDate}
-                                onSelect={handleCalendarSelect}
-                                disabled={isDateInPast}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
+                    <Button variant="ghost" className="text-2xl font-bold text-white flex items-center gap-2 px-4 py-2 hover:bg-transparent">
+                        {currentYear}, {monthNames[currentMonth]}
+                    </Button>
                 </div>
                 {/* Carousel */}
                 <div className="relative max-w-xl mx-auto">
@@ -277,7 +263,7 @@ function Carousel({ userId }: { userId: string }) {
                                 <Card
                                     key={index}
                                     className={`cursor-pointer rounded-xl p-4 border transition-colors duration-200  bg-zinc-950 hover:bg-zinc-900 border-red-500`}
-                                    
+
                                 >
                                     <CardContent className="flex flex-col px-0">
                                         <CardTitle className="text-md font-bold">
