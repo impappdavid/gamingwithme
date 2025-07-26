@@ -3,11 +3,14 @@ import { NavLink } from "react-router-dom"
 import { useEffect, useState, useRef } from "react"
 import { getUserCommonInfos, updateUserAvatar } from "@/api/settings"
 import { Skeleton } from "@/components/ui/skeleton"
+import type { UserProfile } from "@/api/types"
+import { getUserProfile } from "@/api/user"
 
 function SettingsSidebar() {
     // State for current profile picture
     const [profilePic, setProfilePic] = useState("/profile/9.jpg")
-    
+    const [user, setUser] = useState<UserProfile | null>(null);
+
     const [username, setUsername] = useState("")
 
     const [loading, setLoading] = useState(true);
@@ -20,7 +23,8 @@ function SettingsSidebar() {
             try {
                 const common = await getUserCommonInfos();
                 if (common && common.username) {
-
+                    const apiUser = await getUserProfile(common.username);
+                    setUser(apiUser);
                     setUsername(common.username);
                 } else {
                     setUsername("");
@@ -72,9 +76,26 @@ function SettingsSidebar() {
                     <>
                         <div className="relative group sm:w-24 ">
                             <div className="bg-black/40 backdrop-blur-sm z-50 w-24 h-24 absolute rounded-lg text-center text-sm text-zinc-200 hidden group-hover:flex justify-center items-center transition-all duration-300 cursor-pointer" onClick={handleProfilePicClick}>
+                                {/* Button overlay for changing the profile picture */}
                                 Change Picture
                             </div>
-                            <img src={profilePic} alt="profile" className="sm:w-24 w-8 z-1 rounded-lg border " onClick={handleProfilePicClick} style={{ cursor: 'pointer' }} />
+                            {user?.avatarurl && user.avatarurl.length > 0 ? (
+                                <img
+                                    src={user.avatarurl}
+                                    alt="profile"
+                                    className="sm:w-24 w-8 z-1 rounded-lg border"
+                                    onClick={handleProfilePicClick}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            ) : (
+                                <img
+                                    src={profilePic}
+                                    alt="profile"
+                                    className="sm:w-24 w-8 z-1 rounded-lg border"
+                                    onClick={handleProfilePicClick}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            )}
                             <input
                                 type="file"
                                 accept="image/*"
