@@ -101,8 +101,8 @@ function Content() {
                     <Navbar page={t("profile")} />
                 </div>
                 <div className="p-2 sm:p-4 flex flex-col gap-4">
-                    <div className="pl-4 flex gap-2">
-                        <div className="border rounded-2xl w-fit">
+                    <div className="pl-4 flex flex-col sm:flex-row gap-2">
+                        <div className=" rounded-2xl w-fit">
                             {user.avatarurl && user.avatarurl.length > 0 ? (
                                 <img src={user.avatarurl} alt="user" className="w-24 sm:min-w-36 sm:h-36 rounded-2xl" />
                             ) : (
@@ -183,7 +183,7 @@ function Content() {
                     </div>
                     <div className="px-4 py-2 flex flex-col gap-2">
                         {user.tags.includes("Gamer") ? (
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid lg:grid-cols-2 gap-4">
                                 <Carousel userId={String(user.id)} />
                                 {/* Services expects a string, so pass user.id as a string */}
                                 <GamerServices userId={user.id} />

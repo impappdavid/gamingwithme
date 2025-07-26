@@ -8,7 +8,7 @@ import { getUserProfile } from "@/api/user"
 
 function SettingsSidebar() {
     // State for current profile picture
-    const [profilePic, setProfilePic] = useState("/profile/9.jpg")
+    const [profilePic, setProfilePic] = useState("/profile/6.jpg")
     const [user, setUser] = useState<UserProfile | null>(null);
 
     const [username, setUsername] = useState("")

@@ -429,7 +429,7 @@ function General() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-2">
+                            <div className="grid sm:grid-cols-3 gap-2">
                                 <div className="relative flex-1">
                                     <X className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
                                     <Input

@@ -195,7 +195,7 @@ function Carousel({ userId }: { userId: string }) {
                 const formatted = toLocalIsoDateString(d);
                 const activeCount = bookedDates[formatted]?.length || 0;
                 return (
-                  <CarouselItem key={d.toISOString()} className="basis-1/4 sm:basis-1/7">
+                  <CarouselItem key={d.toISOString()} className="basis-1/3 sm:basis-1/7 ">
                     <Card
                       className={`cursor-pointer transition-all duration-200 border-2 px-2 py-2 rounded-lg text-center min-w-[80px] max-w-[80px] h-[80px] mx-auto flex flex-col justify-center ${selectedDate.toDateString() === d.toDateString() ? "border-green-500 bg-zinc-900" : isPast ? "border-zinc-700 bg-zinc-900 opacity-50" : "border-zinc-800 bg-zinc-950"}`}
                       onClick={() => { if (!isPast) setSelectedDate(d); }}
