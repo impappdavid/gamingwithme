@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 export type TypeGames = {
     id:number
     name: string
@@ -6,6 +7,7 @@ export type TypeGames = {
     slug: string
     thumbnailUrl: string
 }
+
 export const GetAllGames = async () => {
     try {
         // TODO: Replace with your actual API URL or use an environment variable
