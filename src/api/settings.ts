@@ -17,6 +17,25 @@ export interface Coupon {
 
 }
 
+
+export interface ServiceOrder {
+    id: string,
+    serviceId: string,
+    serviceTitle: string,
+    customerUsername: string,
+    providerName: string,
+    status: boolean,
+    orderDate: string,
+    deliveryDeadline: string,
+    completedDate: string,
+    price: number,
+    customerNotes: string,
+    providerNotes: string,
+    isOverdue: boolean
+
+
+}
+
 interface CouponResponse {
     coupons: Coupon[];
     totalCount: number;
@@ -115,6 +134,25 @@ export const getUpcomingBookings = async (useCookies?: boolean) => {
         throw error;
     }
 };
+
+export const GetUpcomingServices = async (
+    asProvider: boolean,
+): Promise<ServiceOrder[]> => {
+    try {
+        const API_URL = 'https://localhost:7091';
+        const response = await axios.get(`${API_URL}/api/FixedServices/orders`, {
+            params: { asProvider },
+            withCredentials: true,
+        });
+        // ✅ RETURN the result!
+        return response.data as ServiceOrder[];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error; // Re-throw after handling
+    }
+};
+
+
 
 // Get billing history
 export const getBills = async (useCookies?: boolean): Promise<Bill[]> => {
