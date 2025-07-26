@@ -6,9 +6,6 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import News from "./news"
-import Events from "./events"
-import EasterEgg from "./easteregg"
 import Footer from "../global/footer"
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
@@ -22,13 +19,16 @@ function Content() {
     const [game, setGame] = useState<any>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
-    // News, Events, Easter Eggs
+    // Tab data for this game
     const [news, setNews] = useState<any[]>([])
     const [events, setEvents] = useState<any[]>([])
     const [easterEggs, setEasterEggs] = useState<any[]>([])
+    // Track loading for each tab
     const [tabLoading, setTabLoading] = useState({ news: false, events: false, eggs: false })
+    // Used to display a RAWG image fallback if needed
     const [rawgImage, setRawgImage] = useState<string | null>(null)
 
+    // Load game by slug (from URL)
     useEffect(() => {
         const fetchGame = async () => {
             setLoading(true)
@@ -45,15 +45,15 @@ function Content() {
         if (slug) fetchGame()
     }, [slug])
 
-    // Fetch RAWG image if needed
+    // Try getting a better cover image from RAWG if fallback is needed
     useEffect(() => {
         const getRawg = async () => {
             if (!game?.name) return
-            // If no thumbnail or looks pixelated (e.g. .jpg/.png and width < 400px), try RAWG
+            // Use RAWG if missing or likely low-res/placeholder image
             let shouldFetch = false
             if (!game.thumbnailUrl) shouldFetch = true
             else {
-                // Try to detect pixelated by filename or url pattern (very basic)
+                // Simple check for "pixelated" by filename/substrings
                 if (/pixel|small|icon|64|128|256|32|16|\.ico|\.svg/i.test(game.thumbnailUrl)) shouldFetch = true
             }
             if (shouldFetch) {
@@ -67,6 +67,7 @@ function Content() {
         getRawg()
     }, [game?.thumbnailUrl, game?.name])
 
+    // Load all tab content for this game
     useEffect(() => {
         if (!game?.id) return
         setTabLoading(t => ({ ...t, news: true }))
@@ -188,8 +189,6 @@ function Content() {
                                 <Footer />
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
