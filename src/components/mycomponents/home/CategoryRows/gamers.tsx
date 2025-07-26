@@ -5,13 +5,14 @@ import { Link } from "react-router-dom"
 import { Skeleton } from "@/components/ui/skeleton"
 import { fetchGame } from "@/api/rawg";
 
-
 function Gamers() {
     const { t } = useTranslation()
     const [topcreators, setTopCreators] = useState<TopCreators[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
+    // Store up to 2 RAWG images for each username
     const [gameImages, setGameImages] = useState<{ [username: string]: string[] }>({});
+
     useEffect(() => {
         const getTopCreators = async () => {
             try {
@@ -30,6 +31,7 @@ function Gamers() {
         }
         getTopCreators()
     }, [])
+
     // Fetch RAWG images for up to 2 games per user
     useEffect(() => {
         const fetchImages = async () => {
@@ -75,18 +77,14 @@ function Gamers() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-1 2xl:gap-2">
                     {topcreators.length > 0 ? (
                         <>
-                            {topcreators.map((element: TopCreators, index: number) => (
-                                <div key={index} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full ">
+                            {topcreators.map((element: TopCreators) => (
+                                <div key={element.username} className="p-1.5 relative bg-gradient-to-br group from-zinc-900 to-zinc-950  cursor-pointer rounded-2xl border border-zinc-800 flex flex-col gap-2 w-full ">
                                     <div className="flex flex-col relative w-full overflow-hidden rounded-2xl">
                                         {element.avatarurl.length > 0 ? (
                                             <img src={element.avatarurl} alt={element.username} className="w-full rounded-xl object-cover  ease-in-out group-hover:scale-105 transition-all duration-300" />
-
                                         ) : (
                                             <img src="/profile/6.jpg" alt={element.username} className="w-full rounded-xl object-cover  ease-in-out group-hover:scale-105 transition-all duration-300" />
-
                                         )}
-
-                                        {/* <div className="absolute top-1 right-1 p-1 px-1.5 bg-[#19FF00] backdrop-blur-2xl rounded-full text-xs text-black font-semibold drop-shadow-2xl flex items-center">{element.cost}</div> */}
                                         <div className="flex flex-col gap-0.5 px-1 pt-1 rounded-b-2xl w-full" >
                                             <div className="flex gap-1 items-center">
                                                 <div className="text-lg">{element.username}</div>
@@ -120,7 +118,6 @@ function Gamers() {
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             ))
                             }
@@ -136,7 +133,6 @@ function Gamers() {
                             <div className="text-sm">No gamer yet.</div>
                         </div>
                     )}
-
                 </div>
             </div>
         </>
