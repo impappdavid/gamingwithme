@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import Navbar from "../navbar/navbar"
 import { AddNewGame } from "@/api/admin"
@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useNavigate } from "react-router-dom"
 import { fetchGameFromRAWG } from "@/api/games"
-import { useRef } from "react"
 
-
-
+// Converts a string to a URL-friendly slug
 function slugify(text: string) {
     return text
         .toString()
@@ -21,14 +19,15 @@ function slugify(text: string) {
         .replace(/^-+|-+$/g, '');
 }
 
+// Get a random placeholder image
 function getRandomThumbnail() {
-    // Placeholder: use a random image from unsplash
-    return `https://source.unsplash.com/400x200/?game,${Math.floor(Math.random()*10000)}`;
+    return `https://source.unsplash.com/400x200/?game,${Math.floor(Math.random() * 10000)}`;
 }
 
 function AddGame() {
     const { t } = useTranslation()
     const navigate = useNavigate()
+    // Only 'name' is used, so we just keep 'name' and 'setName'
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     const [loading, setLoading] = useState(false)
@@ -37,9 +36,10 @@ function AddGame() {
     const [rawgResults, setRawgResults] = useState<any[]>([])
     const [showDropdown, setShowDropdown] = useState(false)
     const [selectedRawg, setSelectedRawg] = useState<any>(null)
+    // Only searchTimeout.current is used — keep as is
     const searchTimeout = useRef<NodeJS.Timeout | null>(null)
 
-    // Live search RAWG
+    // When the user types in the game name field, do a live search (with debounce)
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value)
         setSelectedRawg(null)
@@ -50,6 +50,7 @@ function AddGame() {
             setShowDropdown(false)
             return
         }
+        // Wait before searching to reduce API load
         searchTimeout.current = setTimeout(async () => {
             const result = await fetchGameFromRAWG(value)
             if (result) {
@@ -62,19 +63,20 @@ function AddGame() {
         }, 400)
     }
 
+    // Let user pick a RAWG autocomplete result
     const handleSelectRawg = (game: any) => {
         setName(game.name)
         setSelectedRawg(game)
         setShowDropdown(false)
     }
 
+    // Form submission: call AddNewGame and handle results
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setSuccess("")
         setError("")
         const slug = slugify(name)
-        // Use RAWG image if selected, else random
         const thumbnailUrl = selectedRawg?.background_image || getRandomThumbnail()
         try {
             await AddNewGame(name, description, slug, thumbnailUrl)
@@ -109,6 +111,7 @@ function AddGame() {
                                 required
                                 autoComplete="off"
                             />
+                            {/* Dropdown with RAWG results if there are any */}
                             {showDropdown && rawgResults.length > 0 && (
                                 <div className="absolute z-10 bg-zinc-900 border border-zinc-800 rounded-xl shadow-lg mt-1 w-full max-w-xl">
                                     {rawgResults.map((game, idx) => (
