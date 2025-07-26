@@ -5,10 +5,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import { ResetPasswordEndpoin } from "@/api/auth";
 
-
-// Add styles to document
-const styleSheet = document.createElement("style");
-document.head.appendChild(styleSheet);
+// --- Removed unused stylesheet creation ---
 
 function ResetPassword() {
     const [newPassword, setNewPassword] = useState("");
@@ -18,15 +15,14 @@ function ResetPassword() {
     const [success, setSuccess] = useState<string | null>(null);
     const [isErrorVisible, setIsErrorVisible] = useState(false);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
+    // Pull email/token values from URL query params
     const url = new URL(window.location.href);
-    const email = url.searchParams.get("email"); // impappdavid@gmail.com
+    const email = url.searchParams.get("email");
     const token = url.searchParams.get("token");
 
-
-
-
+    // Error popup (auto-hides after a delay)
     const showError = (message: string) => {
         setError(message);
         setIsErrorVisible(true);
@@ -38,39 +34,32 @@ function ResetPassword() {
         }, 3000);
     }
 
+    // Handle reset form submit
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
-
-
-        // Check that email and token are not null before calling the endpoint
+        // Require email and token present before submitting
         if (!email || !token) {
             showError("Missing email or token.");
             setLoading(false);
             return;
         }
-
         try {
             await ResetPasswordEndpoin(email, token, newPassword);
             setSuccess(`Your new password is saved`);
             setTimeout(() => {
-                navigate('/login')
+                navigate('/login');
             }, 3000);
-            
         } catch (error: any) {
             showError("Wrong email. We didn't find this email in our system.");
         } finally {
             setLoading(false);
         }
     }
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     }
-
-
-
-
 
     return (
         <div className="w-full h-screen sm:justify-center items-center flex flex-col gap-2 p-0 sm:py-0 transition-all">
@@ -85,6 +74,7 @@ function ResetPassword() {
                     </Link>
                 </div>
 
+                {/* Error alert, animates in and out */}
                 {error && (
                     <div className={`absolute z-50 top-4 p-2 bg-red-500/10 backdrop-blur-2xl border border-red-500/20 rounded-xl w-88 sm:w-84 flex justify-between items-center transition-all duration-300 ease-in-out transform ${isErrorVisible ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
                         <div className="flex gap-2 items-center">
@@ -99,6 +89,7 @@ function ResetPassword() {
                     </div>
                 )}
 
+                {/* Success alert */}
                 {success && (
                     <div className={`absolute z-50 top-4 p-2 bg-green-500/10 backdrop-blur-2xl border border-green-500/20 rounded-xl w-88 sm:w-84 flex justify-between items-center transition-all duration-300 ease-in-out transform ${success.length > 0 ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
                         <div className="flex gap-2 items-center">
@@ -115,8 +106,6 @@ function ResetPassword() {
 
                 <div className="relative">
                     <div className="py-6 flex flex-col gap-2 w-full sm:w-84 transition-all duration-500 transform translate-x-0 opacity-100">
-
-
                         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
                             <div className="flex flex-col gap-0.5">
                                 <div className="relative">
@@ -146,8 +135,6 @@ function ResetPassword() {
                                 </div>
                             </div>
 
-
-
                             <Button
                                 type="submit"
                                 disabled={loading}
@@ -156,8 +143,6 @@ function ResetPassword() {
                                 {loading ? "Saving..." : "Save"}
                             </Button>
                         </form>
-
-
                     </div>
                 </div>
             </div>
