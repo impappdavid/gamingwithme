@@ -39,7 +39,6 @@ export function AdminProtectedRoute() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [checked, setChecked] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     const checkAdmin = async () => {
