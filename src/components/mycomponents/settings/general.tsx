@@ -93,6 +93,7 @@ function General() {
       try {
         const games = await fetchPopularGamesFromRAWG();
         setGameTags(games);
+        console.log(gameTags)
       } catch (err) {
         console.error("Failed to fetch games:", err);
       }
