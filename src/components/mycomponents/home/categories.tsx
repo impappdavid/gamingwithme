@@ -17,19 +17,19 @@ function Categories() {
                         <div className="overflow-hidden rounded-lg">
                             <img src="/categories/just-chatting.png" alt="just-chatting" className="w-36 xl:min-w-36 rounded-lg transition-transform duration-300 group-hover:scale-105 transform-gpu" />
                         </div>
-                        <div className="text-sm text-zinc-200 group-hover:text-blue-400 transition-colors duration-300">Just Chatting</div>
+                        <div className="text-sm text-zinc-200 group-hover:text-blue-400 transition-colors duration-300">{t("Just Chatting")}</div>
                     </Link>
                     <Link to={`/gamers`} className="flex flex-col gap-1 group">
                         <div className="overflow-hidden rounded-lg">
                             <img src="/categories/gamers.png" alt="gamers" className="w-36 xl:min-w-36 rounded-lg transition-transform duration-300 group-hover:scale-105 transform-gpu" />
                         </div>
-                        <div className="text-sm text-zinc-200 group-hover:text-green-500 transition-colors duration-300">Gamers</div>
+                        <div className="text-sm text-zinc-200 group-hover:text-green-500 transition-colors duration-300">{t("Gamers")}</div>
                     </Link>
                     <Link to={`/music`} className="flex flex-col gap-1 group">
                         <div className="overflow-hidden rounded-lg">
                             <img src="/categories/music.png" alt="gamers" className="w-36 xl:min-w-36 rounded-lg transition-transform duration-300 group-hover:scale-105 transform-gpu" />
                         </div>
-                        <div className="text-sm text-zinc-200 group-hover:text-orange-500 transition-colors duration-300">Music</div>
+                        <div className="text-sm text-zinc-200 group-hover:text-orange-500 transition-colors duration-300">{t("Music")}</div>
                     </Link>
                     <Link to={`/tiktok`} className="flex flex-col gap-1 group">
                         <div className="overflow-hidden rounded-lg">
