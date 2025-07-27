@@ -84,7 +84,7 @@ function JustChatting() {
     <>
       <div className="flex flex-col gap-4 ">
         <div className="flex w-full justify-between items-center">
-          <div className="text-xl font-medium">{t("Just chatting")}</div>
+          <div className="text-xl font-medium">{t("Just Chatting")}</div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-1 2xl:gap-2">
           {topcreators.length > 0 ? (
@@ -200,7 +200,7 @@ function JustChatting() {
             </div>
           ) : (
             <div className="h-24 rounded-2xl flex text-zinc-400 items-center justify-start ">
-              <div className="text-sm">No just chattings users yet.</div>
+              <div className="text-sm">{t("No just chatting users yet.")}</div>
             </div>
           )}
         </div>
