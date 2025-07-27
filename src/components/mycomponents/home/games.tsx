@@ -58,7 +58,7 @@ function HomeGames() {
             <div className="flex flex-col gap-4">
                 <div className="flex w-full justify-between items-center">
                     <div className="text-xl font-medium">{t("Games")}</div>
-                    <Link to={`/games`} className="text-xs text-zinc-400 hover:underline ">View All</Link>
+                    <Link to={`/games`} className="text-xs text-zinc-400 hover:underline ">{t("View all")}</Link>
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2">
                     {loading ? (
