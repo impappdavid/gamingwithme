@@ -124,9 +124,9 @@ function GamerCard({ users }: { users: User[] }) {
                     // No users found message
                     <div className="flex flex-col items-center justify-center h-64 text-center">
                         <div className="text-6xl mb-4">🔍</div>
-                        <h3 className="text-xl font-semibold text-zinc-200 mb-2">No users found</h3>
+                        <h3 className="text-xl font-semibold text-zinc-200 mb-2">{t("No users found")}</h3>
                         <p className="text-zinc-400 max-w-md">
-                            Try adjusting your search criteria or filters to find more users.
+                        {t("Try adjusting your search criteria or filters to find more users.")}
                         </p>
                     </div>
                 ) : (
@@ -170,7 +170,7 @@ function GamerCard({ users }: { users: User[] }) {
                                             </div>
                                         </div>
                                         <div className="py-2 w-full">
-                                            <Link to={`/profile/${user.username}`} className="py-1.5 justify-center bg-[#19FF00] hover:bg-[#1aff0096] transition-all duration-200 px-3 rounded-lg flex items-center text-sm text-black font-semibold">BOOK</Link>
+                                            <Link to={`/profile/${user.username}`} className="py-1.5 justify-center bg-[#19FF00] hover:bg-[#1aff0096] transition-all duration-200 px-3 rounded-lg flex items-center text-sm text-black font-semibold">{t("BOOK")}</Link>
                                         </div>
                                     </div>
                                 </div>
