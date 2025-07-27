@@ -200,7 +200,7 @@ function Tiktok() {
             </div>
           ) : (
             <div className="h-24 rounded-2xl flex text-zinc-400 items-center justify-start ">
-              <div className="text-sm">No tiktoker's yet.</div>
+              <div className="text-sm">{t(`No tiktokers yet.`)}</div>
             </div>
           )}
         </div>
