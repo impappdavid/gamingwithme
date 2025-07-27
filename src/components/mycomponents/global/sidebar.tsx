@@ -115,7 +115,7 @@ function Sidebar() {
                         }
                     >
                         <MessagesSquare className="w-5 h-5 text-[#2856F4]" />
-                        <div className="text-md font-medium hidden xl:flex">{t("JustChatting")}</div>
+                        <div className="text-md font-medium hidden xl:flex">{t("Just Chatting")}</div>
                     </NavLink>
                     <NavLink
                         to="../gamers"
