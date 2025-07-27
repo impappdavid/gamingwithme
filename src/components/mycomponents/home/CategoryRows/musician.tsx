@@ -202,7 +202,7 @@ function Musician() {
             </div>
           ) : (
             <div className="h-24 rounded-2xl flex text-zinc-400 items-center justify-start ">
-              <div className="text-sm">No musician's yet.</div>
+              <div className="text-sm">{t(`No musicians yet`)}</div>
             </div>
           )}
         </div>
