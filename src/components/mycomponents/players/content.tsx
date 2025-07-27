@@ -106,7 +106,7 @@ function Content() {
     <div className="w-full h-full xl:h-screen sm:p-2">
       <div className="w-full min-h-screen sm:min-h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
         <div className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl sm:rounded-t-2xl">
-          <Navbar page={t("Players")} />
+          <Navbar page={t("Gamers")} />
         </div>
         <div className="min-h-[950px]">
           <Filter
