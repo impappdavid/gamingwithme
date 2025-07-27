@@ -55,7 +55,7 @@ function Filter({
                 <Input
                     id="filter"
                     type="text"
-                    placeholder={t("searchpog")}
+                    placeholder={t("Search by username")}
                     className="pl-9 h-10 rounded-xl text-[14px] lg:text-[14px] bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                     value={filterText}
                     onChange={(e) => setFilterText(e.target.value)}
