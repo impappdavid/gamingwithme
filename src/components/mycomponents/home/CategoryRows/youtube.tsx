@@ -198,7 +198,7 @@ function Youtube() {
             </div>
           ) : (
             <div className="h-24 rounded-2xl flex text-zinc-400 items-center justify-start ">
-              <div className="text-sm">No youtuber's yet.</div>
+              <div className="text-sm">{t(`No youtubers yet.`)}</div>
             </div>
           )}
         </div>
