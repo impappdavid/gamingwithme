@@ -21,11 +21,11 @@ function Security() {
         setError("");
         try {
             await updateUserPassword(currentPassword, newPassword);
-            setSuccess("Password updated successfully.");
+            setSuccess(t("Password updated successfully."));
             setCurrentPassword("");
             setNewPassword("");
         } catch (err) {
-            setError("Failed to update password.");
+            setError(t("Failed to update password."));
         } finally {
             setLoading(false);
         }
@@ -42,13 +42,13 @@ function Security() {
                     <div className="w-full p-4">
                         <div className="flex flex-col gap-4"></div>
                         <div className="flex flex-col gap-2">
-                            <label className="text-sm font-semibold">Change Password</label>
+                            <label className="text-sm font-semibold">{t("Change Password")}</label>
                             <div className="grid grid-cols-1 gap-2">
                                 <div className="relative">
                                     <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
                                     <Input
                                         type="password"
-                                        placeholder="Current Password"
+                                        placeholder={t("Current Password")}
                                         className="pl-10 h-11 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
@@ -58,14 +58,18 @@ function Security() {
                                     <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
                                     <Input
                                         type="password"
-                                        placeholder="New Password"
+                                        placeholder={t("New Password")}
                                         className="pl-10 h-11 rounded-xl bg-zinc-800/40 hover:bg-zinc-800/80 border-zinc-800 transition-all duration-300"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
                                     />
                                 </div>
-                                <Button onClick={handlePasswordChange} className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300" disabled={loading}>
-                                    {loading ? "Updating..." : "Update Password"}
+                                <Button
+                                    onClick={handlePasswordChange}
+                                    className="h-11 px-4 rounded-xl bg-green-500 hover:bg-green-600 transition-all duration-300"
+                                    disabled={loading}
+                                >
+                                    {loading ? t("Updating...") : t("Update Password")}
                                 </Button>
                                 {success && <div className="text-green-400 text-sm mt-2">{success}</div>}
                                 {error && <div className="text-red-400 text-sm mt-2">{error}</div>}
