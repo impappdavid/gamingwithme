@@ -80,14 +80,14 @@ function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
                         onClick={() => userInfo?.username && navigate(`/profile/${userInfo.username}`)}
                     >
                         <User className="w-5 h-5" />
-                        {t("profile")}
+                        {t("Profile")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="hover:bg-zinc-500/20 flex gap-1"
                         onClick={() => navigate('/settings/general')}
                     >
                         <Settings />
-                        {t("settings")}
+                        {t("Settings")}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
@@ -95,7 +95,7 @@ function UserMenu({ userInfo, setUserInfo }: UserMenuProps) {
                         className="text-red-500 hover:text-red-500 hover:bg-red-500/20 flex gap-2"
                     >
                         <LogOut className="text-red-500" />
-                        {t("logout")}
+                        {t("Log out")}
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>
