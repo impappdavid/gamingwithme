@@ -83,7 +83,7 @@ function SearchBar() {
                         {/* Main search button: triggers dialog modal */}
                         <div className="rounded-lg h-9 xl:w-full bg-zinc-950 hover:bg-zinc-900/50 border flex gap-2 text-zinc-400 items-center px-2 cursor-pointer transition-all duration-200">
                             <Search className="w-5 h-5" />
-                            <div className="hidden xl:flex">Search between all users...</div>
+                            <div className="hidden xl:flex">{t(`Search between all users...`)}</div>
                         </div>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[700px] sm:min-h-[800px] sm:max-h-[800px] min-h-[700px] max-h-[700px] overflow-y-scroll sm:overflow-hidden flex flex-col">
