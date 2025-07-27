@@ -3,19 +3,21 @@ import { useTranslation } from "react-i18next"
 import Navbar from "../navbar/navbar"
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table"
 import { Link } from "react-router-dom"
-import { getAllGames } from "@/api"
+import { Button } from "@/components/ui/button"
+import { DeleteNotification, GetAllNotification, PublishNotification } from "@/api/admin"
+import { Trash2 } from "lucide-react"
 
-interface Game {
+interface Notifications {
     id: string,
-    name: string,
-    description: string,
-    slug: string,
-    thumbnailUrl: string
+    title: string,
+    content: string,
+    createdAt: string,
+    isPublished: boolean
 }
 
-function AdminGamesC() {
+function AdminNotifications() {
     const { t } = useTranslation()
-    const [games, setGames] = useState<Game[]>([])
+    const [notis, setNotis] = useState<Notifications[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
@@ -23,12 +25,12 @@ function AdminGamesC() {
         const fetchGames = async () => {
             setLoading(true)
             try {
-                // getAllGames returns the list of all games from backend
-                const response = await getAllGames()
+                const response = await GetAllNotification()
                 if (response) {
-                    setGames(response.map((game: any) => ({
+                    // Convert id to string to match the Game interface
+                    setNotis(response.map((game: any) => ({
                         ...game,
-                        id: String(game.id),
+                        id: String(game.id)
                     })))
                 }
             } catch (err: any) {
@@ -40,19 +42,57 @@ function AdminGamesC() {
         fetchGames()
     }, [])
 
+    const handleRemove = async (notiId: string) => {
+        setError("")
+        try {
+            await DeleteNotification(notiId)
+            setNotis(prev => prev.filter(noti => noti.id !== notiId)) // ✅ remove from state
+        } catch (err: any) {
+            setError(err.message || "Failed to delete notification.")
+        }
+    }
+
+    const formatDate = (isoString: string) => {
+        const date = new Date(isoString)
+        return date.toLocaleString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+        })
+    }
+
+    const handlePublish = async (notiId: string) => {
+        setError("")
+        try {
+            await PublishNotification(notiId)
+    
+            // ✅ Update the local state so the UI changes without reload
+            setNotis(prev =>
+                prev.map(noti =>
+                    noti.id === notiId ? { ...noti, isPublished: true } : noti
+                )
+            )
+        } catch (err: any) {
+            setError(err.message || "Failed to publish notification.")
+        }
+    }
+
+
     return (
         <>
             <div className="w-full xl:h-screen sm:p-2">
                 <div className="w-full h-full sm:max-h-screen bg-black sm:rounded-2xl border border-zinc-800 sm:overflow-y-auto relative">
-                    {/* Navbar always at top */}
                     <div className="sticky top-0 z-50 bg-black/40 backdrop-blur-2xl sm:rounded-t-2xl">
                         <Navbar page={t("Admin")} />
                     </div>
                     <div className="p-4">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold">{t("Games")}</h2>
-                            <Link to="/admin/games/create">
-                                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all">{t("Add Game")}</button>
+                            <Link to="/admin/notifications/create">
+                                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all">{t("Add Notification")}</button>
                             </Link>
                         </div>
                         {loading ? (
@@ -63,39 +103,44 @@ function AdminGamesC() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>{t("Name")}</TableHead>
-                                        <TableHead>{t("Description")}</TableHead>
-                                        <TableHead>{t("Slug")}</TableHead>
-                                        <TableHead>{t("Thumbnail")}</TableHead>
-                                        <TableHead>{t("Edit")}</TableHead>
+                                        <TableHead>{t("Title")}</TableHead>
+                                        <TableHead>{t("Content")}</TableHead>
+                                        <TableHead>{t("CreatedAt")}</TableHead>
+                                        <TableHead>{t("IsPublished")}</TableHead>
+                                        <TableHead className="text-right">{t("Delete")}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {games.length > 0 ? (
-                                        // Show all game rows
-                                        games.map((game) => (
-                                            <TableRow key={game.id}>
-                                                <TableCell>{game.name}</TableCell>
-                                                <TableCell>{game.description}</TableCell>
-                                                <TableCell>{game.slug}</TableCell>
-                                                <TableCell>
-                                                    {game.thumbnailUrl ? (
-                                                        <img src={game.thumbnailUrl} alt={game.name} className="w-16 h-10 object-cover rounded" />
-                                                    ) : (
-                                                        <span className="text-zinc-400">No image</span>
-                                                    )}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Link to={`/admin/games/edit/${game.slug}`} className="text-blue-600 hover:underline">{t("Edit")}</Link>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                    {notis.length > 0 ? (
+                                        <>
+                                            {
+                                                notis.map((noti) => (
+                                                    <TableRow key={noti.id}>
+                                                        <TableCell>{noti.title}</TableCell>
+                                                        <TableCell>{noti.content}</TableCell>
+                                                        <TableCell>{formatDate(noti.createdAt)}</TableCell>
+                                                        <TableCell>
+                                                            {noti.isPublished ? (
+                                                                <span className="text-zinc-400">published</span>
+                                                            ) : (
+                                                                <div className="text-orange-500 underline cursor-pointer" onClick={()=> handlePublish(noti.id)}>publish</div>
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell className="text-right">
+                                                            <Button onClick={() => handleRemove(noti.id)} className="bg-red-500/20 text-red-500 border border-red-500 hover:bg-red-500/30 cursor-pointer transition-all duration-300">
+                                                                <Trash2 />
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            }
+                                        </>
                                     ) : (
-                                        // If no games, show a single full-row message
-                                        <TableRow>
-                                            <TableCell colSpan={5}>No added games yet.</TableCell>
+                                        <TableRow >
+                                            <TableCell rowSpan={4}>No notification added yet.</TableCell>
                                         </TableRow>
                                     )}
+
                                 </TableBody>
                             </Table>
                         )}
@@ -106,4 +151,4 @@ function AdminGamesC() {
     )
 }
 
-export default AdminGamesC
+export default AdminNotifications
